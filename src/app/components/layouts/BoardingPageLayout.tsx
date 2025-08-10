@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from "react";
+import React, { FC, PropsWithChildren } from "react";
 import classNames from "clsx";
 
 import { Page } from "app/nav";
@@ -82,7 +82,10 @@ const BoardingPageLayout: FC<PropsWithChildren<BoardingPageLayoutProps>> = ({
           "w-full flex justify-center items-center",
         )}
       >
-        <WigwamIcon className={classNames("h-[2rem]", "w-auto mr-3")} />
+        <WigwamIcon
+          className={classNames("h-[2rem]", "w-auto mr-3")}
+          aria-label="MagicCraft"
+        />
       </div>
     ) : (
       <>

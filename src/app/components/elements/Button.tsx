@@ -159,10 +159,7 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
           plainFocus && "focus:bg-opacity-90 focus:shadow-none",
           "focus-visible:bg-opacity-90 focus-visible:shadow-none",
         ],
-      theme === "magic" &&
-        !disabled && [
-          "focus-visible:outline-none",
-        ],
+      theme === "magic" && !disabled && ["focus-visible:outline-none"],
       (theme === "primary" || theme === "primary-reverse") &&
         !disabled &&
         "active:bg-opacity-70 active:shadow-none",

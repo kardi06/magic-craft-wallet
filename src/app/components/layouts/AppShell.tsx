@@ -16,10 +16,10 @@ export default function AppShell({
       {/* header */}
       <header className="flex items-center justify-between gap-3 px-4 py-3">
         <div className="flex items-center gap-2">
-          {/* logo can be an <img> from public/icons or a simple sparkles emoji for now */}
+          {/* logo */}
           <img
-            src="/icons/magiccraft-48.png"
-            alt=""
+            src="/images/logo.png"
+            alt="MagicCraft"
             className="h-6 w-6 rounded-md ring-1 ring-white/10"
           />
           <h1 className="magic-heading">

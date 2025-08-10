@@ -1,4 +1,4 @@
-import { FC, memo, useCallback, useMemo } from "react";
+import { FC, memo, useCallback, useMemo, useEffect, useState } from "react";
 import classNames from "clsx";
 import { useAtom, useAtomValue } from "jotai";
 import { setLocale } from "lib/ext/i18n";
@@ -31,6 +31,26 @@ const General: FC = () => {
   //   tokensWithoutBalanceAtom
   // );
 
+  const [magicTheme, setMagicTheme] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("theme:magic") === "1";
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (magicTheme) {
+      root.classList.add("magic");
+    } else {
+      root.classList.remove("magic");
+    }
+    try {
+      localStorage.setItem("theme:magic", magicTheme ? "1" : "0");
+    } catch {}
+  }, [magicTheme]);
+
   const locale = useMemo(
     () =>
       DEFAULT_LOCALES.find(({ code }) => currentLocale === code) ??
@@ -51,6 +71,22 @@ const General: FC = () => {
         className="mb-3"
       />
       <SelectCurrency className="mb-3" />
+
+      <div className="mt-2 mb-6">
+        <label className="flex items-center gap-3 select-none">
+          <input
+            type="checkbox"
+            checked={magicTheme}
+            onChange={(e) => setMagicTheme(e.target.checked)}
+          />
+          <span>Enable MagicCraft theme</span>
+        </label>
+        <p className="text-xs magic-subtle mt-1">
+          Applies Midnight Blue background, parchment surfaces, and accent glow
+          styles.
+        </p>
+      </div>
+
       {/* <Switcher
         label="Tokens without balance"
         text={showTokensWithoutBalance ? "Visible" : "Hidden"}

@@ -26,7 +26,6 @@ import Button from "app/components/elements/Button";
 import BackButton from "app/components/elements/BackButton";
 import ScrollAreaContainer from "app/components/elements/ScrollAreaContainer";
 import AddAccountSteps from "app/components/blocks/AddAccountSteps";
-import { ReactComponent as WigwamIcon } from "app/icons/Wigwam.svg";
 
 const AddAccountModal = memo(() => {
   const [accModalOpened, setAccModalOpened] = useAtom(addAccountModalAtom);
@@ -140,13 +139,16 @@ const AddAccountModal = memo(() => {
         >
           <OnMount handle={handleContentMount} />
 
-          <WigwamIcon
+          <img
+            src="/images/logo.png"
+            alt="MagicCraft"
             className={classNames(
               "w-16 h-auto",
               "absolute",
               "top-0 left-1/2",
               "-translate-x-1/2 -translate-y-1/4",
               "z-30",
+              "rounded-md ring-1 ring-white/10",
             )}
           />
 
