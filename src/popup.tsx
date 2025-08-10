@@ -3,6 +3,7 @@ import { PorterChannel } from "core/types";
 
 import { mount } from "app/root";
 import PopupApp from "app/components/PopupApp";
+import "./app/styles/index.css";
 
 porter.connect(PorterChannel.Wallet);
 

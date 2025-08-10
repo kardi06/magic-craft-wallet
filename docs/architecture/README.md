@@ -1,0 +1,1 @@
+Refer to the Architecture index at `./architecture.md` for section links. 

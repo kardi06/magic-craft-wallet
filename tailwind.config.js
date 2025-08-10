@@ -6,6 +6,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        magic: {
+          midnight: "#1A1B2F",   // bg base
+          purple:   "#6E4B9E",   // accents
+          gold:     "#F1C40F",   // highlights
+        },
         brand: {
           darkaccent: "#0D1311",
           darkbg: "#181A1F", // #13191F
@@ -33,6 +38,8 @@ module.exports = {
       },
       fontFamily: {
         sans: ["InterVariable", ...theme.fontFamily.sans],
+        display: ['Cinzel', 'Georgia', 'Times New Roman', 'serif'],
+        body: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
       },
       animation: {
         bootfadein: "fadein 0.15s ease-in",
@@ -134,6 +141,7 @@ module.exports = {
         approvestack: "0px -1px 1px #3C435F",
         "popup-bg": "0px -10px 24px 0px rgba(17, 18, 22, 0.24)",
         "popup-nav": "0px -10px 24px 0px rgba(17, 18, 22, 0.48);",
+        "gold-glow": "0 0 0 2px rgba(241,196,15,0.35), 0 0 24px rgba(241,196,15,0.25)",
       },
       dropShadow: {
         profileinitial: "0px 2px 5px rgba(112, 113, 129, 0.37)",
@@ -145,6 +153,8 @@ module.exports = {
         activity: "linear-gradient(220deg, #80EF6E 0.11%, #80EF6E 90.88%)",
         addaccountcontinue:
           "linear-gradient(90.44deg, rgba(13, 14, 32, 0.95) 2.88%, rgba(15, 16, 34, 0.95) 21.54%, rgba(13, 14, 31, 0.95) 41.08%, rgba(17, 18, 36, 0.95) 81.76%, rgba(16, 17, 35, 0.95) 97.51%)",
+        "magic-parchment":
+          "radial-gradient(1200px 800px at 30% 10%, rgba(110,75,158,0.12), transparent 60%), radial-gradient(900px 600px at 80% 30%, rgba(241,196,15,0.10), transparent 55%), radial-gradient(800px 600px at 50% 120%, rgba(255,255,255,0.05), transparent 60%)",
       },
       screens: {
         mmd: { max: "767px" },

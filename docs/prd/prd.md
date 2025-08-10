@@ -1,0 +1,13 @@
+# MagicCraft Wallet - Product Requirements Document (PRD)
+
+- [1. Overview](./01-overview.md)
+- [2. Goals & Objectives](./02-goals-objectives.md)
+- [3. Target Platforms](./03-target-platforms.md)
+- [4. Features](./04-features.md)
+- [5. Non-Goals](./05-non-goals.md)
+- [6. Technical Requirements](./06-technical-requirements.md)
+- [7. User Stories](./07-user-stories.md)
+- [8. Milestones & Delivery Plan](./08-milestones-delivery-plan.md)
+- [9. Acceptance Criteria](./09-acceptance-criteria.md)
+- [10. Deliverables](./10-deliverables.md)
+- [11. Risks & Considerations](./11-risks-considerations.md) 
