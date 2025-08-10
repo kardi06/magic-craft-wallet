@@ -21,15 +21,17 @@ export const getPendingActivitiesAtom = atomFamily((accountAddress: string) =>
 export const getActivitiesAtom = atomFamily(
   ({
     accountAddress,
+    chainId,
     ...rest
   }: {
     accountAddress: string;
+    chainId?: number;
     offset?: number;
     limit?: number;
   }) =>
     atomWithRepoQuery((query) =>
       query(() =>
-        repo.queryActivities({ accountAddress, pending: false, ...rest }),
+        repo.queryActivities({ accountAddress, pending: false, chainId, ...rest }),
       ),
     ),
   dequal,

@@ -164,7 +164,7 @@ const NavToolbar: FC = () => {
       className={classNames(
         "fixed bottom-0 w-full",
         "flex items-center",
-        "px-3 py-2 bg-[#2A2D35]",
+        "px-3 py-2 bg-brand-darkbg",
         "flex items-center justify-between gap-x-3",
         "shadow-popup-nav",
       )}
@@ -187,14 +187,14 @@ const NavToolbar: FC = () => {
       <div className="flex items-center gap-x-2">
         <Button
           theme="tertiary"
-          className="border border-[#515561] rounded-lg col-span-1 !p-[0.625rem] !min-w-0"
+          className="border border-surface-border rounded-lg col-span-1 !p-[0.625rem] !min-w-0 bg-surface-card/40"
           onClick={() => openInTab(undefined, ["token"])}
         >
           <ExpandIcon />
         </Button>
         <Button
           theme="tertiary"
-          className="border border-[#515561] rounded-lg col-span-1 !p-[0.625rem] !min-w-0"
+          className="border border-surface-border rounded-lg col-span-1 !p-[0.625rem] !min-w-0 bg-surface-card/40"
           onClick={() => toggleSidePanel()}
         >
           {sidePanelEnabled ? <SidePanelCloseIcon /> : <SidePanelOpenIcon />}

@@ -117,6 +117,15 @@ a {
     @apply text-white/70;
   }
 
+  .logo-magic {
+    width: clamp(128px, 20vw, 200px);
+    height: auto;
+  }
+
+  .logo-glow {
+    filter: drop-shadow(0 4px 20px rgba(241, 196, 15, 0.25)) drop-shadow(0 0 6px rgba(241, 196, 15, 0.2));
+  }
+
   .btn-magic {
     @apply inline-flex items-center justify-center px-4 py-2 rounded-xl
            bg-magic-purple text-white font-semibold

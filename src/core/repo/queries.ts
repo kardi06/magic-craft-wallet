@@ -113,6 +113,7 @@ export function queryContacts({ search, offset, limit }: QueryContactsParams) {
 export type QueryActivitiesParams = {
   pending: boolean;
   accountAddress: string;
+  chainId?: number;
   offset?: number;
   limit?: number;
 };
@@ -120,13 +121,20 @@ export type QueryActivitiesParams = {
 export function queryActivities({
   pending,
   accountAddress,
+  chainId,
   offset,
   limit,
 }: QueryActivitiesParams) {
-  let coll = activities
-    .where("[accountAddress+pending]")
-    .equals([accountAddress, Number(pending)])
-    .reverse();
+  let coll =
+    typeof chainId === "number"
+      ? activities
+          .where("[accountAddress+chainId+pending+timeAt]")
+          .equals([accountAddress, chainId, Number(pending)])
+          .reverse()
+      : activities
+          .where("[accountAddress+pending]")
+          .equals([accountAddress, Number(pending)])
+          .reverse();
 
   if (offset) {
     coll = coll.offset(offset);

@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
-      "packages/*": ["../packages/*"]
+      "packages/*": ["../packages/*"],
+      "@logo.png": ["../public/images/logo.png"]
     },
     "module": "esnext",
     "target": "es2022",

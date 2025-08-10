@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MagicCraft logo">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#F1C40F" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#F1C40F" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#F1C40F" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="256" height="256" rx="32" fill="#1A1B2F"/>
+  <circle cx="128" cy="128" r="80" fill="url(#g)"/>
+  <g fill="none" stroke="#F1C40F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 168 L96 88 L128 136 L160 88 L192 168"/>
+    <path d="M96 168 L96 136"/>
+    <path d="M160 168 L160 136"/>
+  </g>
+</svg> 

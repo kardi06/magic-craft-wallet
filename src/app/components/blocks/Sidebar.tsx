@@ -8,7 +8,7 @@ import { TEvent, trackEvent } from "core/client";
 import { Page } from "app/nav";
 import { SoonTag } from "app/components/elements/SoonTag";
 import { updateAvailableAtom, pageAtom, tokenSlugAtom } from "app/atoms";
-import { ReactComponent as WigwamTitleIcon } from "app/icons/WigwamTitle.svg";
+import logoUrl from "@logo.png";
 
 import useSidebarLinks from "./Sidebar.Links";
 
@@ -33,7 +33,14 @@ const Sidebar: FC = () => {
           "text-2xl font-black",
         )}
       >
-        <WigwamTitleIcon className={classNames("ml-3 my-1 h-8 w-auto")} />
+        <img
+          src={logoUrl}
+          alt="MagicCraft logo"
+          className="ml-3 my-1 h-8 w-8 rounded-md ring-1 ring-white/10 mr-2"
+        />
+        <span className="magic-heading">
+          Magic<span className="gold">Craft</span>
+        </span>
       </Link>
       <SidebarBlock links={NavLinksPrimary} />
       <SidebarBlock

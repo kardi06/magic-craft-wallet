@@ -23,6 +23,7 @@ module.exports = {
   moduleNameMapper: {
     "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
     "multiformats/cid": "<rootDir>/node_modules/multiformats/dist/index.min.js",
+    "^@logo\\.png$": "<rootDir>/public/images/logo.png",
   },
   moduleFileExtensions: ["js", "ts", "tsx", "json", "jsx", "node"],
 };

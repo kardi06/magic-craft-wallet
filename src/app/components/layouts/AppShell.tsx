@@ -1,4 +1,5 @@
 import * as React from "react";
+import logoUrl from "@logo.png";
 
 type Props = {
   title?: string;
@@ -18,9 +19,14 @@ export default function AppShell({
         <div className="flex items-center gap-2">
           {/* logo */}
           <img
-            src="/images/logo.png"
-            alt="MagicCraft"
-            className="h-6 w-6 rounded-md ring-1 ring-white/10"
+            // src="/images/magiccraft-logo.svg"
+            src={logoUrl}
+            alt="MagicCraft logo"
+            className="h-8 w-8 rounded-md ring-1 ring-white/10"
+            // onError={(e) => {
+            //   const target = e.currentTarget as HTMLImageElement;
+            //   if (target.src.indexOf("logo.png") === -1) target.src = "/images/logo.png";
+            // }}
           />
           <h1 className="magic-heading">
             Magic<span className="gold">Craft</span>

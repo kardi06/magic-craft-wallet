@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import classNames from "clsx";
 
@@ -7,6 +7,7 @@ import { addAccountModalAtom, profileStateAtom } from "app/atoms";
 import BoardingPageLayout from "app/components/layouts/BoardingPageLayout";
 import Button from "app/components/elements/Button";
 // import { ReactComponent as WigwamIcon } from "app/icons/Wigwam.svg";
+import logoUrl from "@logo.png";
 
 const Welcome: FC = () => {
   const { all } = useAtomValue(profileStateAtom);
@@ -45,11 +46,20 @@ const Welcome: FC = () => {
         )}
       >
         <img
-          src="/images/logo.png"
-          alt="MagicCraft"
-          className={classNames(
-            "w-[5rem] h-auto mb-5 rounded-md ring-1 ring-white/10",
-          )}
+          // src="/images/magiccraft-logo.svg"
+          // src={require("@logo.png")}
+          src={logoUrl}
+          alt="MagicCraft logo"
+          role="img"
+          // className={classNames(
+          //   "logo-magic mb-6",
+          //   "logo-glow",
+          // )}
+          // onError={(e) => {
+          //   const target = e.currentTarget as HTMLImageElement;
+          //   if (target.src.indexOf("logo.png") === -1) target.src = "/images/logo.png";
+          // }}
+          className={classNames("logo-magic mb-6", "logo-glow")}
         />
         <h1
           className={classNames(

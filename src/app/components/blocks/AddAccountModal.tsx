@@ -26,6 +26,7 @@ import Button from "app/components/elements/Button";
 import BackButton from "app/components/elements/BackButton";
 import ScrollAreaContainer from "app/components/elements/ScrollAreaContainer";
 import AddAccountSteps from "app/components/blocks/AddAccountSteps";
+import logoUrl from "@logo.png";
 
 const AddAccountModal = memo(() => {
   const [accModalOpened, setAccModalOpened] = useAtom(addAccountModalAtom);
@@ -140,7 +141,7 @@ const AddAccountModal = memo(() => {
           <OnMount handle={handleContentMount} />
 
           <img
-            src="/images/logo.png"
+            src={logoUrl}
             alt="MagicCraft"
             className={classNames(
               "w-16 h-auto",

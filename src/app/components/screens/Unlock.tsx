@@ -7,7 +7,7 @@ import { Page } from "app/nav";
 import { currentProfileAtom } from "app/atoms";
 import { openInTab } from "app/helpers";
 import { ReactComponent as ChangeProfileIcon } from "app/icons/change-profile.svg";
-import { ReactComponent as WigwamIcon } from "app/icons/WigwamTitle.svg";
+import logoUrl from "@logo.png";
 
 import BoardingPageLayout from "../layouts/BoardingPageLayout";
 import PopupLayout from "../layouts/PopupLayout";
@@ -62,7 +62,11 @@ const Unlock: FC<UnlockProps> = ({ isApproval }) => {
             "flex items-center",
           )}
         >
-          <WigwamIcon className={classNames("h-[1.375rem]", "w-auto mr-3")} />
+          <img
+            src={logoUrl}
+            alt="MagicCraft logo"
+            className={classNames("h-[1.375rem] w-auto mr-3", "logo-glow")}
+          />
         </div>
       )}
     </>

@@ -179,6 +179,7 @@ module.exports = {
         "node_modules/@dicebear/core/lib",
       ),
       packages: path.resolve(__dirname, "packages"),
+      "@logo.png": path.resolve(PUBLIC_PATH, "images/logo.png"),
     },
     fallback: {
       process: false,
