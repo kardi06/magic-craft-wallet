@@ -106,11 +106,16 @@ a {
   }
 
   .magic-card {
-    @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-lg p-4;
+    @apply rounded-2xl border bg-white/5 backdrop-blur-sm shadow-lg p-4;
+    border-color: rgba(241, 196, 15, 0.12); /* gold tint */
+    background:
+      linear-gradient(180deg, rgba(110,75,158,0.08), rgba(110,75,158,0.04))
+      , rgba(255,255,255,0.05);
   }
 
   .magic-heading {
     @apply font-display text-2xl tracking-wide text-white;
+    text-shadow: 0 0 10px rgba(241,196,15,0.15);
   }
 
   .magic-subtle {
@@ -128,30 +133,22 @@ a {
   }
 
   .btn-magic {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-xl
-           bg-magic-purple text-white font-semibold
-           transition-transform duration-150 ease-out;
-    box-shadow:
-      0 0 0 1px rgba(110, 75, 158, 0.35),
-      0 10px 24px rgba(110, 75, 158, 0.25);
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-xl bg-magic-purple text-white font-semibold transition-transform duration-150 ease-out;
+    box-shadow: 0 0 0 1px rgba(110, 75, 158, 0.35), 0 10px 24px rgba(110, 75, 158, 0.25);
   }
   .btn-magic:hover {
     transform: translateY(-1px);
-    box-shadow:
-      0 0 0 2px rgba(241, 196, 15, 0.35),
-      0 0 24px rgba(241, 196, 15, 0.25);
+    box-shadow: 0 0 0 2px rgba(241, 196, 15, 0.35), 0 0 24px rgba(241, 196, 15, 0.25);
     filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.25));
   }
   .btn-magic:focus-visible {
     outline: none;
-    box-shadow:
-      var(--tw-ring-offset-shadow, 0 0 #0000),
-      var(--tw-ring-shadow, 0 0 #0000),
-      0 0 0 2px rgba(241, 196, 15, 0.85);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), 0 0 0 2px rgba(241, 196, 15, 0.85);
   }
 
   .pill {
-    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm bg-white/10 border border-white/10;
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm bg-white/10 border;
+    border-color: rgba(241,196,15,0.12);
   }
 
   .gold {

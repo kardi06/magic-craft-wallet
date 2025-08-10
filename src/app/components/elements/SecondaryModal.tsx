@@ -58,19 +58,24 @@ const SecondaryModal: FC<SecondaryModalProps> = ({
             disabledClickOutside ? (e) => e.preventDefault() : undefined
           }
         >
-          {header && (
-            <h2
-              className={classNames(
-                !small && "mb-8",
-                small && "mt-3 mb-4",
-                !small && "text-2xl",
-                small && "text-xl",
-                "text-center font-bold",
-                headerClassName,
-              )}
-            >
-              {header}
-            </h2>
+          {header ? (
+            <Dialog.Title asChild>
+              <h2
+                className={classNames(
+                  !small && "mb-8",
+                  small && "mt-3 mb-4",
+                  !small && "text-2xl",
+                  small && "text-xl",
+                  "text-center font-bold",
+                  headerClassName,
+                )}
+              >
+                {header}
+              </h2>
+            </Dialog.Title>
+          ) : (
+            // Fallback accessible title for screen readers
+            <Dialog.Title className="sr-only">Dialog</Dialog.Title>
           )}
 
           {children}

@@ -26,7 +26,7 @@ import Button from "app/components/elements/Button";
 import BackButton from "app/components/elements/BackButton";
 import ScrollAreaContainer from "app/components/elements/ScrollAreaContainer";
 import AddAccountSteps from "app/components/blocks/AddAccountSteps";
-import logoUrl from "@logo.png";
+const logoUrl = "/images/logo-icon.png";
 
 const AddAccountModal = memo(() => {
   const [accModalOpened, setAccModalOpened] = useAtom(addAccountModalAtom);
@@ -144,7 +144,7 @@ const AddAccountModal = memo(() => {
             src={logoUrl}
             alt="MagicCraft"
             className={classNames(
-              "w-16 h-auto",
+              "w-24 h-auto",
               "absolute",
               "top-0 left-1/2",
               "-translate-x-1/2 -translate-y-1/4",
@@ -162,12 +162,8 @@ const AddAccountModal = memo(() => {
                   "rounded-[2.5rem]",
                   "border border-brand-light/5",
                   !isInitial && [
-                    "brandbg-large-modal",
-                    "after:absolute after:inset-0",
-                    "after:shadow-addaccountmodal",
-                    "after:rounded-[2.5rem]",
-                    "after:pointer-events-none",
-                    "after:z-20",
+                    // keep modal background consistent with MagicCraft midnight
+                    "bg-magic-midnight",
                   ],
                 )}
                 viewPortClassName="add-account-scrollviewport"

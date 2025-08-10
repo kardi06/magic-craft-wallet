@@ -39,7 +39,7 @@ import FiatAmount from "../elements/FiatAmount";
 import InteractionWithDapp from "../blocks/popup/InteractionWithDapp";
 import { useLazyAtomValue } from "lib/atom-utils";
 import ProfileButton from "../elements/ProfileButton";
-import PopupBgImage from "app/images/popup-bg.svg";
+// import PopupBgImage from "app/images/popup-bg.svg";
 import RoundedButton from "../elements/RoundedButton";
 
 let bootAnimationDisplayed = true;
@@ -83,11 +83,7 @@ const PopupLayout: FC<PopupLayoutProps> = ({ className, children }) => {
           >
             {isUnlocked ? (
               <div className={classNames("pt-2 px-3 pb-8", "relative")}>
-                <img
-                  src={PopupBgImage}
-                  alt="MagicCraft"
-                  className="absolute inset-0 w-full h-full object-cover opacity-30"
-                />
+                {/* Removed background decoration to prevent mixed shades */}
                 <div className="mb-2 flex items-center justify-between gap-3 relative z-10">
                   <InteractionWithDapp />
                   <ProfileButton
@@ -128,9 +124,8 @@ const PopupLayout: FC<PopupLayoutProps> = ({ className, children }) => {
                 "relative",
                 "flex-1",
                 "pb-16 px-3",
-                "before:absolute before:w-full before:h-4 before:rounded-t-[2rem] before:left-0",
-                "before:bg-brand-darkbg before:-top-[1rem] before:shadow-popup-bg",
-                "magic-card border-surface-border bg-surface-card",
+                // Remove top overlay strip and surface card to keep uniform background
+                "bg-transparent",
                 className,
               )}
             >

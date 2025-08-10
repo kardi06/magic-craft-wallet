@@ -138,9 +138,24 @@ export const DialogProvider: FC<PropsWithChildren> = ({ children }) => {
           res();
         });
 
+        let safeContent: ReactNode;
+        if (typeof content === "string") {
+          safeContent = content;
+        } else if ((content as any)?.message) {
+          safeContent = (content as any).message;
+        } else if (typeof content === "object") {
+          try {
+            safeContent = JSON.stringify(content as any);
+          } catch {
+            safeContent = String(content);
+          }
+        } else {
+          safeContent = String(content);
+        }
+
         addDialog({
           header: title,
-          children: content,
+          children: safeContent,
           primaryButtonText: okButtonText,
           onPrimaryButtonClick: handleDone,
           onClose: handleDone,

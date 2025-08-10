@@ -17,7 +17,7 @@ module.exports = {
         },
         brand: {
           darkaccent: "#0D1311",
-          darkbg: "#181A1F", // #13191F
+          darkbg: "#1A1B2F", // MagicCraft midnight base
           lightgray: "#E4E4E4",
           redone: "#80EF6E",
           redtwo: "#80EF6E",

@@ -28,9 +28,7 @@ const MainPageLayout: FC<PropsWithChildren> = ({ children }) => (
         >
           <Menu />
 
-          <div className="magic-card border-surface-border bg-surface-card mt-4 p-4">
-            {children}
-          </div>
+          <div className="mt-4 p-4 bg-transparent">{children}</div>
         </main>
       </ContentContainer>
     </div>

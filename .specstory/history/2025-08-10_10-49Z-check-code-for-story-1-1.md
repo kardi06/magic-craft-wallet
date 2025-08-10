@@ -5465,7 +5465,2507 @@ let's try yarn build again
 
 _**Assistant**_
 
+<think><details><summary>Thought Process</summary>**Running build command**
 
+I need to execute `yarn build` in the terminal. The last attempt was canceled, and the tool signaled to check with the user. Since the user has asked me to try again, I'll go ahead and run the command now. If there are any errors that pop up, I'll need to troubleshoot and fix them afterward. Let's get this build process started!</details></think>
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+√ Wigwam
+  Compiled successfully in 1.71m
+
+webpack compiled successfully
+Done in 106.33s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+- Updated the extension’s theme background to a uniform deep midnight blue by removing the parchment blend:
+  - `src/app/styles/index.css`: `magic-page` now uses only `bg-magic-midnight`.
+  - Removed redundant `bg-magic-parchment` in `MainPageLayout` and `BoardingPageLayout`.
+- Switched the in-app header logo in `AppShell.tsx` to use the crisp SVG (`/images/magiccraft-logo.svg`) for better quality. This doesn’t affect the extension icon.
+
+For the extension icon itself (the toolbar/badge):
+- Replace `public/icons/16.png`, `public/icons/48.png`, `public/icons/128.png`, and `public/icons/512.png` with your new MagicCraft icon PNGs (square).
+- If desired, fix `public/manifest.json` icon mapping to point 48→`icons/48.png`, 128→`icons/128.png`.
+- Then run:
+  - yarn build:chrome
+  - Reload the extension in chrome://extensions
+
+Build
+- yarn build completed successfully.
+
+---
+
+_**User**_
+
+what is this error ? "Error: Extension context invalidated.
+Context
+https://www.youtube.com/watch?v=gSJa7BDjXF4&list=TLPQMDkwODIwMjUSrHC4aJDlPw&index=4
+Stack Trace
+scripts/content.js:1 (t)
+scripts/content.js:1 (connect)
+scripts/content.js:1 (anonymous function)" , "Wigwam: Provider disconnected. A page reload is required to reestablish the connection.
+Context
+https://www.youtube.com/watch?v=gSJa7BDjXF4&list=TLPQMDkwODIwMjUSrHC4aJDlPw&index=4
+Stack Trace
+scripts/content.js:1 (r.onFullyDisconnect)
+scripts/content.js:1 (t)
+scripts/content.js:1 (connect)
+scripts/content.js:1 (anonymous function)" , "`DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users. If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component. For more information, see https://radix-ui.com/primitives/docs/components/dialog
+Context
+main.html#addAccOpened=true
+Stack Trace
+scripts/603.js:1 (anonymous function)
+scripts/603.js:1 (nl)
+scripts/603.js:1 (xu)
+scripts/603.js:1 (anonymous function)
+scripts/603.js:1 (Eu)
+scripts/603.js:1 (lu)
+scripts/603.js:1 (zi)
+scripts/603.js:1 (anonymous function)
+scripts/603.js:1 (Eu)
+scripts/603.js:1 (iu)
+scripts/603.js:1 (x)
+scripts/603.js:1 (O)" how to fix it ?
+
+---
+
+_**Assistant**_
+
+<think><details><summary>Thought Process</summary>**Addressing extension errors**
+
+I need to respond concisely with steps to fix a couple of errors. 
+
+First, with the “Extension context invalidated” message, it often comes from an issue when the service worker reloads. A hard reload or reloading the extension might help, and it's essential to keep the service worker active and handle long-lived ports properly.
+
+Second, there’s an accessibility warning about missing titles in Radix UI Dialogs. Specifically, some dialogues like AddAccountModal or SecondaryModal need to have a DialogTitle.
+**Fixing SecondaryModal warning**
+
+I’m looking at the `SecondaryModal` and there’s a warning referencing `603.js` in the built chunk, which suggests it might relate to Radix UI. 
+
+To fix the warning, I need to ensure that `Dialog.Content` in `SecondaryModal.tsx` includes a label. I can add an `aria-label` to provide better accessibility or include a `Dialog.Title`. 
+
+I’ll open the file to make these adjustments!</details></think>
+
+---
+
+Read file: src/app/components/elements/SecondaryModal.tsx
+
+---
+
+<think><details><summary>Thought Process</summary>**Addressing user errors**
+
+I need to approach the user's errors and figure out how to help. The first error indicates that the extension's content script has lost connection, which often happens after an update or reload. The quick fix is to simply instruct the user to reload the page. The second error suggests the provider is disconnected as well, with a similar solution — a page reload for reestablishment. Lastly, there's a warning indicating that a DialogContent requires a DialogTitle, which needs to be addressed as well.
+**Improving modal headers**
+
+I need to adjust the SecondaryModal to wrap the header in Radix's `Dialog.Title` whenever a header exists. This change will meet the requirements and improve accessibility. For modals without a header, I should add a visually hidden title. I'll use the code structure: `<Dialog.Title asChild> <h2>...</h2> </Dialog.Title>`, and for missing headers, I'll implement a default title using `<Dialog.Title className="sr-only">Modal</Dialog.Title>`. Also, the disconnected provider error could stem from service worker restarts; I’ll consider adding an auto-reconnect feature for the content script.
+**Crafting the response about the extension errors**
+
+I need to address the user's issues that arise after an extension reload. The solution is simply to reload the tab or use devtools, which is a rare occurrence in production. They previously asked about the extension icon, which was accepted. Now, I’ll provide a detailed explanation of each error, along with the steps to clear them. I plan to implement a code change to wrap `Dialog.Title` around the modal components like `SecondaryModal`. After I edit, we should run the build to finalize changes.</details></think>
+
+---
+
+<details><summary>Edit file: src/app/components/elements/SecondaryModal.tsx</summary>
+
+I will make the modal accessible by wrapping the header with Radix Dialog.Title and adding a Visually Hidden fallback title when header is not provided.
+
+**Chunk 1**
+Lines added: 18, lines removed: 13
+
+```diff
+@@ -59,17 +59,22 @@
+            }
+          >
+-           {header && (
+-             <h2
+-               className={classNames(
+-                 !small && "mb-8",
+-                 small && "mt-3 mb-4",
+-                 !small && "text-2xl",
+-                 small && "text-xl",
+-                 "text-center font-bold",
+-                 headerClassName,
+-               )}
+-             >
+-               {header}
+-             </h2>
++           {header ? (
++             <Dialog.Title asChild>
++               <h2
++                 className={classNames(
++                   !small && "mb-8",
++                   small && "mt-3 mb-4",
++                   !small && "text-2xl",
++                   small && "text-xl",
++                   "text-center font-bold",
++                   headerClassName,
++                 )}
++               >
++                 {header}
++               </h2>
++             </Dialog.Title>
++           ) : (
++             // Fallback accessible title for screen readers
++             <Dialog.Title className="sr-only">Dialog</Dialog.Title>
+            )}
+  
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.56m
+
+webpack compiled successfully
+Done in 97.23s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+- Extension context invalidated / Provider disconnected: this happens when the extension reloads (after a rebuild/update) while a content script is still injected in existing tabs. The YouTube tab was trying to talk to the old content script channel.
+  - Fix: Reload the affected page(s) (YouTube in your case). Alternatively, toggle the extension off/on, or click “Relaunch to update” then refresh tabs.
+
+- Dialog accessibility warning: Radix requires a DialogTitle.
+  - I fixed this by wrapping headers in Dialog.Title and adding a visually hidden fallback when no header is provided in `src/app/components/elements/SecondaryModal.tsx`. Build is green.
+
+- Color still off: I removed the parchment overlay and redundant uses so the background is now uniform deep midnight blue. If you still see mismatched areas, they likely come from specific images or surface backgrounds:
+  - Popup has `PopupBgImage` overlay at low opacity; we can adjust or remove it.
+  - Cards use `bg-surface-card` (semi-transparent). If you want a more purple-tinged card, I can tune `surface.card` or add a purple gradient edge.
+
+- Extension icon: To change the browser toolbar icon, replace `public/icons/16.png`, `48.png`, `128.png`, `512.png` with your brand PNGs (or update manifest mappings), then rebuild and reload the extension.
+
+---
+
+_**User**_
+
+there is still an error "[object Object]
+Context
+scripts/298.js
+Stack Trace" what is this error ? "
+
+---
+
+_**Assistant**_
+
+
+
+---
+
+<details>
+            <summary>Grep search for "useDialog\(" • **38** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/lib/react-hooks/usePasteFromClipboard.ts` | L9 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/lib/react-hooks/useCopyCanvasToClipboard.ts` | L9 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/hooks/ledger.tsx` | L25 | `const { waitLoading } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/hooks/hideToken.tsx` | L10 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/hooks/web3Mode.tsx` | L13 | `const { alert, confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/elements/ProfileButton.tsx` | L466 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/elements/LockProfileButton.tsx` | L22 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/addAccountSteps/VerifySeedPhrase.tsx` | L32 | `const { alert, confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/addAccountSteps/shared/AccountsToAdd.tsx` | L77 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/addAccountSteps/shared/LedgerScanModal.tsx` | L22 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/addAccountSteps/ImportSeedPhrase.tsx` | L32 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/addAccountSteps/shared/ScanAccountsModal.tsx` | L35 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/approvals/Transaction.tsx` | L646 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/approvals/Signing.tsx` | L55 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/addAccountSteps/EditAccounts.tsx` | L44 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/settingTabs/General.tsx` | L153 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/addAccountSteps/CreateSeedPhrase.tsx` | L33 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/approvals/Connection.tsx` | L68 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/addAccountSteps/ConfirmAccounts.tsx` | L44 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/approvals/AddNetwork.tsx` | L22 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/mainPages/Rewards.tsx` | L134 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/mainPages/Rewards.tsx` | L456 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/ContactsDialog.tsx` | L34 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/Dialog.tsx` | L9 | `const { modalData } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/EditNetwork.tsx` | L81 | `const { alert, confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/EditWalletSection.tsx` | L65 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/ContactsSection.tsx` | L28 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddFundsOnRampModal.tsx` | L25 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddAccountSteps.tsx` | L41 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/activity/ActivityAsset.tsx` | L897 | `const { alert, confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/activity/ActivityAsset.tsx` | L1252 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/NetworksButton.tsx` | L117 | `const { confirm, alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddAccountModal.tsx` | L36 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/SecretField.tsx` | L73 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/Sidebar.Links.tsx` | L23 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/transfer/TokenTransfer.tsx` | L133 | `const { alert, closeCurrentDialog } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/OnRampIframe.tsx` | L63 | `const { alert } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/settingTabs/General.tsx` | L153 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddAccountModal.tsx` | L36 | `const { confirm } = useDialog();` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/transfer/TokenTransfer.tsx` | L133 | `const { alert, closeCurrentDialog } = useDialog();` |
+
+</details>
+
+---
+
+Read file: src/app/hooks/dialog.tsx
+
+---
+
+
+
+---
+
+<details><summary>Edit file: src/app/hooks/dialog.tsx</summary>
+
+I will coerce alert() content to a readable string when a non-React element/object is passed to avoid '[object Object]' messages.
+
+**Chunk 1**
+Lines added: 9, lines removed: 1
+
+```diff
+@@ -139,7 +139,15 @@
+          });
+  
++         const safeContent =
++           typeof content === "string"
++             ? content
++             : (content as any)?.message ??
++               (typeof content === "object"
++                 ? JSON.stringify(content)
++                 : String(content));
++ 
+          addDialog({
+            header: title,
+-           children: content,
++           children: safeContent,
+            primaryButtonText: okButtonText,
+            onPrimaryButtonClick: handleDone,
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.98m
+
+WARNING in [eslint] 
+D:\captain garuda\project\magic-craft-wallet\src\app\hooks\dialog.tsx
+  144:16  error  Insert `(`  prettier/prettier
+  147:33  error  Insert `)`  prettier/prettier
+
+✖ 2 problems (2 errors, 0 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
+
+webpack compiled with 1 warning
+Done in 123.55s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+
+
+---
+
+Read file: src/app/hooks/dialog.tsx
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.63m
+
+WARNING in [eslint] 
+D:\captain garuda\project\magic-craft-wallet\src\app\hooks\dialog.tsx
+  144:16  error  Insert `(`  prettier/prettier
+  147:33  error  Insert `)`  prettier/prettier
+
+✖ 2 problems (2 errors, 0 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
+
+webpack compiled with 1 warning
+Done in 102.52s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+
+
+---
+
+_**User**_
+
+try again, there is error above
+
+---
+
+_**Assistant**_
+
+<think><details><summary>Thought Process</summary>**Updating final answer format**
+
+I need to provide status updates, but keep the final answer minimal and concise. The aim should be to avoid over-explaining. However, my instructions require including status updates before tool calls, which I've already done. So, for the final output, I’ll ensure it’s straightforward. Now, I’ll proceed with the edit_file operation to make the necessary updates. It’s all about balancing clarity with brevity!</details></think>
+
+---
+
+<details><summary>Edit file: src/app/hooks/dialog.tsx</summary>
+
+I will wrap the nullish-coalescing + ternary in parentheses to satisfy Prettier.
+
+**Chunk 1**
+Lines added: 4, lines removed: 4
+
+```diff
+@@ -142,8 +142,8 @@
+            typeof content === "string"
+              ? content
+-             : (content as any)?.message ??
+-               (typeof content === "object"
+-                 ? JSON.stringify(content)
+-                 : String(content));
++             : ((content as any)?.message ??
++                 (typeof content === "object"
++                   ? JSON.stringify(content)
++                   : String(content)));
+  
+          addDialog({
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.49m
+
+WARNING in [eslint] 
+D:\captain garuda\project\magic-craft-wallet\src\app\hooks\dialog.tsx
+  146:17  error  Delete `··`  prettier/prettier
+  147:1   error  Delete `··`  prettier/prettier
+
+✖ 3 problems (3 errors, 0 warnings)
+  3 errors and 0 warnings potentially fixable with the `--fix` option.
+
+
+webpack compiled with 1 warning
+Done in 92.82s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+Read file: src/app/hooks/dialog.tsx
+
+---
+
+```bash
+yarn format-all
+```
+
+```
+
+.bmad-core/templates/front-end-architecture-tmpl.yaml 15ms (unchanged)
+.bmad-core/templates/front-end-spec-tmpl.yaml 14ms (unchanged)
+.bmad-core/templates/fullstack-architecture-tmpl.yaml
+[error] .bmad-core/templates/fullstack-architecture-tmpl.yaml: SyntaxError: Block scalars must not be l
+ess indented than their first line (673:19)
+[error]   671 |         type: code
+[error]   672 |         language: text
+[error] > 673 |         template: |
+[error]       |                   ^
+[error] > 674 |                   E2E Tests
+[error]       | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[error] > 675 |                  /        \
+[error]       | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[error] > 676 |             Integration Tests
+[error]       | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[error] > 677 |                /            \
+[error]       | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[error] > 678 |           Frontend Unit  Backend Unit
+[error]       | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[error] > 679 |       - id: test-organization
+[error]       | ^
+[error]   680 |         title: Test Organization
+[error]   681 |         sections:
+[error]   682 |           - id: frontend-tests
+.bmad-core/templates/market-research-tmpl.yaml 10ms (unchanged)
+.bmad-core/templates/prd-tmpl.yaml 12ms (unchanged)
+.bmad-core/templates/project-brief-tmpl.yaml 11ms (unchanged)
+.bmad-core/templates/story-tmpl.yaml 4ms (unchanged)
+.bmad-core/user-guide.md 26ms (unchanged)
+.bmad-core/utils/bmad-doc-template.md 39ms (unchanged)
+.bmad-core/utils/workflow-management.md 5ms (unchanged)
+.bmad-core/workflows/brownfield-fullstack.yaml 11ms (unchanged)
+.bmad-core/workflows/brownfield-service.yaml 4ms (unchanged)
+.bmad-core/workflows/brownfield-ui.yaml 7ms (unchanged)
+.bmad-core/workflows/greenfield-fullstack.yaml 9ms (unchanged)
+.bmad-core/workflows/greenfield-service.yaml 7ms (unchanged)
+.bmad-core/workflows/greenfield-ui.yaml 9ms (unchanged)
+.bmad-core/working-in-the-brownfield.md 32ms (unchanged)
+.eslintrc.js 50ms (unchanged)
+.github/workflows/newcode.yml 6ms (unchanged)
+.github/workflows/release.yml 3ms (unchanged)
+.jest/cssTransform.js 6ms (unchanged)
+.jest/fileTransform.js 10ms (unchanged)
+.jest/setup.js 10ms (unchanged)
+.ncurc.js 1ms (unchanged)
+.specstory/.what-is-this.md 10ms
+.specstory/history/2025-08-09_10-42Z-understanding-typescript-error-code-2322.md 8ms (unchanged)
+
+.specstory/history/2025-08-10_07-00Z-documenting-project-files.md 75ms (unchanged)
+.specstory/history/2025-08-10_07-18Z-create-a-new-epic.md 254ms (unchanged)
+.specstory/history/2025-08-10_07-34Z-start-story-6-1.md 173ms (unchanged)
+.specstory/history/2025-08-10_09-07Z-check-story-6-1.md 64ms (unchanged)
+.specstory/history/2025-08-10_09-47Z-understanding-the-let-keyword-in-javascript.md 242ms (unchanged)
+.specstory/history/2025-08-10_10-49Z-check-code-for-story-1-1.md 327ms
+.specstory/history/2025-08-10_12-06Z-check-default-systems-in-wigam.md 15ms (unchanged)
+.vendor/axios-fetch-adapter/index.d.ts 51ms (unchanged)
+.vendor/axios-fetch-adapter/index.js 21ms (unchanged)
+.vendor/axios-fetch-adapter/package.json 5ms (unchanged)
+.vendor/flux/index.js 7ms (unchanged)
+.vendor/flux/package.json 1ms (unchanged)
+.vendor/ledgerhq-evm-tools/message-eip712.js 37ms (unchanged)
+.vendor/ledgerhq-live-network/network.js 25ms (unchanged)
+.vendor/swc-jest/index.js 28ms (unchanged)
+.vendor/swc-jest/package.json 2ms (unchanged)
+.vscode/settings.json 3ms (unchanged)
+docs/add-network.md 3ms (unchanged)
+docs/architecture.md 20ms (unchanged)
+docs/architecture/01-overview.md 2ms (unchanged)
+docs/architecture/02-high-level-architecture-diagram.md 5ms (unchanged)
+docs/architecture/03-core-modules.md 12ms (unchanged)
+docs/architecture/architecture.md 2ms (unchanged)
+docs/architecture/README.md 2ms (unchanged)
+docs/epics/blitz-1-day.md 5ms (unchanged)
+docs/epics/checklist-day1.md 4ms (unchanged)
+docs/epics/epic-00-day1-mvp.md 5ms (unchanged)
+docs/epics/epic-01-core-wallet-mvp.md 6ms (unchanged)
+docs/epics/epic-02-dashboard-history.md 5ms (unchanged)
+docs/epics/epic-03-send-transaction.md 6ms (unchanged)
+docs/epics/epic-04-network-selector.md 3ms (unchanged)
+docs/epics/epic-05-address-tools-qr.md 4ms (unchanged)
+docs/epics/epic-06-theme.md 4ms (unchanged)
+docs/epics/README.md 3ms (unchanged)
+docs/prd.md 24ms (unchanged)
+docs/prd/01-overview.md 3ms (unchanged)
+docs/prd/02-goals-objectives.md 4ms (unchanged)
+docs/prd/03-target-platforms.md 2ms (unchanged)
+docs/prd/04-features.md 6ms (unchanged)
+docs/prd/05-non-goals.md 2ms (unchanged)
+docs/prd/06-technical-requirements.md 3ms (unchanged)
+docs/prd/07-user-stories.md 6ms (unchanged)
+docs/prd/08-milestones-delivery-plan.md 3ms (unchanged)
+docs/prd/09-acceptance-criteria.md 2ms (unchanged)
+docs/prd/10-deliverables.md 3ms (unchanged)
+docs/prd/11-risks-considerations.md 2ms (unchanged)
+docs/prd/prd.md 4ms (unchanged)
+docs/prd/README.md 3ms (unchanged)
+docs/README.md 32ms (unchanged)
+docs/SECURITY.md 29ms (unchanged)
+docs/stories/1.1.onboarding-encryption.md 18ms (unchanged)
+docs/stories/2.1.dashboard-summary.md 11ms (unchanged)
+docs/stories/3.1.send-form-and-confirmation.md 11ms (unchanged)
+docs/stories/4.1.network-selector-dropdown.md 7ms (unchanged)
+docs/stories/5.1.copy-address-button.md 7ms (unchanged)
+docs/stories/5.2.qr-drag-and-drop-prefill.md 7ms (unchanged)
+docs/stories/6.1.theme-application.md 24ms (unchanged)
+docs/stories/6.2.logo-hero-polish.md 20ms (unchanged)
+jest.config.js 4ms (unchanged)
+lint-staged.config.js 4ms (unchanged)
+package.json 3ms (unchanged)
+packages/lifi-widget/App.tsx 41ms (unchanged)
+packages/lifi-widget/AppDrawer.style.tsx 33ms (unchanged)
+packages/lifi-widget/AppDrawer.tsx 22ms (unchanged)
+packages/lifi-widget/AppProvider.tsx 11ms (unchanged)
+packages/lifi-widget/AppRoutes.tsx 13ms (unchanged)
+packages/lifi-widget/components/ActiveTransactions/ActiveTransactionItem.tsx 23ms (unchanged)
+packages/lifi-widget/components/ActiveTransactions/ActiveTransactions.style.ts 10ms (unchanged)
+
+packages/lifi-widget/components/ActiveTransactions/ActiveTransactions.tsx 14ms (unchanged)
+packages/lifi-widget/components/ActiveTransactions/index.ts 3ms (unchanged)
+packages/lifi-widget/components/AmountInput/AmountInput.style.tsx 9ms (unchanged)
+packages/lifi-widget/components/AmountInput/AmountInput.tsx 37ms (unchanged)
+packages/lifi-widget/components/AmountInput/AmountInputAdornment.style.tsx 7ms (unchanged)
+packages/lifi-widget/components/AmountInput/AmountInputEndAdornment.tsx 20ms (unchanged)
+packages/lifi-widget/components/AmountInput/AmountInputStartAdornment.tsx 12ms (unchanged)
+packages/lifi-widget/components/AmountInput/FormPriceHelperText.tsx 17ms (unchanged)
+packages/lifi-widget/components/AmountInput/index.ts 1ms (unchanged)
+packages/lifi-widget/components/AppContainer.tsx 14ms (unchanged)
+packages/lifi-widget/components/BaseTransactionButton/BaseTransactionButton.tsx 7ms (unchanged)
+
+packages/lifi-widget/components/BaseTransactionButton/index.ts 1ms (unchanged)
+packages/lifi-widget/components/BaseTransactionButton/types.ts 2ms (unchanged)
+packages/lifi-widget/components/BottomSheet/BottomSheet.tsx 6ms (unchanged)
+packages/lifi-widget/components/BottomSheet/index.ts 2ms (unchanged)
+packages/lifi-widget/components/BottomSheet/types.ts 5ms (unchanged)
+packages/lifi-widget/components/Card/Card.tsx 14ms (unchanged)
+packages/lifi-widget/components/Card/CardHeader.tsx 4ms (unchanged)
+packages/lifi-widget/components/Card/CardIconButton.tsx 6ms (unchanged)
+packages/lifi-widget/components/Card/CardLabel.tsx 12ms (unchanged)
+packages/lifi-widget/components/Card/CardTitle.tsx 4ms (unchanged)
+packages/lifi-widget/components/Card/index.ts 2ms (unchanged)
+packages/lifi-widget/components/ChainSelect/ChainSelect.style.tsx 3ms (unchanged)
+packages/lifi-widget/components/ChainSelect/ChainSelect.tsx 13ms (unchanged)
+packages/lifi-widget/components/ChainSelect/index.ts 3ms (unchanged)
+packages/lifi-widget/components/ChainSelect/useChainSelect.ts 12ms (unchanged)
+packages/lifi-widget/components/ContractComponent/ContractComponent.tsx 2ms (unchanged)
+packages/lifi-widget/components/ContractComponent/index.ts 1ms (unchanged)
+packages/lifi-widget/components/Dialog.tsx 7ms (unchanged)
+packages/lifi-widget/components/GasMessage/FundsSufficiencyMessage.tsx 6ms (unchanged)
+packages/lifi-widget/components/GasMessage/GasMessage.style.ts 13ms (unchanged)
+packages/lifi-widget/components/GasMessage/GasMessage.tsx 5ms (unchanged)
+packages/lifi-widget/components/GasMessage/GasRefuelMessage.tsx 13ms (unchanged)
+packages/lifi-widget/components/GasMessage/GasSufficiencyMessage.tsx 6ms (unchanged)
+packages/lifi-widget/components/GasMessage/index.ts 3ms (unchanged)
+packages/lifi-widget/components/Header/Header.style.ts 8ms (unchanged)
+packages/lifi-widget/components/Header/Header.tsx 9ms (unchanged)
+packages/lifi-widget/components/Header/index.ts 1ms (unchanged)
+packages/lifi-widget/components/Header/NavigationHeader.tsx 28ms (unchanged)
+packages/lifi-widget/components/Header/NavigationTabs.style.tsx 11ms (unchanged)
+packages/lifi-widget/components/Header/NavigationTabs.tsx 8ms (unchanged)
+packages/lifi-widget/components/Header/WalletHeader.tsx 18ms (unchanged)
+packages/lifi-widget/components/Header/WalletMenu.tsx 9ms (unchanged)
+packages/lifi-widget/components/Initializer.tsx 2ms (unchanged)
+packages/lifi-widget/components/Input.tsx 5ms (unchanged)
+packages/lifi-widget/components/Insurance/index.ts 1ms (unchanged)
+packages/lifi-widget/components/Insurance/Insurance.tsx 2ms (unchanged)
+packages/lifi-widget/components/Insurance/InsuranceCard.tsx 18ms (unchanged)
+packages/lifi-widget/components/Insurance/InsuranceCollapsed.tsx 5ms (unchanged)
+packages/lifi-widget/components/Insurance/types.ts 6ms (unchanged)
+packages/lifi-widget/components/LiFiLogo.tsx 4ms (unchanged)
+packages/lifi-widget/components/ListItemButton.tsx 5ms (unchanged)
+packages/lifi-widget/components/ListItemText.tsx 3ms (unchanged)
+packages/lifi-widget/components/NFT/index.ts 1ms (unchanged)
+packages/lifi-widget/components/NFT/NFT.style.ts 4ms (unchanged)
+packages/lifi-widget/components/NFT/NFT.tsx 7ms (unchanged)
+packages/lifi-widget/components/NFT/NFTBase.tsx 8ms (unchanged)
+packages/lifi-widget/components/NFT/types.ts 2ms (unchanged)
+packages/lifi-widget/components/NotFound.tsx 4ms (unchanged)
+packages/lifi-widget/components/PoweredBy/index.ts 1ms (unchanged)
+packages/lifi-widget/components/PoweredBy/PoweredBy.style.ts 5ms (unchanged)
+packages/lifi-widget/components/PoweredBy/PoweredBy.tsx 7ms (unchanged)
+packages/lifi-widget/components/ProgressToNextUpdate/index.ts 1ms (unchanged)
+packages/lifi-widget/components/ProgressToNextUpdate/ProgressToNextUpdate.tsx 17ms (unchanged)
+packages/lifi-widget/components/ReverseTokensButton/index.ts 2ms (unchanged)
+packages/lifi-widget/components/ReverseTokensButton/ReverseTokensButton.style.tsx 6ms (unchanged)
+
+packages/lifi-widget/components/ReverseTokensButton/ReverseTokensButton.tsx 6ms (unchanged)
+packages/lifi-widget/components/RouteCard/index.ts 1ms (unchanged)
+packages/lifi-widget/components/RouteCard/RouteCard.style.ts 3ms (unchanged)
+packages/lifi-widget/components/RouteCard/RouteCard.tsx 43ms (unchanged)
+packages/lifi-widget/components/RouteCard/RouteCardEssentials.tsx 22ms (unchanged)
+packages/lifi-widget/components/RouteCard/RouteCardSkeleton.tsx 12ms (unchanged)
+packages/lifi-widget/components/RouteCard/RouteNotFoundCard.tsx 6ms (unchanged)
+packages/lifi-widget/components/RouteCard/types.ts 6ms (unchanged)
+packages/lifi-widget/components/RouteCard/utils.ts 18ms (unchanged)
+packages/lifi-widget/components/Routes/index.ts 1ms (unchanged)
+packages/lifi-widget/components/Routes/Routes.tsx 10ms (unchanged)
+packages/lifi-widget/components/Routes/RoutesExpanded.style.ts 7ms (unchanged)
+packages/lifi-widget/components/Routes/RoutesExpanded.tsx 16ms (unchanged)
+packages/lifi-widget/components/Select.tsx 8ms (unchanged)
+packages/lifi-widget/components/SelectChainAndToken.tsx 14ms (unchanged)
+packages/lifi-widget/components/SelectTokenButton/index.ts 1ms (unchanged)
+packages/lifi-widget/components/SelectTokenButton/SelectTokenButton.style.tsx 6ms (unchanged)
+packages/lifi-widget/components/SelectTokenButton/SelectTokenButton.tsx 14ms (unchanged)
+packages/lifi-widget/components/SendToWallet/index.ts 1ms (unchanged)
+packages/lifi-widget/components/SendToWallet/SendToWallet.style.tsx 4ms (unchanged)
+packages/lifi-widget/components/SendToWallet/SendToWallet.tsx 15ms (unchanged)
+packages/lifi-widget/components/SendToWallet/SendToWalletButton.tsx 10ms (unchanged)
+packages/lifi-widget/components/SmallAvatar.tsx 6ms (unchanged)
+packages/lifi-widget/components/Step/CircularProgress.style.tsx 57ms (unchanged)
+packages/lifi-widget/components/Step/CircularProgress.tsx 7ms (unchanged)
+packages/lifi-widget/components/Step/DestinationWalletAddress.tsx 7ms (unchanged)
+packages/lifi-widget/components/Step/GasStepProcess.tsx 6ms (unchanged)
+packages/lifi-widget/components/Step/index.ts 2ms (unchanged)
+packages/lifi-widget/components/Step/Step.tsx 16ms (unchanged)
+packages/lifi-widget/components/Step/StepList.tsx 9ms (unchanged)
+packages/lifi-widget/components/Step/StepProcess.style.tsx 10ms (unchanged)
+packages/lifi-widget/components/Step/StepProcess.tsx 14ms (unchanged)
+packages/lifi-widget/components/Step/StepTimer.tsx 14ms (unchanged)
+packages/lifi-widget/components/StepActions/index.ts 3ms (unchanged)
+packages/lifi-widget/components/StepActions/StepActions.style.tsx 13ms (unchanged)
+packages/lifi-widget/components/StepActions/StepActions.tsx 53ms (unchanged)
+packages/lifi-widget/components/StepActions/types.ts 4ms (unchanged)
+packages/lifi-widget/components/StepDivider/index.ts 1ms (unchanged)
+packages/lifi-widget/components/StepDivider/StepDivider.style.tsx 3ms (unchanged)
+packages/lifi-widget/components/StepDivider/StepDivider.tsx 3ms (unchanged)
+packages/lifi-widget/components/Switch.tsx 8ms (unchanged)
+packages/lifi-widget/components/TextFitter/index.ts 3ms (unchanged)
+packages/lifi-widget/components/TextFitter/TextFitter.tsx 17ms (unchanged)
+packages/lifi-widget/components/TextFitter/types.ts 2ms (unchanged)
+packages/lifi-widget/components/Token/index.ts 2ms (unchanged)
+packages/lifi-widget/components/Token/Token.style.tsx 13ms (unchanged)
+packages/lifi-widget/components/Token/Token.tsx 80ms (unchanged)
+packages/lifi-widget/components/TokenAvatar/index.ts 1ms (unchanged)
+packages/lifi-widget/components/TokenAvatar/TokenAvatar.style.tsx 9ms (unchanged)
+packages/lifi-widget/components/TokenAvatar/TokenAvatar.tsx 18ms (unchanged)
+packages/lifi-widget/components/TokenList/index.ts 1ms (unchanged)
+packages/lifi-widget/components/TokenList/TokenList.style.tsx 13ms (unchanged)
+packages/lifi-widget/components/TokenList/TokenList.tsx 14ms (unchanged)
+packages/lifi-widget/components/TokenList/TokenListItem.tsx 85ms (unchanged)
+packages/lifi-widget/components/TokenList/TokenNotFound.tsx 7ms (unchanged)
+packages/lifi-widget/components/TokenList/types.ts 4ms (unchanged)
+packages/lifi-widget/components/TokenList/useTokenSelect.ts 13ms (unchanged)
+packages/lifi-widget/components/TokenList/VirtualizedTokenList.tsx 15ms (unchanged)
+packages/lifi-widget/config/queryClient.ts 3ms (unchanged)
+packages/lifi-widget/config/theme.ts 28ms (unchanged)
+packages/lifi-widget/config/version.ts 2ms (unchanged)
+packages/lifi-widget/fonts/inter.css 26ms (unchanged)
+packages/lifi-widget/hooks/index.ts 2ms (unchanged)
+packages/lifi-widget/hooks/useChain.ts 3ms (unchanged)
+packages/lifi-widget/hooks/useChains.ts 7ms (unchanged)
+packages/lifi-widget/hooks/useContentHeight.ts 7ms (unchanged)
+packages/lifi-widget/hooks/useDebouncedWatch.ts 5ms (unchanged)
+packages/lifi-widget/hooks/useDefaultElementId.ts 2ms (unchanged)
+packages/lifi-widget/hooks/useExpandableVariant.ts 3ms (unchanged)
+packages/lifi-widget/hooks/useFeaturedTokens.ts 2ms (unchanged)
+packages/lifi-widget/hooks/useFromTokenSufficiency.ts 12ms (unchanged)
+packages/lifi-widget/hooks/useGasRecommendation.ts 3ms (unchanged)
+packages/lifi-widget/hooks/useGasRefuel.ts 8ms (unchanged)
+packages/lifi-widget/hooks/useGasSufficiency.ts 17ms (unchanged)
+packages/lifi-widget/hooks/useGetTokenBalancesWithRetry.ts 7ms (unchanged)
+packages/lifi-widget/hooks/useInitializer.ts 4ms (unchanged)
+packages/lifi-widget/hooks/useNavigateBack.ts 5ms (unchanged)
+packages/lifi-widget/hooks/useProcessMessage.ts 26ms (unchanged)
+packages/lifi-widget/hooks/useRouteExecution.ts 23ms (unchanged)
+packages/lifi-widget/hooks/useRoutes.ts 35ms (unchanged)
+packages/lifi-widget/hooks/useScrollableContainer.ts 10ms (unchanged)
+packages/lifi-widget/hooks/useSwapOnly.ts 2ms (unchanged)
+packages/lifi-widget/hooks/useToken.ts 6ms (unchanged)
+packages/lifi-widget/hooks/useTokenAddressBalance.ts 5ms (unchanged)
+packages/lifi-widget/hooks/useTokenBalance.ts 19ms (unchanged)
+packages/lifi-widget/hooks/useTokenBalances.ts 12ms (unchanged)
+packages/lifi-widget/hooks/useTokens.ts 13ms (unchanged)
+packages/lifi-widget/hooks/useTokenSearch.ts 5ms (unchanged)
+packages/lifi-widget/hooks/useTools.ts 8ms (unchanged)
+packages/lifi-widget/hooks/useWidgetEvents.ts 2ms (unchanged)
+packages/lifi-widget/i18n/bn.json 12ms (unchanged)
+packages/lifi-widget/i18n/de.json 9ms (unchanged)
+packages/lifi-widget/i18n/en.json 7ms (unchanged)
+packages/lifi-widget/i18n/es.json 12ms (unchanged)
+packages/lifi-widget/i18n/fr.json 15ms (unchanged)
+packages/lifi-widget/i18n/i18next.d.ts 3ms (unchanged)
+packages/lifi-widget/i18n/id.json 15ms (unchanged)
+packages/lifi-widget/i18n/index.ts 5ms (unchanged)
+packages/lifi-widget/i18n/it.json 9ms (unchanged)
+packages/lifi-widget/i18n/ko.json 18ms (unchanged)
+packages/lifi-widget/i18n/pt.json 7ms (unchanged)
+packages/lifi-widget/i18n/th.json 9ms (unchanged)
+packages/lifi-widget/i18n/tr.json 10ms (unchanged)
+packages/lifi-widget/i18n/uk.json 12ms (unchanged)
+packages/lifi-widget/i18n/vi.json 8ms (unchanged)
+packages/lifi-widget/i18n/zh.json 9ms (unchanged)
+packages/lifi-widget/icons/index.ts 2ms (unchanged)
+packages/lifi-widget/icons/InsuraceLogo.tsx 4ms (unchanged)
+packages/lifi-widget/icons/LiFiFullLogo.tsx 4ms (unchanged)
+packages/lifi-widget/icons/LiFiLogo.tsx 3ms (unchanged)
+packages/lifi-widget/icons/LiFiToolLogo.tsx 3ms (unchanged)
+packages/lifi-widget/index.ts 4ms (unchanged)
+packages/lifi-widget/override.css 27ms (unchanged)
+packages/lifi-widget/package.json 3ms (unchanged)
+packages/lifi-widget/pages/ActiveTransactionsPage/ActiveTransactionsEmpty.tsx 7ms (unchanged)
+packages/lifi-widget/pages/ActiveTransactionsPage/ActiveTransactionsPage.tsx 14ms (unchanged)
+packages/lifi-widget/pages/ActiveTransactionsPage/index.ts 8ms (unchanged)
+packages/lifi-widget/pages/MainPage/index.ts 2ms (unchanged)
+packages/lifi-widget/pages/MainPage/MainGasMessage.tsx 6ms (unchanged)
+packages/lifi-widget/pages/MainPage/MainPage.style.tsx 5ms (unchanged)
+packages/lifi-widget/pages/MainPage/MainPage.tsx 16ms (unchanged)
+packages/lifi-widget/pages/MainPage/ReviewButton.tsx 15ms (unchanged)
+packages/lifi-widget/pages/RoutesPage/index.ts 2ms (unchanged)
+packages/lifi-widget/pages/RoutesPage/RoutesPage.style.ts 3ms (unchanged)
+packages/lifi-widget/pages/RoutesPage/RoutesPage.tsx 30ms (unchanged)
+packages/lifi-widget/pages/SelectChainPage/index.ts 7ms (unchanged)
+packages/lifi-widget/pages/SelectChainPage/SelectChainPage.tsx 20ms (unchanged)
+packages/lifi-widget/pages/SelectChainPage/types.ts 4ms (unchanged)
+packages/lifi-widget/pages/SelectEnabledToolsPage/index.ts 4ms (unchanged)
+packages/lifi-widget/pages/SelectEnabledToolsPage/SelectEnabledToolsPage.style.tsx 3ms (unchanged)
+
+packages/lifi-widget/pages/SelectEnabledToolsPage/SelectEnabledToolsPage.tsx 24ms (unchanged)
+packages/lifi-widget/pages/SelectNativeTokenPage/index.ts 2ms (unchanged)
+packages/lifi-widget/pages/SelectNativeTokenPage/SelectNativeTokenPage.tsx 9ms (unchanged)
+packages/lifi-widget/pages/SelectTokenPage/index.ts 7ms (unchanged)
+packages/lifi-widget/pages/SelectTokenPage/SearchTokenInput.style.tsx 4ms (unchanged)
+packages/lifi-widget/pages/SelectTokenPage/SearchTokenInput.tsx 7ms (unchanged)
+packages/lifi-widget/pages/SelectTokenPage/SelectTokenPage.tsx 9ms (unchanged)
+packages/lifi-widget/pages/SelectTokenPage/types.ts 3ms (unchanged)
+packages/lifi-widget/pages/SelectWalletPage/index.ts 1ms (unchanged)
+packages/lifi-widget/pages/SelectWalletPage/SelectWalletPage.tsx 23ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/ColorSchemeButtonGroup.style.tsx 4ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/ColorSchemeButtonGroup.tsx 7ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/EnabledToolsButton.style.tsx 5ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/EnabledToolsButton.tsx 6ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/GasPriceSelect.tsx 8ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/index.ts 1ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/LanguageSelect.tsx 9ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/ResetSettingsButton.style.tsx 2ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/ResetSettingsButton.tsx 12ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/RoutePrioritySelect.tsx 6ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/SettingsPage.tsx 13ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/SettingsPageExpanded.tsx 4ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/ShowDestinationWallet.tsx 8ms (unchanged)
+packages/lifi-widget/pages/SettingsPage/SlippageInput.tsx 8ms (unchanged)
+packages/lifi-widget/pages/TransactionDetailsPage/ContactSupportButton.tsx 5ms (unchanged)
+packages/lifi-widget/pages/TransactionDetailsPage/index.ts 4ms (unchanged)
+packages/lifi-widget/pages/TransactionDetailsPage/TransactionDetailsPage.style.tsx 3ms (unchanged)
+
+packages/lifi-widget/pages/TransactionDetailsPage/TransactionDetailsPageExpanded.tsx 31ms (unchanged)
+packages/lifi-widget/pages/TransactionHistoryPage/index.ts 4ms (unchanged)
+packages/lifi-widget/pages/TransactionHistoryPage/TransactionActiveItem.tsx 24ms (unchanged)
+packages/lifi-widget/pages/TransactionHistoryPage/TransactionHistoryEmpty.tsx 4ms (unchanged)
+packages/lifi-widget/pages/TransactionHistoryPage/TransactionHistoryItem.tsx 15ms (unchanged)
+packages/lifi-widget/pages/TransactionHistoryPage/TransactionHistoryPage.tsx 16ms (unchanged)
+packages/lifi-widget/pages/TransactionHistoryPage/TransactionHistoryPageExpanded.tsx 9ms (unchanged)
+
+packages/lifi-widget/pages/TransactionPage/ExchangeRateBottomSheet.tsx 24ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/index.ts 1ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/StartTransactionButton.tsx 5ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/StatusBottomSheet.style.tsx 10ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/StatusBottomSheet.tsx 27ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/TokenValueBottomSheet.tsx 20ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/TransactionPage.style.tsx 5ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/TransactionPage.tsx 32ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/TransactionPageExpanded.tsx 4ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/types.ts 2ms (unchanged)
+packages/lifi-widget/pages/TransactionPage/utils.ts 2ms (unchanged)
+packages/lifi-widget/providers/FormProvider/FormProvider.tsx 7ms (unchanged)
+packages/lifi-widget/providers/FormProvider/FormUpdater.tsx 10ms (unchanged)
+packages/lifi-widget/providers/FormProvider/index.ts 1ms (unchanged)
+packages/lifi-widget/providers/FormProvider/types.ts 5ms (unchanged)
+packages/lifi-widget/providers/FormProvider/URLSearchParamsBuilder.tsx 5ms (unchanged)
+packages/lifi-widget/providers/I18nProvider/I18nProvider.tsx 11ms (unchanged)
+packages/lifi-widget/providers/I18nProvider/index.ts 2ms (unchanged)
+packages/lifi-widget/providers/I18nProvider/types.ts 8ms (unchanged)
+packages/lifi-widget/providers/index.ts 1ms (unchanged)
+packages/lifi-widget/providers/SDKProvider/index.ts 1ms (unchanged)
+packages/lifi-widget/providers/SDKProvider/SDKProvider.tsx 6ms (unchanged)
+packages/lifi-widget/providers/ThemeProvider/index.ts 3ms (unchanged)
+packages/lifi-widget/providers/ThemeProvider/ThemeProvider.tsx 4ms (unchanged)
+packages/lifi-widget/providers/WalletProvider/index.ts 2ms (unchanged)
+packages/lifi-widget/providers/WalletProvider/types.ts 3ms (unchanged)
+packages/lifi-widget/providers/WalletProvider/WalletProvider.tsx 20ms (unchanged)
+packages/lifi-widget/providers/WidgetProvider/index.ts 1ms (unchanged)
+packages/lifi-widget/providers/WidgetProvider/types.ts 2ms (unchanged)
+packages/lifi-widget/providers/WidgetProvider/utils.ts 2ms (unchanged)
+packages/lifi-widget/providers/WidgetProvider/WidgetProvider.tsx 10ms (unchanged)
+packages/lifi-widget/react-app-env.d.ts 2ms (unchanged)
+packages/lifi-widget/stores/chains/ChainOrderStore.tsx 10ms (unchanged)
+packages/lifi-widget/stores/chains/createChainOrderStore.ts 13ms (unchanged)
+packages/lifi-widget/stores/chains/index.ts 1ms (unchanged)
+packages/lifi-widget/stores/chains/types.ts 2ms (unchanged)
+packages/lifi-widget/stores/chains/useChainOrder.ts 5ms (unchanged)
+packages/lifi-widget/stores/header/index.ts 1ms (unchanged)
+packages/lifi-widget/stores/header/types.ts 2ms (unchanged)
+packages/lifi-widget/stores/header/useHeaderStore.tsx 7ms (unchanged)
+packages/lifi-widget/stores/index.ts 2ms (unchanged)
+packages/lifi-widget/stores/routes/createRouteExecutionStore.ts 36ms (unchanged)
+packages/lifi-widget/stores/routes/index.ts 2ms (unchanged)
+packages/lifi-widget/stores/routes/RouteExecutionStore.tsx 9ms (unchanged)
+packages/lifi-widget/stores/routes/types.ts 3ms (unchanged)
+packages/lifi-widget/stores/routes/useExecutingRoutesIds.ts 9ms (unchanged)
+packages/lifi-widget/stores/routes/useSetExecutableRoute.ts 2ms (unchanged)
+packages/lifi-widget/stores/routes/useTransactionHistory.ts 5ms (unchanged)
+packages/lifi-widget/stores/routes/utils.ts 7ms (unchanged)
+packages/lifi-widget/stores/settings/index.ts 1ms (unchanged)
+packages/lifi-widget/stores/settings/types.ts 6ms (unchanged)
+packages/lifi-widget/stores/settings/useAppearance.ts 4ms (unchanged)
+packages/lifi-widget/stores/settings/useSendToWalletStore.ts 4ms (unchanged)
+packages/lifi-widget/stores/settings/useSettings.ts 3ms (unchanged)
+packages/lifi-widget/stores/settings/useSettingsStore.ts 19ms (unchanged)
+packages/lifi-widget/stores/settings/useSplitSubvariantStore.tsx 8ms (unchanged)
+packages/lifi-widget/stores/StoreProvider.tsx 4ms (unchanged)
+packages/lifi-widget/stores/types.ts 3ms (unchanged)
+packages/lifi-widget/types/errors.ts 2ms (unchanged)
+packages/lifi-widget/types/events.ts 4ms (unchanged)
+packages/lifi-widget/types/index.ts 4ms (unchanged)
+packages/lifi-widget/types/token.ts 2ms (unchanged)
+packages/lifi-widget/types/widget.ts 16ms (unchanged)
+packages/lifi-widget/utils/colors.ts 5ms (unchanged)
+packages/lifi-widget/utils/deepMerge.ts 3ms (unchanged)
+packages/lifi-widget/utils/elements.ts 5ms (unchanged)
+packages/lifi-widget/utils/enum.ts 2ms (unchanged)
+packages/lifi-widget/utils/format.ts 13ms (unchanged)
+packages/lifi-widget/utils/index.ts 2ms (unchanged)
+packages/lifi-widget/utils/input.ts 7ms (unchanged)
+packages/lifi-widget/utils/navigationRoutes.ts 5ms (unchanged)
+packages/lifi-widget/utils/wallet.ts 3ms (unchanged)
+postcss.config.js 1ms (unchanged)
+public/approve.html 48ms (unchanged)
+public/hotreload.html 16ms (unchanged)
+public/locales/en.json 2ms (unchanged)
+public/locales/es.json 2ms (unchanged)
+public/locales/fr.json 3ms (unchanged)
+public/locales/it.json 4ms (unchanged)
+public/locales/ja.json 2ms (unchanged)
+public/locales/ko.json 4ms (unchanged)
+public/locales/ru.json 3ms (unchanged)
+public/locales/uk.json 3ms (unchanged)
+public/locales/zh-CN.json 2ms (unchanged)
+public/locales/zh-TW.json 2ms (unchanged)
+public/main.html 9ms (unchanged)
+public/manifest.json 3ms (unchanged)
+public/popup.html 10ms (unchanged)
+public/sidepanel.html 5ms (unchanged)
+public/sw.js 3ms (unchanged)
+README.md 28ms (unchanged)
+src/_dev/controlPanel.tsx 25ms (unchanged)
+src/_dev/devTools.ts 7ms (unchanged)
+src/_dev/env.d.ts 12ms (unchanged)
+src/_dev/hotReload.ts 48ms (unchanged)
+src/_dev/hotReloadObserver.ts 6ms (unchanged)
+src/_dev/importExport.ts 10ms (unchanged)
+src/_dev/misc.d.ts 2ms (unchanged)
+src/_dev/utils.ts 3ms (unchanged)
+src/abi/ERC1155.json 13ms (unchanged)
+src/abi/ERC20.json 27ms (unchanged)
+src/abi/ERC721.json 17ms (unchanged)
+src/abi/L1GasOracle.json 12ms (unchanged)
+src/app/atoms/activity.ts 8ms (unchanged)
+src/app/atoms/approve.ts 13ms (unchanged)
+src/app/atoms/boot.ts 4ms (unchanged)
+src/app/atoms/common.ts 14ms (unchanged)
+src/app/atoms/ext.ts 9ms (unchanged)
+src/app/atoms/index.ts 5ms (unchanged)
+src/app/atoms/nav.ts 7ms (unchanged)
+src/app/atoms/README.md 2ms (unchanged)
+src/app/atoms/settings.ts 8ms (unchanged)
+src/app/atoms/tokens.ts 12ms (unchanged)
+src/app/atoms/wallet.ts 16ms (unchanged)
+src/app/components/ApproveApp.tsx 28ms (unchanged)
+src/app/components/BaseProvider.tsx 4ms (unchanged)
+src/app/components/blocks/AcceptCheckbox.tsx 11ms (unchanged)
+src/app/components/blocks/activity/ActivitiesList.tsx 18ms (unchanged)
+src/app/components/blocks/activity/ActivityAsset.tsx 201ms (unchanged)
+src/app/components/blocks/activity/ActivityContent.tsx 13ms (unchanged)
+src/app/components/blocks/activity/ActivityModal.tsx 19ms (unchanged)
+src/app/components/blocks/ActivityBar.tsx 26ms (unchanged)
+src/app/components/blocks/AddAccountContinueButton.tsx 6ms (unchanged)
+src/app/components/blocks/AddAccountHeader.tsx 5ms (unchanged)
+src/app/components/blocks/AddAccountModal.tsx 27ms (unchanged)
+src/app/components/blocks/AddAccountSteps.tsx 14ms (unchanged)
+src/app/components/blocks/AddFundsOnRampModal.tsx 19ms (unchanged)
+src/app/components/blocks/approvals/AdvancedTab.tsx 156ms (unchanged)
+src/app/components/blocks/approvals/ApprovalHeader.tsx 309ms (unchanged)
+src/app/components/blocks/approvals/DetailsTab.tsx 62ms (unchanged)
+src/app/components/blocks/approvals/FeeTab.tsx 80ms (unchanged)
+src/app/components/blocks/approvals/TabsHeader.tsx 13ms (unchanged)
+src/app/components/blocks/ApprovalStatus.tsx 25ms (unchanged)
+src/app/components/blocks/AttentionModal.tsx 27ms (unchanged)
+src/app/components/blocks/AuthSignatureModal.tsx 16ms (unchanged)
+src/app/components/blocks/ContactsDialog.tsx 20ms (unchanged)
+src/app/components/blocks/ContactsSection.tsx 22ms (unchanged)
+src/app/components/blocks/Dialog.tsx 7ms (unchanged)
+src/app/components/blocks/EditNetwork.tsx 68ms (unchanged)
+src/app/components/blocks/EditWalletSection.tsx 60ms (unchanged)
+src/app/components/blocks/Menu.tsx 5ms (unchanged)
+src/app/components/blocks/misc/Delay.tsx 3ms (unchanged)
+src/app/components/blocks/NetworksButton.tsx 57ms (unchanged)
+src/app/components/blocks/NetworksList.tsx 17ms (unchanged)
+src/app/components/blocks/nft/NftOverview.tsx 23ms (unchanged)
+src/app/components/blocks/OnboardingPopup.tsx 19ms (unchanged)
+src/app/components/blocks/OnRampIframe.tsx 24ms (unchanged)
+src/app/components/blocks/overview/AssetCard.tsx 18ms (unchanged)
+src/app/components/blocks/overview/AssetInfo.tsx 44ms (unchanged)
+src/app/components/blocks/overview/NftInfo.tsx 47ms (unchanged)
+src/app/components/blocks/overview/RecentTransactions.tsx 10ms (unchanged)
+src/app/components/blocks/overview/TokenActivity.tsx 40ms (unchanged)
+src/app/components/blocks/OverviewContent.tsx 19ms (unchanged)
+src/app/components/blocks/PasswordForm.tsx 29ms (unchanged)
+src/app/components/blocks/popup/AssetCard.tsx 38ms (unchanged)
+src/app/components/blocks/popup/InteractionWithDapp.tsx 32ms (unchanged)
+src/app/components/blocks/popup/NFTOverviewPopup.tsx 24ms (unchanged)
+src/app/components/blocks/popup/PopupModal.tsx 5ms (unchanged)
+src/app/components/blocks/popup/ScrollTopButton.tsx 12ms (unchanged)
+src/app/components/blocks/ProfileGen.tsx 12ms (unchanged)
+src/app/components/blocks/ProfileNav.tsx 7ms (unchanged)
+src/app/components/blocks/ProfilePreview.tsx 4ms (unchanged)
+src/app/components/blocks/ReceiveModal.tsx 13ms (unchanged)
+src/app/components/blocks/SecondaryTabs.tsx 7ms (unchanged)
+src/app/components/blocks/SecretField.tsx 28ms (unchanged)
+src/app/components/blocks/SeedPhraseWords.tsx 19ms (unchanged)
+src/app/components/blocks/SelectLanguage.tsx 11ms (unchanged)
+src/app/components/blocks/Sidebar.Links.tsx 24ms (unchanged)
+src/app/components/blocks/Sidebar.tsx 22ms (unchanged)
+src/app/components/blocks/TokenAmount.tsx 26ms (unchanged)
+src/app/components/blocks/tokenList/AddTokenBanner.tsx 12ms (unchanged)
+src/app/components/blocks/tokenList/NftCard.tsx 27ms (unchanged)
+src/app/components/blocks/tokenList/NoNftState.tsx 12ms (unchanged)
+src/app/components/blocks/tokenList/NullState.tsx 10ms (unchanged)
+src/app/components/blocks/transfer/TokenTransfer.tsx 107ms (unchanged)
+src/app/components/blocks/WalletsList.tsx 17ms (unchanged)
+src/app/components/blocks/WalletTabs.tsx 16ms (unchanged)
+src/app/components/blocks/WebThreeCompatible.tsx 12ms (unchanged)
+src/app/components/elements/__tests__/Button.magic.test.tsx 2ms (unchanged)
+src/app/components/elements/AccountPreview.tsx 10ms (unchanged)
+src/app/components/elements/AccountSelect.tsx 29ms (unchanged)
+src/app/components/elements/AddressField.tsx 7ms (unchanged)
+src/app/components/elements/approvals/DappLogos.tsx 3ms (unchanged)
+src/app/components/elements/approvals/PlusMinusInput.tsx 7ms (unchanged)
+src/app/components/elements/approvals/TabHeader.tsx 3ms (unchanged)
+src/app/components/elements/AssetInput.tsx 8ms (unchanged)
+src/app/components/elements/AssetLogo.tsx 11ms (unchanged)
+src/app/components/elements/AssetsManagement.tsx 19ms (unchanged)
+src/app/components/elements/AssetsSwitcher.tsx 6ms (unchanged)
+src/app/components/elements/AutoIcon.tsx 17ms (unchanged)
+src/app/components/elements/Avatar.tsx 17ms (unchanged)
+src/app/components/elements/BackButton.tsx 7ms (unchanged)
+src/app/components/elements/BadgeWrapper.tsx 3ms (unchanged)
+src/app/components/elements/Balance.tsx 11ms (unchanged)
+src/app/components/elements/Button.tsx 14ms (unchanged)
+src/app/components/elements/CanvasTextField.tsx 9ms (unchanged)
+src/app/components/elements/Checkbox.tsx 4ms (unchanged)
+src/app/components/elements/CircleSpinner.tsx 8ms (unchanged)
+src/app/components/elements/Collapse.tsx 5ms (unchanged)
+src/app/components/elements/ComingSoon.tsx 7ms (unchanged)
+src/app/components/elements/ContactAutocomplete.tsx 37ms (unchanged)
+src/app/components/elements/ContentEditableField.tsx 9ms (unchanged)
+src/app/components/elements/ControlIcon.tsx 7ms (unchanged)
+src/app/components/elements/CopiableTooltip.tsx 10ms (unchanged)
+src/app/components/elements/Dot.tsx 2ms (unchanged)
+src/app/components/elements/FiatAmount.tsx 7ms (unchanged)
+src/app/components/elements/FindBug.tsx 5ms (unchanged)
+src/app/components/elements/HashPreview.tsx 13ms (unchanged)
+src/app/components/elements/IconedButton.tsx 24ms (unchanged)
+src/app/components/elements/Input.tsx 33ms (unchanged)
+src/app/components/elements/InputLabelAction.tsx 11ms (unchanged)
+src/app/components/elements/LargeSpinner.tsx 12ms (unchanged)
+src/app/components/elements/LargeWalletCard.tsx 20ms (unchanged)
+src/app/components/elements/LockProfileButton.tsx 12ms (unchanged)
+src/app/components/elements/LongTextField.tsx 9ms (unchanged)
+src/app/components/elements/NetworkCard.tsx 26ms (unchanged)
+src/app/components/elements/NetworkIcon.tsx 16ms (unchanged)
+src/app/components/elements/NetworkSelect.tsx 21ms (unchanged)
+src/app/components/elements/NetworkSelectPrimitive.tsx 28ms (unchanged)
+src/app/components/elements/NftAvatar.tsx 3ms (unchanged)
+src/app/components/elements/NumberInput.tsx 14ms (unchanged)
+src/app/components/elements/PasswordField.tsx 7ms (unchanged)
+src/app/components/elements/PasswordValidationField.tsx 15ms (unchanged)
+src/app/components/elements/PrettyAmount.tsx 48ms (unchanged)
+src/app/components/elements/PrettyDate.tsx 8ms (unchanged)
+src/app/components/elements/PriceArrow.tsx 3ms (unchanged)
+src/app/components/elements/PriceChange.tsx 7ms (unchanged)
+src/app/components/elements/ProfileButton.tsx 40ms (unchanged)
+src/app/components/elements/RoundedButton.tsx 6ms (unchanged)
+src/app/components/elements/ScrollAreaContainer.tsx 6ms (unchanged)
+src/app/components/elements/SearchInput.tsx 10ms (unchanged)
+src/app/components/elements/SecondaryModal.tsx 8ms (unchanged)
+src/app/components/elements/Select.tsx 30ms (unchanged)
+src/app/components/elements/Seperator.tsx 5ms (unchanged)
+src/app/components/elements/SettingsHeader.tsx 3ms (unchanged)
+src/app/components/elements/SmallContactCard.tsx 12ms (unchanged)
+src/app/components/elements/SmartLink.tsx 4ms (unchanged)
+src/app/components/elements/SoonTag.tsx 6ms (unchanged)
+src/app/components/elements/SupportAlert.tsx 6ms (unchanged)
+src/app/components/elements/Switcher.tsx 8ms (unchanged)
+src/app/components/elements/Toast.tsx 3ms (unchanged)
+src/app/components/elements/TokenSelect.tsx 33ms (unchanged)
+src/app/components/elements/Tooltip.tsx 8ms (unchanged)
+src/app/components/elements/TooltipIcon.tsx 7ms (unchanged)
+src/app/components/elements/TotalWalletBalance.tsx 4ms (unchanged)
+src/app/components/elements/WalletAvatar.tsx 10ms (unchanged)
+src/app/components/elements/WalletCard.tsx 5ms (unchanged)
+src/app/components/elements/WalletName.tsx 7ms (unchanged)
+src/app/components/FullScreenRouter.tsx 6ms (unchanged)
+src/app/components/layouts/__tests__/AppShell.magic.test.tsx 4ms (unchanged)
+src/app/components/layouts/__tests__/MainPageLayout.magic.test.tsx 7ms (unchanged)
+src/app/components/layouts/AppShell.tsx 8ms (unchanged)
+src/app/components/layouts/BoardingPageLayout.tsx 7ms (unchanged)
+src/app/components/layouts/ContentContainer.tsx 4ms (unchanged)
+src/app/components/layouts/ErrBond.tsx 9ms (unchanged)
+src/app/components/layouts/MainPageLayout.tsx 3ms (unchanged)
+src/app/components/layouts/PopupLayout.tsx 35ms (unchanged)
+src/app/components/layouts/PreloadBaseAndSync.tsx 9ms (unchanged)
+src/app/components/MainApp.tsx 5ms (unchanged)
+src/app/components/PopupApp.tsx 5ms (unchanged)
+src/app/components/screens/__tests__/Welcome.magic.test.tsx 11ms (unchanged)
+src/app/components/screens/addAccountSteps/AddAccountInitial.tsx 19ms (unchanged)
+src/app/components/screens/addAccountSteps/AddWatchOnlyAccount.tsx 7ms (unchanged)
+src/app/components/screens/addAccountSteps/ConfirmAccounts.tsx 36ms (unchanged)
+src/app/components/screens/addAccountSteps/CreateSeedPhrase.tsx 13ms (unchanged)
+src/app/components/screens/addAccountSteps/EditAccounts.tsx 29ms (unchanged)
+src/app/components/screens/addAccountSteps/ImportPrivateKey.tsx 10ms (unchanged)
+src/app/components/screens/addAccountSteps/ImportSeedPhrase.tsx 19ms (unchanged)
+src/app/components/screens/addAccountSteps/SetupPassword.tsx 16ms (unchanged)
+src/app/components/screens/addAccountSteps/shared/AccountsToAdd.tsx 36ms (unchanged)
+src/app/components/screens/addAccountSteps/shared/LedgerScanModal.tsx 5ms (unchanged)
+src/app/components/screens/addAccountSteps/shared/ScanAccountsModal.tsx 22ms (unchanged)
+src/app/components/screens/addAccountSteps/VerifySeedPhrase.tsx 30ms (unchanged)
+src/app/components/screens/approvals/AddNetwork.tsx 13ms (unchanged)
+src/app/components/screens/approvals/Connection.tsx 27ms (unchanged)
+src/app/components/screens/approvals/Layout.tsx 8ms (unchanged)
+src/app/components/screens/approvals/Signing.tsx 47ms (unchanged)
+src/app/components/screens/approvals/Transaction.tsx 71ms (unchanged)
+src/app/components/screens/Main.tsx 8ms (unchanged)
+src/app/components/screens/mainPages/Apps.tsx 2ms (unchanged)
+src/app/components/screens/mainPages/Buy.tsx 17ms (unchanged)
+src/app/components/screens/mainPages/Contacts.tsx 4ms (unchanged)
+src/app/components/screens/mainPages/Overview.tsx 2ms (unchanged)
+src/app/components/screens/mainPages/Receive.tsx 11ms (unchanged)
+src/app/components/screens/mainPages/Rewards.tsx 52ms (unchanged)
+src/app/components/screens/mainPages/Settings.Tab.tsx 5ms (unchanged)
+src/app/components/screens/mainPages/Settings.tsx 8ms (unchanged)
+src/app/components/screens/mainPages/Swap.tsx 41ms (unchanged)
+src/app/components/screens/mainPages/SwapSuspended.tsx 2ms (unchanged)
+src/app/components/screens/mainPages/Transfer.Tab.tsx 7ms (unchanged)
+src/app/components/screens/mainPages/Transfer.tsx 4ms (unchanged)
+src/app/components/screens/mainPages/Wallets.tsx 5ms (unchanged)
+src/app/components/screens/Popup.tsx 21ms (unchanged)
+src/app/components/screens/Profiles.tsx 14ms (unchanged)
+src/app/components/screens/receiveTabs/BuyWithCrypto.tsx 3ms (unchanged)
+src/app/components/screens/receiveTabs/Faucet.tsx 3ms (unchanged)
+src/app/components/screens/receiveTabs/ShareAddress.tsx 9ms (unchanged)
+src/app/components/screens/settingTabs/About.tsx 10ms (unchanged)
+src/app/components/screens/settingTabs/Advanced.tsx 2ms (unchanged)
+src/app/components/screens/settingTabs/General.tsx 18ms (unchanged)
+src/app/components/screens/settingTabs/Networks.tsx 15ms (unchanged)
+src/app/components/screens/settingTabs/Profile.tsx 14ms (unchanged)
+src/app/components/screens/settingTabs/Security.tsx 18ms (unchanged)
+src/app/components/screens/settingTabs/Web3.tsx 11ms (unchanged)
+src/app/components/screens/transferTabs/Asset.tsx 3ms (unchanged)
+src/app/components/screens/transferTabs/Nft.tsx 3ms (unchanged)
+src/app/components/screens/Unlock.tsx 7ms (unchanged)
+src/app/components/screens/Welcome.tsx 5ms (unchanged)
+src/app/defaults.tsx 5ms (unchanged)
+src/app/helpers.ts 7ms (unchanged)
+src/app/hooks/account.tsx 5ms (unchanged)
+src/app/hooks/activity.tsx 13ms (unchanged)
+src/app/hooks/chainId.tsx 10ms (unchanged)
+src/app/hooks/contacts.tsx 10ms (unchanged)
+src/app/hooks/dialog.tsx 22ms
+src/app/hooks/ens.tsx 16ms (unchanged)
+src/app/hooks/explorer.ts 4ms (unchanged)
+src/app/hooks/hideToken.tsx 7ms (unchanged)
+src/app/hooks/index.ts 1ms (unchanged)
+src/app/hooks/ledger.tsx 16ms (unchanged)
+src/app/hooks/network.ts 2ms (unchanged)
+src/app/hooks/nftMetadata.ts 5ms (unchanged)
+src/app/hooks/overflow.tsx 3ms (unchanged)
+src/app/hooks/provider.ts 7ms (unchanged)
+src/app/hooks/ramp.tsx 3ms (unchanged)
+src/app/hooks/rns.tsx 10ms (unchanged)
+src/app/hooks/steps.tsx 10ms (unchanged)
+src/app/hooks/tippy.tsx 3ms (unchanged)
+src/app/hooks/toast.tsx 9ms (unchanged)
+src/app/hooks/tokenList.tsx 16ms (unchanged)
+src/app/hooks/tokens.ts 11ms (unchanged)
+src/app/hooks/wallet.ts 2ms (unchanged)
+src/app/hooks/web3Mode.tsx 7ms (unchanged)
+src/app/nav.ts 11ms (unchanged)
+src/app/root.tsx 9ms (unchanged)
+src/app/styles/index.css 75ms (unchanged)
+src/app/temp-data/assets.ts 12ms (unchanged)
+src/app/temp-data/select.ts 3ms (unchanged)
+src/app/utils/form.ts 5ms (unchanged)
+src/app/utils/format.ts 6ms (unchanged)
+src/app/utils/humanDelay.ts 3ms (unchanged)
+src/app/utils/index.ts 2ms (unchanged)
+src/app/utils/largeAmount.ts 1ms (unchanged)
+src/app/utils/openInTab.ts 4ms (unchanged)
+src/app/utils/passwordReset.ts 7ms (unchanged)
+src/app/utils/prepareNFTLabel.ts 3ms (unchanged)
+src/app/utils/transak.ts 16ms (unchanged)
+src/app/utils/txApprove.ts 8ms (unchanged)
+src/app/utils/validators.ts 23ms (unchanged)
+src/approve.tsx 2ms (unchanged)
+src/back.ts 4ms (unchanged)
+src/content.ts 13ms (unchanged)
+src/core/back/__tests__/approve_utils.ts 18ms (unchanged)
+src/core/back/__tests__/approve.ts 33ms (unchanged)
+src/core/back/__tests__/vault.ts 77ms (unchanged)
+src/core/back/approve/index.ts 26ms (unchanged)
+src/core/back/approve/utils.ts 13ms (unchanged)
+src/core/back/rpc/context.ts 20ms (unchanged)
+src/core/back/rpc/handle.ts 21ms (unchanged)
+src/core/back/rpc/index.ts 12ms (unchanged)
+src/core/back/rpc/network/index.ts 20ms (unchanged)
+src/core/back/rpc/network/provider.ts 12ms (unchanged)
+src/core/back/rpc/wallet/connection.ts 18ms (unchanged)
+src/core/back/rpc/wallet/index.ts 4ms (unchanged)
+src/core/back/rpc/wallet/network.ts 11ms (unchanged)
+src/core/back/rpc/wallet/signing.ts 29ms (unchanged)
+src/core/back/rpc/wallet/transaction.ts 14ms (unchanged)
+src/core/back/rpc/wallet/validation.ts 31ms (unchanged)
+src/core/back/services/approveWindow.ts 61ms (unchanged)
+src/core/back/services/autoLock.ts 4ms (unchanged)
+src/core/back/services/bruteForceProtection.ts 20ms (unchanged)
+src/core/back/services/changeNetwork.ts 18ms (unchanged)
+src/core/back/services/extBadge.ts 19ms (unchanged)
+src/core/back/services/index.ts 5ms (unchanged)
+src/core/back/services/inpageContentScript.ts 9ms (unchanged)
+src/core/back/services/installOrUpdate.ts 15ms (unchanged)
+src/core/back/services/pageServer.ts 40ms (unchanged)
+src/core/back/services/persistApprovals.ts 6ms (unchanged)
+src/core/back/services/rampTxObserver.ts 16ms (unchanged)
+src/core/back/services/txObserver.ts 27ms (unchanged)
+src/core/back/services/walletServer.ts 64ms (unchanged)
+src/core/back/state/events.ts 11ms (unchanged)
+src/core/back/state/helpers.ts 35ms (unchanged)
+src/core/back/state/index.ts 12ms (unchanged)
+src/core/back/state/stores.ts 51ms (unchanged)
+src/core/back/sync/chain.ts 33ms (unchanged)
+src/core/back/sync/currencyConversion.ts 13ms (unchanged)
+src/core/back/sync/dexPrices.ts 54ms (unchanged)
+src/core/back/sync/fiatOnRamp.ts 15ms (unchanged)
+src/core/back/sync/gasPrices/index.ts 5ms (unchanged)
+src/core/back/sync/gasPrices/indexerApi.ts 4ms (unchanged)
+src/core/back/sync/gasPrices/linea.ts 17ms (unchanged)
+src/core/back/sync/gasPrices/onChainLegacy.ts 11ms (unchanged)
+src/core/back/sync/general.ts 7ms (unchanged)
+src/core/back/sync/index.ts 3ms (unchanged)
+src/core/back/sync/indexer/cx.ts 29ms (unchanged)
+src/core/back/sync/indexer/dx.ts 8ms (unchanged)
+src/core/back/sync/indexer/index.ts 2ms (unchanged)
+src/core/back/sync/indexer/nsx.ts 13ms (unchanged)
+src/core/back/sync/tokens/account/assets.ts 44ms (unchanged)
+src/core/back/sync/tokens/account/index.ts 4ms (unchanged)
+src/core/back/sync/tokens/account/nfts.ts 52ms (unchanged)
+src/core/back/sync/tokens/account/utils.ts 33ms (unchanged)
+src/core/back/sync/tokens/activities/chain.ts 52ms (unchanged)
+src/core/back/sync/tokens/activities/dx.ts 27ms (unchanged)
+src/core/back/sync/tokens/activities/explorer.ts 25ms (unchanged)
+src/core/back/sync/tokens/activities/index.ts 10ms (unchanged)
+src/core/back/sync/tokens/activities/utils.ts 13ms (unchanged)
+src/core/back/sync/tokens/activities/ux.ts 19ms (unchanged)
+src/core/back/sync/tokens/detailsUrl.ts 9ms (unchanged)
+src/core/back/sync/tokens/find.ts 41ms (unchanged)
+src/core/back/sync/tokens/index.ts 6ms (unchanged)
+src/core/back/sync/tokens/networks.ts 80ms (unchanged)
+src/core/back/sync/tokens/queue.ts 4ms (unchanged)
+src/core/back/sync/tokens/total.ts 19ms (unchanged)
+src/core/back/sync/utils.ts 4ms (unchanged)
+src/core/back/vault/index.ts 188ms (unchanged)
+src/core/back/vault/passwordSession.ts 5ms (unchanged)
+src/core/back/vault/README.md 58ms (unchanged)
+src/core/client/approvals.ts 26ms (unchanged)
+src/core/client/base.ts 6ms (unchanged)
+src/core/client/fees.ts 7ms (unchanged)
+src/core/client/index.ts 2ms (unchanged)
+src/core/client/lifi-provider.ts 27ms (unchanged)
+src/core/client/provider.ts 20ms (unchanged)
+src/core/client/track.ts 20ms (unchanged)
+src/core/client/wallet.ts 43ms (unchanged)
+src/core/common/__tests__/account.ts 23ms (unchanged)
+src/core/common/__tests__/base.ts 15ms (unchanged)
+src/core/common/__tests__/network.ts 23ms (unchanged)
+src/core/common/__tests__/nonce.ts 10ms (unchanged)
+src/core/common/__tests__/permissions.ts 6ms (unchanged)
+src/core/common/__tests__/wallet.ts 23ms (unchanged)
+src/core/common/account.ts 15ms (unchanged)
+src/core/common/activity.ts 26ms (unchanged)
+src/core/common/balance.ts 5ms (unchanged)
+src/core/common/base.ts 6ms (unchanged)
+src/core/common/chainList.ts 9ms (unchanged)
+src/core/common/importExport/export.ts 9ms (unchanged)
+src/core/common/importExport/import.ts 7ms (unchanged)
+src/core/common/importExport/index.ts 3ms (unchanged)
+src/core/common/index.ts 2ms (unchanged)
+src/core/common/indexerApi.ts 3ms (unchanged)
+src/core/common/l1Fee.ts 14ms (unchanged)
+src/core/common/network.ts 20ms (unchanged)
+src/core/common/nonce.ts 9ms (unchanged)
+src/core/common/permissions.ts 2ms (unchanged)
+src/core/common/rpc.ts 7ms (unchanged)
+src/core/common/settings.ts 3ms (unchanged)
+src/core/common/tokens.ts 16ms (unchanged)
+src/core/common/totalBalance.ts 8ms (unchanged)
+src/core/common/transaction.ts 48ms (unchanged)
+src/core/common/wallet.ts 13ms (unchanged)
+src/core/inpage/filterManager.ts 56ms (unchanged)
+src/core/inpage/iconSvgBase64.ts 2ms (unchanged)
+src/core/inpage/protocol.ts 6ms (unchanged)
+src/core/inpage/provider.ts 65ms (unchanged)
+src/core/inpage/README.md 11ms (unchanged)
+src/core/inpage/shouldInject.ts 9ms (unchanged)
+src/core/inpage/subscriptionManager.ts 15ms (unchanged)
+src/core/inpage/universalProvider.ts 33ms (unchanged)
+src/core/repo/asyncDexie.ts 6ms (unchanged)
+src/core/repo/fixtures.ts 17ms (unchanged)
+src/core/repo/helpers.ts 5ms (unchanged)
+src/core/repo/index.ts 4ms (unchanged)
+src/core/repo/mutations.ts 3ms (unchanged)
+src/core/repo/queries.ts 44ms (unchanged)
+src/core/repo/schema.ts 8ms (unchanged)
+src/core/types/account/base.ts 4ms (unchanged)
+src/core/types/account/hd.ts 5ms (unchanged)
+src/core/types/account/index.ts 4ms (unchanged)
+src/core/types/account/ledger.ts 2ms (unchanged)
+src/core/types/account/privateKey.ts 2ms (unchanged)
+src/core/types/account/social.ts 5ms (unchanged)
+src/core/types/account/watchOnly.ts 2ms (unchanged)
+src/core/types/activity.ts 24ms (unchanged)
+src/core/types/base.ts 2ms (unchanged)
+src/core/types/contacts.ts 4ms (unchanged)
+src/core/types/fees.ts 5ms (unchanged)
+src/core/types/index.ts 2ms (unchanged)
+src/core/types/messages.ts 21ms (unchanged)
+src/core/types/network.ts 5ms (unchanged)
+src/core/types/permissions.ts 2ms (unchanged)
+src/core/types/ramp.ts 15ms (unchanged)
+src/core/types/rpc.ts 12ms (unchanged)
+src/core/types/shared.ts 6ms (unchanged)
+src/core/types/storage.ts 2ms (unchanged)
+src/core/types/sync.ts 1ms (unchanged)
+src/core/types/tokens.ts 10ms (unchanged)
+src/fixtures/conversionCurrency.ts 13ms (unchanged)
+src/fixtures/dateLocales.ts 2ms (unchanged)
+src/fixtures/kdbx.ts 6ms (unchanged)
+src/fixtures/locales.ts 4ms (unchanged)
+src/fixtures/networks/arbitrum.ts 4ms (unchanged)
+src/fixtures/networks/arbitrumnova.ts 2ms (unchanged)
+src/fixtures/networks/aurora.ts 4ms (unchanged)
+src/fixtures/networks/avalanche.ts 2ms (unchanged)
+src/fixtures/networks/base.ts 4ms (unchanged)
+src/fixtures/networks/blast.ts 2ms (unchanged)
+src/fixtures/networks/boba.ts 2ms (unchanged)
+src/fixtures/networks/bsc.ts 5ms (unchanged)
+src/fixtures/networks/celo.ts 2ms (unchanged)
+src/fixtures/networks/cronos.ts 2ms (unchanged)
+src/fixtures/networks/ethereum.ts 6ms (unchanged)
+src/fixtures/networks/evmos.ts 2ms (unchanged)
+src/fixtures/networks/fantom.ts 4ms (unchanged)
+src/fixtures/networks/gnosis.ts 4ms (unchanged)
+src/fixtures/networks/harmony.ts 2ms (unchanged)
+src/fixtures/networks/heco.ts 3ms (unchanged)
+src/fixtures/networks/index.ts 14ms (unchanged)
+src/fixtures/networks/linea.ts 4ms (unchanged)
+src/fixtures/networks/local.ts 7ms (unchanged)
+src/fixtures/networks/mantle.ts 3ms (unchanged)
+src/fixtures/networks/mode.ts 3ms (unchanged)
+src/fixtures/networks/moonbeam.ts 4ms (unchanged)
+src/fixtures/networks/moonriver.ts 2ms (unchanged)
+src/fixtures/networks/optimism.ts 7ms (unchanged)
+src/fixtures/networks/polygon.ts 3ms (unchanged)
+src/fixtures/networks/README.md 9ms (unchanged)
+src/fixtures/networks/rootstock.ts 4ms (unchanged)
+src/fixtures/networks/scroll.ts 4ms (unchanged)
+src/fixtures/networks/syscoin.ts 6ms (unchanged)
+src/fixtures/networks/zksyncera.ts 3ms (unchanged)
+src/fixtures/niceColorPalettes/200.json 27ms (unchanged)
+src/fixtures/phishingDetect.ts 4ms (unchanged)
+src/fixtures/settings.ts 7ms (unchanged)
+src/fixtures/tokens.ts 3ms (unchanged)
+src/inpage.ts 17ms (unchanged)
+src/lib/amplitude/client.ts 3ms (unchanged)
+src/lib/amplitude/config.ts 5ms (unchanged)
+src/lib/amplitude/context.ts 8ms (unchanged)
+src/lib/amplitude/index.ts 3ms (unchanged)
+src/lib/amplitude/transport.ts 6ms (unchanged)
+src/lib/amplitude/types.d.ts 1ms (unchanged)
+src/lib/atom-utils/atomWithAutoReset.ts 11ms (unchanged)
+src/lib/atom-utils/atomWithClientStorage.ts 7ms (unchanged)
+src/lib/atom-utils/atomWithGlobalStorage.ts 2ms (unchanged)
+src/lib/atom-utils/atomWithRepoQuery.ts 6ms (unchanged)
+src/lib/atom-utils/atomWithStorage.ts 1ms (unchanged)
+src/lib/atom-utils/atomWithURLHash.ts 25ms (unchanged)
+src/lib/atom-utils/createAtomWithStorageArea.ts 9ms (unchanged)
+src/lib/atom-utils/index.ts 2ms (unchanged)
+src/lib/atom-utils/README.md 1ms (unchanged)
+src/lib/atom-utils/useAtomsAll.ts 15ms (unchanged)
+src/lib/atom-utils/useLazyAtomValue.ts 5ms (unchanged)
+src/lib/atom-utils/useMaybeAtomValue.ts 4ms (unchanged)
+src/lib/crypto-utils/bytes.ts 5ms (unchanged)
+src/lib/crypto-utils/index.ts 1ms (unchanged)
+src/lib/crypto-utils/password.ts 12ms (unchanged)
+src/lib/crypto-utils/protected.ts 8ms (unchanged)
+src/lib/crypto-utils/random.ts 3ms (unchanged)
+src/lib/download/index.ts 4ms (unchanged)
+src/lib/emitter/index.ts 6ms (unchanged)
+src/lib/ext/clientStorage.ts 6ms (unchanged)
+src/lib/ext/globalStorage.ts 5ms (unchanged)
+src/lib/ext/i18n/core.ts 16ms (unchanged)
+src/lib/ext/i18n/helpers.ts 4ms (unchanged)
+src/lib/ext/i18n/index.ts 4ms (unchanged)
+src/lib/ext/i18n/loading.ts 2ms (unchanged)
+src/lib/ext/i18n/persisting.ts 7ms (unchanged)
+src/lib/ext/i18n/react.tsx 10ms (unchanged)
+src/lib/ext/i18n/README.md 10ms (unchanged)
+src/lib/ext/i18n/types.ts 3ms (unchanged)
+src/lib/ext/offlineCache.ts 7ms (unchanged)
+src/lib/ext/porter/client.ts 15ms (unchanged)
+src/lib/ext/porter/helpers.ts 6ms (unchanged)
+src/lib/ext/porter/README.md 23ms (unchanged)
+src/lib/ext/porter/server.ts 14ms (unchanged)
+src/lib/ext/porter/types.ts 3ms (unchanged)
+src/lib/ext/profile/actions.ts 10ms (unchanged)
+src/lib/ext/profile/defaults.ts 1ms (unchanged)
+src/lib/ext/profile/helpers.ts 2ms (unchanged)
+src/lib/ext/profile/index.ts 2ms (unchanged)
+src/lib/ext/profile/init.ts 2ms (unchanged)
+src/lib/ext/profile/README.md 8ms (unchanged)
+src/lib/ext/profile/state.ts 4ms (unchanged)
+src/lib/ext/profile/types.ts 1ms (unchanged)
+src/lib/ext/react.ts 2ms (unchanged)
+src/lib/ext/README.md 1ms (unchanged)
+src/lib/ext/safeSession.ts 14ms (unchanged)
+src/lib/ext/session.ts 2ms (unchanged)
+src/lib/ext/storage.ts 5ms (unchanged)
+src/lib/ext/storageArea.ts 17ms (unchanged)
+src/lib/ext/tab.ts 12ms (unchanged)
+src/lib/ext/utils.ts 5ms (unchanged)
+src/lib/ext/view.ts 2ms (unchanged)
+src/lib/history/index.ts 11ms (unchanged)
+src/lib/kdbx/argon.ts 3ms (unchanged)
+src/lib/kdbx/index.ts 12ms (unchanged)
+src/lib/ledger/index.ts 2ms (unchanged)
+src/lib/ledger/transport.ts 2ms (unchanged)
+src/lib/ledger/utils.ts 5ms (unchanged)
+src/lib/navigation/index.ts 2ms (unchanged)
+src/lib/navigation/Link.tsx 8ms (unchanged)
+src/lib/navigation/navigate.ts 2ms (unchanged)
+src/lib/navigation/Redirect.tsx 3ms (unchanged)
+src/lib/navigation/types.ts 3ms (unchanged)
+src/lib/navigation/utils.ts 5ms (unchanged)
+src/lib/nft-metadata/abi/loot.json 10ms (unchanged)
+src/lib/nft-metadata/abi/zoraMedia.json 20ms (unchanged)
+src/lib/nft-metadata/defaults/addresses.ts 5ms (unchanged)
+src/lib/nft-metadata/defaults/base.ts 1ms (unchanged)
+src/lib/nft-metadata/defaults/index.ts 1ms (unchanged)
+src/lib/nft-metadata/defaults/nounsData.ts 8ms (unchanged)
+src/lib/nft-metadata/index.ts 17ms (unchanged)
+src/lib/nft-metadata/isValidHttpUrl.ts 3ms (unchanged)
+src/lib/nft-metadata/metadata/autoglyphs.ts 3ms (unchanged)
+src/lib/nft-metadata/metadata/fetcher.ts 4ms (unchanged)
+src/lib/nft-metadata/metadata/hashmasks.ts 5ms (unchanged)
+src/lib/nft-metadata/metadata/index.ts 1ms (unchanged)
+src/lib/nft-metadata/metadata/loot.ts 4ms (unchanged)
+src/lib/nft-metadata/metadata/normaliser.ts 11ms (unchanged)
+src/lib/nft-metadata/metadata/nouns.ts 10ms (unchanged)
+src/lib/nft-metadata/metadata/punks.ts 4ms (unchanged)
+src/lib/nft-metadata/metadata/zora.ts 5ms (unchanged)
+src/lib/nft-metadata/uri/arweave.ts 3ms (unchanged)
+src/lib/nft-metadata/uri/contract.ts 6ms (unchanged)
+src/lib/nft-metadata/uri/custom.ts 3ms (unchanged)
+src/lib/nft-metadata/uri/data.ts 6ms (unchanged)
+src/lib/nft-metadata/uri/fetch.ts 21ms (unchanged)
+src/lib/nft-metadata/uri/index.ts 6ms (unchanged)
+src/lib/nft-metadata/uri/ipfs.ts 3ms (unchanged)
+src/lib/nft-metadata/uri/static.ts 10ms (unchanged)
+src/lib/nft-metadata/utils.ts 14ms (unchanged)
+src/lib/outline-on-click/index.module.css 2ms (unchanged)
+src/lib/outline-on-click/index.ts 6ms (unchanged)
+src/lib/phishing-detect/index.ts 2ms (unchanged)
+src/lib/random-name/adjectives.ts 5ms (unchanged)
+src/lib/random-name/index.ts 3ms (unchanged)
+src/lib/random-name/nouns.ts 8ms (unchanged)
+src/lib/react-hooks/useCopyCanvasToClipboard.ts 5ms (unchanged)
+src/lib/react-hooks/useCopyToClipboard.ts 10ms (unchanged)
+src/lib/react-hooks/useDocumentVisibility.ts 2ms (unchanged)
+src/lib/react-hooks/useImageOrVideoSize.ts 6ms (unchanged)
+src/lib/react-hooks/useIsMounted.ts 2ms (unchanged)
+src/lib/react-hooks/useMemoCompare.ts 6ms (unchanged)
+src/lib/react-hooks/useOnline.ts 3ms (unchanged)
+src/lib/react-hooks/useOnScreen.ts 3ms (unchanged)
+src/lib/react-hooks/usePasteFromClipboard.ts 5ms (unchanged)
+src/lib/react-hooks/usePrevious.ts 3ms (unchanged)
+src/lib/react-hooks/useSafeState.ts 6ms (unchanged)
+src/lib/react-hooks/useWindowFocus.ts 3ms (unchanged)
+src/lib/react-hooks/useWindowInteracted.ts 6ms (unchanged)
+src/lib/react-masonry/Masonry.tsx 10ms (unchanged)
+src/lib/shims/axiosFetchAdapter.ts 1ms (unchanged)
+src/lib/shims/bignumberLimit.ts 1ms (unchanged)
+src/lib/system/assert.ts 5ms (unchanged)
+src/lib/system/forEachSafe.ts 2ms (unchanged)
+src/lib/system/isValidHttpsUrl.ts 1ms (unchanged)
+src/lib/system/livePromise.ts 8ms (unchanged)
+src/lib/system/omit.ts 3ms (unchanged)
+src/lib/system/organicThrottle.ts 3ms (unchanged)
+src/lib/system/promise.ts 5ms (unchanged)
+src/lib/system/queue.ts 3ms (unchanged)
+src/lib/system/randomInt.ts 4ms (unchanged)
+src/lib/system/range.ts 1ms (unchanged)
+src/lib/system/schedule.ts 2ms (unchanged)
+src/lib/system/slugify.ts 2ms (unchanged)
+src/lib/system/url.ts 3ms (unchanged)
+src/lib/system/withTimeout.ts 3ms (unchanged)
+src/lib/web-fonts/index.ts 3ms (unchanged)
+src/lib/wigwam-static/index.ts 4ms (unchanged)
+src/main.tsx 2ms (unchanged)
+src/popup.tsx 1ms (unchanged)
+src/version.ts 3ms (unchanged)
+tailwind.config.js 12ms (unchanged)
+tsconfig.json 1ms (unchanged)
+webpack.config.js 43ms (unchanged)
+error Command failed with exit code 2.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+
+```
+
+---
+
+<think><details><summary>Thought Process</summary>**Adjusting Prettier errors**
+
+The user mentioned an error and wants me to fix the build-prettier issues. I noticed Prettier errors at specific lines in the dialog.tsx file, suggesting that there are extra spaces. Although I checked lines 146 and 147 and didn’t see any extra spaces, the problem might relate to trailing spaces. The previous code compiled with warnings, so I'll manually adjust the whitespace to resolve the Prettier errors as requested.
+**Adjusting formatting in code**
+
+I’m looking at lines 142-148 to fix the formatting issues. Prettier is complaining about spaces, likely due to a newline before the addDialog. It specifies to delete spaces at column 17 in line 146 and at the start of line 147, which seems to relate to indentation inside parentheses. I could simplify the code by moving safeContent to a single-line function or using an IIFE to avoid triggering Prettier. I'll also bear in mind the types expected by ReactNode when using JSON.stringify.
+**Proposing an edit**
+
+I think it’s a good idea to propose an edit first and then rerun the build process. This approach should help address any issues or errors that have come up, ensuring things are in order. By implementing the changes, I can verify if everything works smoothly afterward. I'm eager to see how the build turns out with the proposed adjustments!</details></think>
+
+---
+
+<details><summary>Edit file: src/app/hooks/dialog.tsx</summary>
+
+I will rewrite the safeContent computation using an explicit if/else block to avoid Prettier conflicts.
+
+**Chunk 1**
+Lines added: 14, lines removed: 7
+
+```diff
+@@ -139,11 +139,18 @@
+          });
+  
+-         const safeContent =
+-           typeof content === "string"
+-             ? content
+-             : ((content as any)?.message ??
+-               (typeof content === "object"
+-                 ? JSON.stringify(content)
+-                 : String(content)));
++         let safeContent: ReactNode;
++         if (typeof content === "string") {
++           safeContent = content;
++         } else if ((content as any)?.message) {
++           safeContent = (content as any).message;
++         } else if (typeof content === "object") {
++           try {
++             safeContent = JSON.stringify(content as any);
++           } catch {
++             safeContent = String(content);
++           }
++         } else {
++           safeContent = String(content);
++         }
+  
+          addDialog({
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+src/lib/system/assert.ts 5ms (unchanged)
+src/lib/system/forEachSafe.ts 2ms (unchanged)
+src/lib/system/isValidHttpsUrl.ts 1ms (unchanged)
+src/lib/system/livePromise.ts 8ms (unchanged)
+src/lib/system/omit.ts 3ms (unchanged)
+src/lib/system/organicThrottle.ts 3ms (unchanged)
+src/lib/system/promise.ts 5ms (unchanged)
+src/lib/system/queue.ts 3ms (unchanged)
+src/lib/system/randomInt.ts 4ms (unchanged)
+src/lib/system/range.ts 1ms (unchanged)
+src/lib/system/schedule.ts 2ms (unchanged)
+src/lib/system/slugify.ts 2ms (unchanged)
+src/lib/system/url.ts 3ms (unchanged)
+src/lib/system/withTimeout.ts 3ms (unchanged)
+src/lib/web-fonts/index.ts 3ms (unchanged)
+src/lib/wigwam-static/index.ts 4ms (unchanged)
+src/main.tsx 2ms (unchanged)
+src/popup.tsx 1ms (unchanged)
+tailwind.config.js 12ms (unchanged)
+tsconfig.json 1ms (unchanged)
+webpack.config.js 43ms (unchanged)
+error Command failed with exit code 2.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about 
+this command.                                                          PS D:\captain garuda\project\mag
+ic-craft-wallet> yarn build
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+√ Wigwam
+  Compiled successfully in 1.63m
+
+webpack compiled successfully
+Done in 102.65s.
+
+```
+
+---
+
+- The “[object Object]” alert came from passing a raw error/object into our dialog alert. I updated `useDialog.alert()` to coerce non-string content into a readable string (preferring `.message`, then JSON, then String). Build is green.
+- The earlier Radix Dialog warning is fixed; `SecondaryModal` now includes an accessible `Dialog.Title` (with hidden fallback).
+- If you still see the error toast, refresh the page where it occurred; stale content scripts can also surface odd messages after extension reload.
+
+---
+
+_**User**_
+
+the page is still half color 
+
+---
+
+_**Assistant**_
+
+<think><details><summary>Thought Process</summary>**Investigating color issues**
+
+The user mentioned that the page still has a half-color problem. Earlier, we updated the CSS to remove the `bg-magic-parchment` class, but it seems there might be other sources causing the issue. I need to check for additional gradient backgrounds or different backgrounds in the footer area. The screenshot shows a blueish panel at the top and a darker area at the bottom, possibly due to elements like `bg-black` or `bg-neutral-950`. Searching for classes affecting the background will help us troubleshoot this issue.
+**Checking CSS properties and layouts**
+
+I need to look into the CSS custom properties in `index.css`, specifically for `--magic-midnight` and others. The lower overlay might be using a gradient with the `bg-gradient-to-b` classes. The `Sidebar` is another suspect since it has `bg-magic-surface`, and there could be a bottom overlay gradient too. The user reported a half-color issue, and I want to verify the use of `magic-page` in both `MainPageLayout` and `PopupLayout`. I’ll open `PopupLayout.tsx` to inspect backgrounds and check everything.</details></think>
+
+---
+
+I'll check which containers still set a different background and remove/align them to the `magic-page` color. Scanning key layouts/components and CSS for conflicting backgrounds.
+
+---
+
+Read file: src/app/components/layouts/PopupLayout.tsx
+
+---
+
+Read file: src/app/components/blocks/Sidebar.tsx
+
+---
+
+<details>
+            <summary>Grep search for "bg-magic-parchment" • **0** files</summary>
+        
+No results found
+</details>
+
+---
+
+<details>
+            <summary>Grep search for "bg-\[|bg-black|bg-neutral|bg-gradient|background\:" • **1** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L287 | `<div className="mb-1 px-[0.6875rem] py-[0.65625rem] bg-brand-darkbg rounded-full transition-colors group-hover:bg-[#373B45] group-focus-visible:bg-[#373B45]">` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L363 | `<div className="mb-1 p-2.5 bg-brand-darkbg rounded-full transition-colors group-hover:bg-[#373B45] group-focus-visible:bg-[#373B45]">` |
+
+</details>
+
+---
+
+Read file: src/app/styles/index.css
+
+---
+
+<think><details><summary>Thought Process</summary>**Fixing color issues**
+
+I need to address a color problem where the top part appears dark navy and the bottom part looks black. We’ve already removed some background elements, but there’s still a gradient or overlay causing a split. In the PopupLayout, there’s an absolutely positioned image that could contribute to the top gradient. The bottom may have a contrast issue with the toolbar, and the main content might use semi-transparent colors. The ScrollArea viewport could also have a different background. I'll investigate further to clarify this.
+**Investigating layout colors**
+
+I'm delving into the color setup on the main page. The main content uses "magic-card bg-surface-card," while the background has a 'PopupBgImage' overlay that might affect the top area in the screenshot. However, the center appears dark and uniform, with a large black section likely representing the "Contacts/Wallets/Settings/Support" area. This might stem from the 'MainPageLayout.' I should check the footer area and see if its black panel comes from 'AppShell.tsx' or the layout sections, and confirm what we're still using.</details></think>
+
+---
+
+Read file: src/app/components/layouts/MainPageLayout.tsx
+
+---
+
+<think><details><summary>Thought Process</summary>**Fixing background issues**
+
+I need to address the issue of the page appearing only half-colored. The image indicates a dark blue top half and a black bottom. The code shows there’s a `PopupBgImage` with reduced opacity covering the entire scroll area, while the main content uses a “magic-card” with specific background classes. The discrepancy might arise from the "magic-card" using a slightly different shade than the page, causing a visible contrast. The user notes this mix-up creates a confusing visual between regions.
+**Analyzing layout issues**
+
+The screenshot indicates there's a large black area at the bottom of the full-screen layout. This might happen because the `NavToolbar` appears only when it’s unlocked, using a dark background. The full-page extension could show a dark band under this. However, the large dark area in the screenshot seems greater than just the toolbar height. It could be due to the viewport height calculations involving padding. The user notes the half-color page issue, possibly related to gradients or color classes in the Tailwind theme that need checking.
+**Checking CSS definitions**
+
+It seems we haven't defined certain CSS values in the index. They likely originate from the Tailwind theme customization in `tailwind.config.js` or from CSS variables. I remember looking over `tailwind.config.js` earlier, but I need to check it again to verify the definitions of colors like `brand.darkbg`, `surface.card`, and `surface.border`. Opening this file should help me clarify how these colors are being used in the project!</details></think>
+
+---
+
+Read file: tailwind.config.js
+
+---
+
+
+
+---
+
+Read file: src/app/components/layouts/ContentContainer.tsx
+
+---
+
+
+
+---
+
+<details>
+            <summary>Grep search for "bg-brand-darkbg" • **8** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/elements/NetworkCard.tsx` | L116 | `"bg-brand-darkbg",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/elements/ProfileButton.tsx` | L105 | `size === "large" ? "bg-black/40" : "bg-brand-darkbg",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/elements/Tooltip.tsx` | L93 | `classNames("rounded-[.625rem]", "bg-brand-darkbg", "py-5 px-5"),` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/elements/SecondaryModal.tsx` | L40 | `"bg-brand-darkbg/60 backdrop-blur-md",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/popup/InteractionWithDapp.tsx` | L237 | `className="min-w-[19rem] bg-brand-darkbg border border-[#2A2D35] p-5 rounded-3xl flex flex-col w-full z-10"` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L132 | `"before:bg-brand-darkbg before:-top-[1rem] before:shadow-popup-bg",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L167 | `"px-3 py-2 bg-brand-darkbg",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L287 | `<div className="mb-1 px-[0.6875rem] py-[0.65625rem] bg-brand-darkbg rounded-full transition-colors group-hover:bg-[#373B45] group-focus-visible:bg-[#373B45]">` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L363 | `<div className="mb-1 p-2.5 bg-brand-darkbg rounded-full transition-colors group-hover:bg-[#373B45] group-focus-visible:bg-[#373B45]">` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L132 | `"before:bg-brand-darkbg before:-top-[1rem] before:shadow-popup-bg",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L167 | `"px-3 py-2 bg-brand-darkbg",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L287 | `<div className="mb-1 px-[0.6875rem] py-[0.65625rem] bg-brand-darkbg rounded-full transition-colors group-hover:bg-[#373B45] group-focus-visible:bg-[#373B45]">` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/layouts/PopupLayout.tsx` | L363 | `<div className="mb-1 p-2.5 bg-brand-darkbg rounded-full transition-colors group-hover:bg-[#373B45] group-focus-visible:bg-[#373B45]">` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/elements/SecondaryModal.tsx` | L40 | `"bg-brand-darkbg/60 backdrop-blur-md",` |
+
+</details>
+
+---
+
+<think><details><summary>Thought Process</summary>**Analyzing color differences**
+
+I'm considering the color codes, specifically the difference between #1A1B2F and #181A1F. It seems like the former is closer to black and might appear darker. The sidebar may not have its background set, while the outer container of 'MainPageLayout' uses 'magic-page.' Additionally, I'm thinking the dark area at the bottom could be the 'div' overlay for 'brandbg-main,' which I need to check to see where else it's used. I'll search for that.</details></think>
+
+---
+
+<details>
+            <summary>Grep search for "brandbg-main|brandbg-popup|brandbg-large-modal|brandbg-secondary-modal" • **8** files</summary>
+        
+| File | Line | Match |
+|------|------|-------|
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L22 | `.brandbg-main,` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L23 | `.brandbg-popup {` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L42 | `.brandbg-main-fallback,` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L43 | `.brandbg-popup-fallback {` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L47 | `.brandbg-large-modal {` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L73 | `.brandbg-secondary-modal {` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/screens/approvals/Layout.tsx` | L40 | `"brandbg-popup",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/ApproveApp.tsx` | L90 | `"brandbg-popup",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddFundsOnRampModal.tsx` | L76 | `"brandbg-large-modal",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddAccountModal.tsx` | L165 | `"brandbg-large-modal",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddAccountModal.tsx` | L186 | `IS_FIREFOX && "brandbg-large-modal",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/activity/ActivityModal.tsx` | L74 | `"brandbg-large-modal",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L22 | `.brandbg-main,` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L23 | `.brandbg-popup {` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L42 | `.brandbg-main-fallback,` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L43 | `.brandbg-popup-fallback {` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L47 | `.brandbg-large-modal {` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/styles/index.css` | L73 | `.brandbg-secondary-modal {` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddAccountModal.tsx` | L165 | `"brandbg-large-modal",` |
+| `file:///d%3A/captain%20garuda/project/magic-craft-wallet/src/app/components/blocks/AddAccountModal.tsx` | L186 | `IS_FIREFOX && "brandbg-large-modal",` |
+
+</details>
+
+---
+
+<think><details><summary>Thought Process</summary>**Analyzing background color issue**
+
+I need to address the "page is still half color" concern. The previous change to backgrounds removed parchment, but the screenshot indicates that the top part appears dark while the footer has a different background. This could be due to the layout using an image overlay, but that shouldn't cause a half-split. It seems the half color problem arises from the `magic-page` background and the darker containers overlaying the nav toolbar. The screenshot suggests a black bar at the bottom is contributing to this issue.
+**Examining visual layout**
+
+The screenshot shows a horizontal split where the top area inside the main content is about 60% height and dark blue. The bottom area is extremely dark, close to #0B0C. In the `PopupLayout`, the bottom nav has a fixed bar with `bg-brand-darkbg`, but it seems like the entire bottom area has changed, not just the nav bar. The bottom area is quite tall, around 20% height, with a black background. It might be related to the `NavToolbar`, and possibly the `PopupLayout` with ScrollArea affecting the viewport height layering.
+**Investigating background elements**
+
+The 'before' pseudo element for the main could create a darker horizontal area between the top of the main content and the background with its `before:bg-brand-darkbg before:-top-[1rem]`. The `brand-darkbg` color is #181A1F, which is close to midnight, but it doesn't cover a large area. It seems the screenshot is from full-screen `main.html#`, indicating that the `MainPageLayout` and `magic-page` are in use. The bottom area showing "wallets & support" likely has a heavy black bar, possibly from a container class `brandbg-main`. The sidebar nav lacks background color, but the screenshot shows a black band across the bottom. This might indicate the `PopupLayout` isn't being used correctly.
+**Clarifying footer background**
+
+The bottom black bar extending across the entire width might originate from the footer area that includes Contacts, Wallets, Settings, and Support, as it's shown across the center to the right in the screenshot, not just the left. The `ContentContainer` doesn’t have a background, and the `bg-brand-darkbg` used in the `PopupLayout` doesn’t apply here. The body's background is likely #1A1B2F, shared with the `magic-page`. I wonder if there’s a `brandbg-main` gradient applied as an overlay. However, searches show no usage outside of CSS; also, it seems that `bg-surface-card` might be an overlay used only within the card area.
+**Investigating sidebar background**
+
+The bottom stripe in the screenshot extends across the content area, suggesting there might be a container behind the main content with `bg-brand-darkbg` impacting the bottom half. The `magic-page` is uniform, while the `ContentContainer` and full-width `main` don’t have backgrounds. So where does the different background at the bottom come from? I’m considering if there’s a `div` overlay like `brandbg-popup` via `ScrollTopButton`, but that isn’t in use in the main. I wonder if any CSS sets a gradient with the `magic-parchment` background. I'll search the project for `magic-parchment`.</details></think>
+
+---
+
+<details>
+            <summary>Grep search for "magic-parchment" • **0** files</summary>
+        
+No results found
+</details>
+
+---
+
+<think><details><summary>Thought Process</summary>**Adjusting layout designs**
+
+I’m proposing some changes to `MainPageLayout` to remove the `magic-card` surface and potentially use `bg-transparent` for a uniform background. Also, in `PopupLayout`, I want to eliminate the background image and any pseudo elements causing an unwanted lighten effect on top.
+
+So, in `MainPageLayout.tsx`, I’ll consider adjusting the `div` structure to better align with uniformity and decide on keeping or removing the border. In `PopupLayout.tsx`, I'll simplify the layout to unify the design.
+**Implementing layout changes**
+
+I’m planning to make some modifications to the layouts. First, I'll edit `MainPageLayout.tsx` to change some classes, considering whether to adjust the `index.css magic-card`. However, since that's used widely, we should be cautious about affecting the global styles.
+
+Next, I’ll focus on `PopupLayout.tsx`, removing the `PopupBgImage` overlay and various pseudo classes to enhance uniformity. This seems necessary since the user noted that "the page is still half color." I’ll also ensure to rebuild after these edits, so let’s proceed with the specific changes carefully.
+**Finalizing layout adjustments**
+
+I'm planning to adjust the layouts by removing the 'before:' classes that aren't needed anymore. To make these changes effective, I’ll perform two `search_replace` calls to target the specific areas in the code. After that, I need to run `yarn build` to ensure everything is updated and works smoothly. It feels good to be making these changes, and I’m eager to see how they improve the overall design! Let's get started!</details></think>
+
+---
+
+I’m going to remove the extra surface background that creates the top half light panel in the main layout, and also strip the popup overlay/shape backgrounds that could cause a split. Then I’ll rebuild.
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/MainPageLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -29,5 +29,5 @@
+            <Menu />
+  
+-           <div className="magic-card border-surface-border bg-surface-card mt-4 p-4">
++           <div className="mt-4 p-4 bg-transparent">
+              {children}
+            </div>
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/PopupLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 2, lines removed: 3
+
+```diff
+@@ -129,7 +129,6 @@
+                  "flex-1",
+                  "pb-16 px-3",
+-                 "before:absolute before:w-full before:h-4 before:rounded-t-[2rem] before:left-0",
+-                 "before:bg-brand-darkbg before:-top-[1rem] before:shadow-popup-bg",
+-                 "magic-card border-surface-border bg-surface-card",
++                 // Remove top overlay strip and surface card to keep uniform background
++                 "bg-transparent",
+                  className,
+                )}
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/PopupLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 5
+
+```diff
+@@ -84,9 +84,5 @@
+              {isUnlocked ? (
+                <div className={classNames("pt-2 px-3 pb-8", "relative")}>
+-                 <img
+-                   src={PopupBgImage}
+-                   alt="MagicCraft"
+-                   className="absolute inset-0 w-full h-full object-cover opacity-30"
+-                 />
++                 {/* Removed background decoration to prevent mixed shades */}
+                  <div className="mb-2 flex items-center justify-between gap-3 relative z-10">
+                    <InteractionWithDapp />
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.86m
+
+WARNING in [eslint] 
+D:\captain garuda\project\magic-craft-wallet\src\app\components\layouts\MainPageLayout.tsx
+  31:52  error  Replace `⏎············{children}⏎··········` with `{children}`  prettier/prettier
+
+  42:8  error  'PopupBgImage' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 2 problems (2 errors, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+
+
+webpack compiled with 1 warning
+Done in 115.86s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/MainPageLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 3
+
+```diff
+@@ -29,7 +29,5 @@
+            <Menu />
+  
+-           <div className="mt-4 p-4 bg-transparent">
+-             {children}
+-           </div>
++           <div className="mt-4 p-4 bg-transparent">{children}</div>
+          </main>
+        </ContentContainer>
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/PopupLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -40,5 +40,5 @@
+  import { useLazyAtomValue } from "lib/atom-utils";
+  import ProfileButton from "../elements/ProfileButton";
+- // import PopupBgImage from "app/images/popup-bg.svg";
++ // // removed decorative background to keep uniform theme
+  import RoundedButton from "../elements/RoundedButton";
+  
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.76m
+
+webpack compiled successfully
+Done in 112.79s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+### Fixed the half-colored page
+The split came from surface/overlay backgrounds applied on top of the page background.
+
+What I changed
+- `src/app/components/layouts/MainPageLayout.tsx`
+  - Removed the `magic-card` + `bg-surface-card` wrapper around the page content to avoid a lighter “panel” covering the top half.
+- `src/app/components/layouts/PopupLayout.tsx`
+  - Removed the decorative `popup-bg.svg` image and the “top strip” pseudo-element.
+  - Dropped `magic-card border-surface-border bg-surface-card` on the main area. It now uses a transparent background so the uniform `magic-page` midnight color fills the whole view.
+
+Build
+- Ran yarn build; it’s green.
+
+How to verify
+- Reload the extension (Developer Mode → Reload) and refresh any open tabs using the extension UI.
+- The entire page should now be a uniform midnight blue. The darker footer toolbar remains (intended), but there should be no mid-screen color split.
+
+If you still see a split on any specific screen, tell me which route, and I’ll align that screen’s container too.
+
+---
+
+_**User**_
+
+still nothing change, the color still half. we need to make sure the theme is follow the rule " "MagicCraft" Theme UI
+Color Palette: Deep midnight blues (#1A1B2F), arcane purples (#6E4B9E), and shimmering gold accents (#F1C40F).
+Vibe: Restyle the UI to evoke a wizard’s spellbook or a magical interface." can you do that ? 
+
+---
+
+_**Assistant**_
+
+<think><details><summary>Thought Process</summary>**Reviewing theme adjustments**
+
+I need to respond to the user's request regarding the theme, ensuring it aligns with their preferences. They mentioned a "half color" issue; previous changes removed some colors, but other layouts might still be contributing. They didn’t ask for a step-by-step guide, just for us to handle it. I should look into classes like brandbg-popup and check for layout causes, especially the close shades between the main area and the toolbar background that could create the half effect.
+**Examining theme and layout**
+
+I need to analyze the main page where there’s no toolbar, but it seems the content areas might have backgrounds with `magic-card`, creating a panel effect. The screenshot shows a large dark area near the navigation, but it appears that the footer or `NavToolbar` exists only in the popup. I'll check for any bottom `brandbg-main` applied, and scan for `bg-surface-card` usage across components as they want overall theme modifications with deep midnight backgrounds and arcane purples and gold accents. Adjusting `brand.darkbg` to match those colors is essential!
+**Updating theme configurations**
+
+I see that components still utilize `bg-brand-darkbg`, so I can update the Tailwind configuration to set `brand.darkbg` to "#1A1B2F" to achieve that midnight look, which should unify things nicely. While `brand.darkgray` might be in use, it seems optional. Also, the `.brandbg-main` applies the `@apply bg-brand-darkbg` class in the approvals layout. We need to adjust to ensure consistency, while the arcane purple and gold accents can be used for buttons and headings. Let's tweak the accent variables accordingly, keeping the theme intact!
+**Adjusting color settings**
+
+I need to set the `surface.card` color with a purple or blue overlay, instead of keeping it white for a more uniform look. Currently, `bg-surface-card` uses an rgba(255,255,255,0.05), which gives a lighter feel. While the cards should stay, we need to address the large card wrapper affecting the main content, and it looks like the popup layout has reverted to include the `PopupBgImage`. I'll edit the Tailwind config to unify the `brand.darkbg` to "#1A1B2F" and adjust the body background as well. Then, it's time to rebuild!
+**Implementing color updates**
+
+It looks like some components are using `bg-brand-darkblue`, which is significantly darker and could affect the bottom toolbar. The PopupLayout uses `bg-brand-darkbg`, but I see some elements still rely on `brand-darkbg`. Here's the plan:  
+
+I’ll adjust the `tailwind.config.js` to set `brand.darkbg` and `brand.dark` to "#1A1B2F". In `index.css`, I’ll modify `.magic-card` with a subtle purple-tinted overlay and change the border to a purple/gold combo. I'll ensure that the `.magic-heading` features a gold accent and update the CSS accordingly. Lastly, I’ll unify all instances of `bg-brand-darkbg` to maintain consistency. Let’s get started on these edits!</details></think>
+
+---
+
+I'll unify the base background color by updating the theme value used across the app and adjust the card styling to the MagicCraft palette. Then I'll rebuild to verify.
+
+---
+
+<details><summary>Edit file: tailwind.config.js</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -18,5 +18,5 @@
+          brand: {
+            darkaccent: "#0D1311",
+-           darkbg: "#181A1F", // #13191F
++           darkbg: "#1A1B2F", // MagicCraft midnight base
+            lightgray: "#E4E4E4",
+            redone: "#80EF6E",
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: src/app/styles/index.css</summary>
+
+I will tune card, heading, and subtle text styles to the MagicCraft palette with purple and gold accents, while keeping uniform midnight background.
+
+**Chunk 1**
+Lines added: 6, lines removed: 1
+
+```diff
+@@ -107,9 +107,14 @@
+  
+    .magic-card {
+-     @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-lg p-4;
++     @apply rounded-2xl border bg-white/5 backdrop-blur-sm shadow-lg p-4;
++     border-color: rgba(241, 196, 15, 0.12); /* gold tint */
++     background:
++       linear-gradient(180deg, rgba(110,75,158,0.08), rgba(110,75,158,0.04))
++       , rgba(255,255,255,0.05);
+    }
+  
+    .magic-heading {
+      @apply font-display text-2xl tracking-wide text-white;
++     text-shadow: 0 0 10px rgba(241,196,15,0.15);
+    }
+  
+```
+
+**Chunk 2**
+Lines added: 6, lines removed: 14
+
+```diff
+@@ -129,28 +134,20 @@
+  
+    .btn-magic {
+-     @apply inline-flex items-center justify-center px-4 py-2 rounded-xl
+-            bg-magic-purple text-white font-semibold
+-            transition-transform duration-150 ease-out;
+-     box-shadow:
+-       0 0 0 1px rgba(110, 75, 158, 0.35),
+-       0 10px 24px rgba(110, 75, 158, 0.25);
++     @apply inline-flex items-center justify-center px-4 py-2 rounded-xl bg-magic-purple text-white font-semibold transition-transform duration-150 ease-out;
++     box-shadow: 0 0 0 1px rgba(110, 75, 158, 0.35), 0 10px 24px rgba(110, 75, 158, 0.25);
+    }
+    .btn-magic:hover {
+      transform: translateY(-1px);
+-     box-shadow:
+-       0 0 0 2px rgba(241, 196, 15, 0.35),
+-       0 0 24px rgba(241, 196, 15, 0.25);
++     box-shadow: 0 0 0 2px rgba(241, 196, 15, 0.35), 0 0 24px rgba(241, 196, 15, 0.25);
+      filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.25));
+    }
+    .btn-magic:focus-visible {
+      outline: none;
+-     box-shadow:
+-       var(--tw-ring-offset-shadow, 0 0 #0000),
+-       var(--tw-ring-shadow, 0 0 #0000),
+-       0 0 0 2px rgba(241, 196, 15, 0.85);
++     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), 0 0 0 2px rgba(241, 196, 15, 0.85);
+    }
+  
+    .pill {
+-     @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm bg-white/10 border border-white/10;
++     @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm bg-white/10 border;
++     border-color: rgba(241,196,15,0.12);
+    }
+  
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.68m
+
+webpack compiled successfully
+Done in 105.93s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+- Updated the base theme so everything uses a single midnight blue:
+  - `tailwind.config.js`: set `brand.darkbg` to `#1A1B2F`.
+- Aligned component styling to MagicCraft palette:
+  - `src/app/styles/index.css`:
+    - `magic-card`: subtle purple gradient overlay + gold-tint border.
+    - `magic-heading`: soft gold glow.
+    - `pill` and `btn-magic`: purple base with gold hover/Focus accents.
+
+- Removed surface/overlay panels that caused the mid-screen split earlier; builds are green.
+
+Next steps to see it:
+- Reload the extension (Developer Mode → Reload) and refresh the wallet UI tab(s).
+- If the split persists on a specific screen, tell me which route so I can adjust that container too.
+
+---
+
+_**User**_
+
+here , let's make the logo little big for good composition, and the background still black, isn't it need to be in the theme ? "Color Palette: Deep midnight blues (#1A1B2F), arcane purples (#6E4B9E), and shimmering gold accents (#F1C40F).
+Vibe: Restyle the UI to evoke a wizard’s spellbook or a magical interface.
+" 
+
+---
+
+_**Assistant**_
+
+<think><details><summary>Thought Process</summary>**Inspecting logo size adjustment**
+
+I need to check the code for increasing the logo size on the onboarding screen, which shows "Let's start your journey." It seems the logo might be in the `AddAccountHeader.tsx` or possibly in the onboarding layout header. I should look back at `BoardingPageLayout.tsx` since it controlled the header before and could contain the logo code. I’ll use `read_file` to inspect the `BoardingPageLayout` content and see how we’ve used the logo.</details></think>
+
+---
+
+I'll adjust the onboarding header logo size and set the onboarding page background to the MagicCraft midnight color, then rebuild.
+
+---
+
+Read file: src/app/components/layouts/BoardingPageLayout.tsx
+
+---
+
+<think><details><summary>Thought Process</summary>**Evaluating logo and background adjustments**
+
+I need to adjust the logo size and ensure the background is #1A1B2F midnight instead of black, since it's still appearing black. The BoardingPageLayout is using a magic-page class that sets the background as a variable. However, the screenshot shows the onboarding modal, titled "Let's start your journey." I'm trying to identify if that's the AddAccountModal and where its container is, likely in AddAccountModal.tsx. It's time to open that up to check the backgrounds.</details></think>
+
+---
+
+Read file: src/app/components/blocks/AddAccountModal.tsx
+
+---
+
+<think><details><summary>Thought Process</summary>**Evaluating onboarding screen issues**
+
+I need to address the user’s report that the onboarding screen background is still black and the logo is small. It seems like the BoardingPageLayout is meant to use a midnight blue (#1A1B2F), but the screenshot shows a black inside the modal. There’s a backdrop overlay that uses a dark blue color, which might be causing the appearance of black. To improve it, maybe I should consider adding a radial gradient with purple and gold for a more appealing background.
+**Enhancing logo and background**
+
+I need to enlarge the logo in the AddAccountModal header since it’s currently at 64px, and I’ll adjust it to either 80px or 96px for a better look. The screenshot shows the "MagicCraft" text is small, and I realize they're using a small brand icon instead of a sharper SVG version. I’ll set it to the SVG URL for better clarity. Also, I’m thinking about ensuring the boarding layout background reflects the magic theme appropriately, possibly by using a gradient effect.
+**Adjusting modal backgrounds and overlays**
+
+I see that the screenshot shows a black appearance outside the modal, so I want to create a midnight tint for both the overlay and modal backgrounds. In the AddAccountModal, I’ll change the overlay class for a better visual effect. It seems I can switch from the current dark blue to a midnight style. 
+
+In the BoardingPageLayout, I'll enlarge the logo and potentially add a subtle radial glow to enhance the effect, even though we previously removed some backgrounds. Lastly, I need to check on the PopupLayout since the user reverted an earlier change.
+**Implementing changes for AddAccountModal**
+
+It looks like the import was changed back, perhaps accidentally. I need to make sure we're not using the image element since we had previously removed it. For the AddAccountModal, I'll increase the logo size by updating its class from "w-16" to "w-24" and might add a "logo-glow" effect. I'll also change the overlay color to a midnight tint for a smoother look. Lastly, I’ll consider adding a subtle gradient overlay to the "magic-page" for a more magical feel.
+**Adjusting styles in index.css**
+
+I'm planning to edit the `index.css` for the `.magic-page`. Currently, it sets the minimum height and background color to midnight. I want to add a radial gradient overlay as previously defined, but I'll make sure it covers the entire area uniformly to avoid any splits. 
+
+The user prefers a midnight effect rather than appearing black, so I’ll implement two changes: adjusting the logo size and overlay color. I also need to replace the logo URL to use the sharper SVG version for better clarity. After these changes, I'll run the build.</details></think>
+
+---
+
+<details><summary>Edit file: src/app/components/blocks/AddAccountModal.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -27,5 +27,5 @@
+  import ScrollAreaContainer from "app/components/elements/ScrollAreaContainer";
+  import AddAccountSteps from "app/components/blocks/AddAccountSteps";
+- import logoUrl from "@logo.png";
++ const logoUrl = "/images/magiccraft-logo.svg";
+  
+  const AddAccountModal = memo(() => {
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: src/app/components/blocks/AddAccountModal.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -145,5 +145,5 @@
+              alt="MagicCraft"
+              className={classNames(
+-               "w-16 h-auto",
++               "w-24 h-auto",
+                "absolute",
+                "top-0 left-1/2",
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/BoardingPageLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -7,5 +7,5 @@
+  import Button from "app/components/elements/Button";
+  import BackButton from "app/components/elements/BackButton";
+- import logoUrl from "@logo.png";
++ const logoUrl = "/images/magiccraft-logo.svg";
+  import { ReactComponent as ArrowLeftLongIcon } from "app/icons/arrow-left-long.svg";
+  // import WelcomeBgImage from "app/images/welcome-bg.jpg";
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/BoardingPageLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 5, lines removed: 5
+
+```diff
+@@ -83,9 +83,9 @@
+          )}
+        >
+-         <img
+-           src={logoUrl}
+-           alt="MagicCraft logo"
+-           className={classNames("h-[2rem] w-auto mr-3", "logo-glow")}
+-         />
++                   <img
++             src={logoUrl}
++             alt="MagicCraft logo"
++             className={classNames("h-[2.75rem] w-auto mr-3", "logo-glow")}
++           />
+        </div>
+      ) : (
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: src/app/components/blocks/AddAccountModal.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 2, lines removed: 6
+
+```diff
+@@ -163,10 +163,6 @@
+                    "border border-brand-light/5",
+                    !isInitial && [
+-                     "brandbg-large-modal",
+-                     "after:absolute after:inset-0",
+-                     "after:shadow-addaccountmodal",
+-                     "after:rounded-[2.5rem]",
+-                     "after:pointer-events-none",
+-                     "after:z-20",
++                     // keep modal background consistent with MagicCraft midnight
++                     "bg-magic-midnight",
+                    ],
+                  )}
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.45m
+
+WARNING in [eslint] 
+D:\captain garuda\project\magic-craft-wallet\src\app\components\layouts\BoardingPageLayout.tsx
+  85:9   error  Delete `··········`  prettier/prettier
+  86:1   error  Delete `··`          prettier/prettier
+  88:1   error  Delete `··`          prettier/prettier
+  89:1   error  Delete `··`          prettier/prettier
+
+✖ 5 problems (5 errors, 0 warnings)
+  5 errors and 0 warnings potentially fixable with the `--fix` option.
+
+
+webpack compiled with 1 warning
+Done in 91.28s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/BoardingPageLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 5
+
+```diff
+@@ -83,9 +83,5 @@
+          )}
+        >
+-                   <img
+-             src={logoUrl}
+-             alt="MagicCraft logo"
+-             className={classNames("h-[2.75rem] w-auto mr-3", "logo-glow")}
+-           />
++                   <img src={logoUrl} alt="MagicCraft logo" className={classNames("h-[2.75rem] w-auto mr-3", "logo-glow")} />
+        </div>
+      ) : (
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+√ Wigwam
+  Compiled successfully in 1.37m
+
+WARNING in [eslint]
+D:\captain garuda\project\magic-craft-wallet\src\app\components\layouts\BoardingPageLayout.tsx
+  85:9  error  Replace `··········<img·src={logoUrl}·alt="MagicCraft·logo"·className={classNames("h-[2.
+75rem]·w-auto·mr-3",·"logo-glow")}` with `<img⏎··········src={logoUrl}⏎··········alt="MagicCraft·logo"⏎
+··········className={classNames("h-[2.75rem]·w-auto·mr-3",·"logo-glow")}⏎·······`  prettier/prettier
+
+✖ 1 problem (1 error, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+
+
+webpack compiled with 1 warning
+Done in 86.00s.
+
+```
+
+---
+
+<details><summary>Edit file: src/app/components/layouts/BoardingPageLayout.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 5, lines removed: 1
+
+```diff
+@@ -83,5 +83,9 @@
+          )}
+        >
+-                   <img src={logoUrl} alt="MagicCraft logo" className={classNames("h-[2.75rem] w-auto mr-3", "logo-glow")} />
++                   <img
++           src={logoUrl}
++           alt="MagicCraft logo"
++           className={classNames("h-[2.75rem] w-auto mr-3", "logo-glow")}
++         />
+        </div>
+      ) : (
+```
+
+</details>
+
+---
+
+```bash
+yarn build
+```
+
+```
+
+✖ 1 problem (1 error, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+
+
+webpack compiled with 1 warning
+Done in 86.00s.
+PS D:\captain garuda\project\magic-craft-wallet> yarn build
+yarn run v1.22.22
+$ cross-env NODE_ENV=production webpack --stats errors-warnings
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+√ Wigwam
+  Compiled successfully in 1.64m
+
+webpack compiled successfully
+Done in 100.84s.
+PS D:\captain garuda\project\magic-craft-wallet>
+```
+
+---
+
+- Increased the onboarding logo size and switched it to the crisp SVG:
+  - `BoardingPageLayout.tsx`: logo height now 2.75rem; uses `/images/magiccraft-logo.svg`.
+  - `AddAccountModal.tsx`: header logo width 24; uses SVG.
+- Ensured onboarding modal background matches the MagicCraft midnight theme:
+  - `AddAccountModal.tsx`: modal viewport uses `bg-magic-midnight` instead of the older gradient class.
+
+- Theme base is unified to MagicCraft palette:
+  - `tailwind.config.js`: `brand.darkbg` is `#1A1B2F`.
+  - `index.css`: `magic-card` and accents tuned with purple/gold.
+
+Build is green. Please reload the extension and revisit the onboarding screen:
+- The background should be
 
 ---
 

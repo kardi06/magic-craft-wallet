@@ -6,7 +6,7 @@ import { pageAtom } from "app/atoms";
 import ContentContainer from "app/components/layouts/ContentContainer";
 import Button from "app/components/elements/Button";
 import BackButton from "app/components/elements/BackButton";
-import logoUrl from "@logo.png";
+const logoUrl = "/images/logo-icon.png";
 import { ReactComponent as ArrowLeftLongIcon } from "app/icons/arrow-left-long.svg";
 // import WelcomeBgImage from "app/images/welcome-bg.jpg";
 // import WelcomeTreeLeftImage from "app/images/welcome-tree-left.png";
@@ -85,7 +85,7 @@ const BoardingPageLayout: FC<PropsWithChildren<BoardingPageLayoutProps>> = ({
         <img
           src={logoUrl}
           alt="MagicCraft logo"
-          className={classNames("h-[2rem] w-auto mr-3", "logo-glow")}
+          className={classNames("h-[2.75rem] w-auto mr-3", "logo-glow")}
         />
       </div>
     ) : (
