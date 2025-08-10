@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button theme=magic renders with magic classes 1`] = `"<button class="relative overflow-hidden py-3 px-4 min-w-[10rem] text-brand-light text-base font-bold btn-magic !min-w-0 !py-2 !px-3 rounded-xl text-white rounded-[.375rem] inline-flex justify-center transition focus-visible:outline-none select-none" type="button"><span class="inline-flex items-center transition transform duration-300">Action</span></button>"`;

@@ -20,7 +20,7 @@ export default function AppShell({
           <img
             src="/icons/magiccraft-48.png"
             alt=""
-            className="h-6 w-6 rounded-md"
+            className="h-6 w-6 rounded-md ring-1 ring-white/10"
           />
           <h1 className="magic-heading">
             Magic<span className="gold">Craft</span>
@@ -35,7 +35,7 @@ export default function AppShell({
 
       {/* content */}
       <main className="flex-1 px-4 pb-4">
-        <section className="magic-card">{children}</section>
+        <section className="magic-card border-surface-border bg-surface-card">{children}</section>
       </main>
     </div>
   );

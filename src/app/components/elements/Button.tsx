@@ -1,4 +1,4 @@
-import {
+import React, {
   ForwardedRef,
   forwardRef,
   ReactNode,
@@ -19,7 +19,8 @@ export type ButtonTheme =
   | "secondary"
   | "tertiary"
   | "clean"
-  | "primary-reverse";
+  | "primary-reverse"
+  | "magic";
 
 export type ButtonProps = {
   theme?: ButtonTheme;
@@ -140,6 +141,8 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
       theme === "primary" && "bg-brand-redone text-brand-darkaccent bg-opacity",
       theme === "primary-reverse" &&
         "bg-brand-redone text-brand-darkaccent bg-opacity shadow-buttonaccent",
+      theme === "magic" &&
+        "btn-magic !min-w-0 !py-2 !px-3 rounded-xl text-white",
       theme === "secondary" && "bg-brand-main bg-opacity-10",
       "rounded-[.375rem]",
       "inline-flex justify-center",
@@ -155,6 +158,10 @@ const Button = forwardRef<HTMLElement, ButtonProps>(
           "hover:bg-opacity-90 hover:shadow-none",
           plainFocus && "focus:bg-opacity-90 focus:shadow-none",
           "focus-visible:bg-opacity-90 focus-visible:shadow-none",
+        ],
+      theme === "magic" &&
+        !disabled && [
+          "focus-visible:outline-none",
         ],
       (theme === "primary" || theme === "primary-reverse") &&
         !disabled &&

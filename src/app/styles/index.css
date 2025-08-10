@@ -1,5 +1,11 @@
 @import "inter-ui/inter-variable.css";
 
+:root {
+  --magic-midnight: #1A1B2F;
+  --magic-purple: #6E4B9E;
+  --magic-gold: #F1C40F;
+}
+
 * {
   font-variant-ligatures: none;
 }
@@ -86,6 +92,8 @@ a {
 @layer base {
   html, body {
     @apply bg-magic-midnight text-white font-body;
+    background-color: var(--magic-midnight);
+    color: white;
   }
 }
 
@@ -93,6 +101,7 @@ a {
 @layer components {
   .magic-page {
     @apply min-h-screen bg-magic-midnight bg-magic-parchment;
+    background-color: var(--magic-midnight);
     background-blend-mode: screen;
   }
 
@@ -117,6 +126,7 @@ a {
   .btn-magic:hover {
     transform: translateY(-1px);
     box-shadow: 0 0 0 2px rgba(241,196,15,0.35), 0 0 24px rgba(241,196,15,0.25);
+    filter: drop-shadow(0 0 8px rgba(241,196,15,0.25));
   }
   .btn-magic:focus-visible {
     outline: none;

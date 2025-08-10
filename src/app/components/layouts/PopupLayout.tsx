@@ -67,7 +67,7 @@ const PopupLayout: FC<PopupLayoutProps> = ({ className, children }) => {
           className={classNames(
             isPopupWindow() ? "w-full" : "w-screen",
             "h-screen",
-            "flex flex-col items-stretch",
+            "flex flex-col items-stretch magic-page bg-magic-parchment",
             bootAnimationDisplayed && "animate-bootfadeinfast",
           )}
           onAnimationEnd={
@@ -86,7 +86,7 @@ const PopupLayout: FC<PopupLayoutProps> = ({ className, children }) => {
                 <img
                   src={PopupBgImage}
                   alt="Wigwam"
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="absolute inset-0 w-full h-full object-cover opacity-30"
                 />
                 <div className="mb-2 flex items-center justify-between gap-3 relative z-10">
                   <InteractionWithDapp />
@@ -130,6 +130,7 @@ const PopupLayout: FC<PopupLayoutProps> = ({ className, children }) => {
                 "pb-16 px-3",
                 "before:absolute before:w-full before:h-4 before:rounded-t-[2rem] before:left-0",
                 "before:bg-brand-darkbg before:-top-[1rem] before:shadow-popup-bg",
+                "magic-card border-surface-border bg-surface-card",
                 className,
               )}
             >

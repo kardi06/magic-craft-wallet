@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from "react";
+import React, { FC, PropsWithChildren } from "react";
 import classNames from "clsx";
 
 import ContentContainer from "app/components/layouts/ContentContainer";
@@ -16,7 +16,7 @@ const MainPageLayout: FC<PropsWithChildren> = ({ children }) => (
   <PreloadBaseAndSync>
     <div
       className={classNames(
-        "h-screen flex flex-col",
+        "h-screen flex flex-col magic-page bg-magic-parchment",
         bootAnimationDisplayed && "animate-bootfadein",
       )}
       onAnimationEnd={
@@ -27,11 +27,17 @@ const MainPageLayout: FC<PropsWithChildren> = ({ children }) => (
         <Sidebar />
 
         <main
-          className={classNames("w-full min-w-0 pl-6", "grow", "flex flex-col")}
+          className={classNames(
+            "w-full min-w-0 pl-6",
+            "grow",
+            "flex flex-col",
+          )}
         >
           <Menu />
 
-          {children}
+          <div className="magic-card border-surface-border bg-surface-card mt-4 p-4">
+            {children}
+          </div>
         </main>
       </ContentContainer>
     </div>

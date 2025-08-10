@@ -7,9 +7,13 @@ module.exports = {
     extend: {
       colors: {
         magic: {
-          midnight: "#1A1B2F",   // bg base
-          purple:   "#6E4B9E",   // accents
-          gold:     "#F1C40F",   // highlights
+          midnight: "#1A1B2F", // bg base
+          purple: "#6E4B9E", // accents
+          gold: "#F1C40F", // highlights
+        },
+        surface: {
+          card: "rgba(255,255,255,0.05)",
+          border: "rgba(255,255,255,0.10)",
         },
         brand: {
           darkaccent: "#0D1311",

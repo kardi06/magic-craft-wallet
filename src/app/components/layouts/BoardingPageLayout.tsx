@@ -36,6 +36,7 @@ const BoardingPageLayout: FC<PropsWithChildren<BoardingPageLayoutProps>> = ({
       "relative",
       "min-h-screen flex flex-col",
       "bg-center bg-cover",
+      "magic-page bg-magic-parchment",
     )}
     style={{
       backgroundImage: /*isWelcome ? `url('${WelcomeBgImage}')` : */ "none",
@@ -117,6 +118,7 @@ const BoardingPageLayout: FC<PropsWithChildren<BoardingPageLayoutProps>> = ({
             "h-[54.5%] w-auto",
           )}
         /> */}
+        {/* themed decorations would go here */}
       </>
     )}
   </div>
