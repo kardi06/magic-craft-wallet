@@ -13,6 +13,7 @@ import { ReactComponent as ImportIcon } from "app/icons/addaccount-import.svg";
 import { ReactComponent as LedgerIcon } from "app/icons/addaccount-ledger.svg";
 import { ReactComponent as ChevronRightIcon } from "app/icons/chevron-right.svg";
 import { ReactComponent as SuccessGreen } from "app/icons/success-green.svg";
+import { ReactComponent as OpenedEyeIcon } from "app/icons/opened-eye.svg";
 
 import ConfirmAccounts from "./ConfirmAccounts";
 import LedgerScanModal from "./shared/LedgerScanModal";
@@ -70,6 +71,15 @@ const ChooseAddAccountWay = memo<{ onLedgerOpened?: () => void }>(
             action: () => {
               stateRef.current.addSeedPhraseType = "import";
               navigateToStep(AddAccountStep.ImportSeedPhrase);
+            },
+          },
+          {
+            title: "Watch only",
+            description: "Track balance and activity by address",
+            Icon: OpenedEyeIcon,
+            action: () => {
+              stateRef.current.addSeedPhraseType = "watch";
+              navigateToStep(AddAccountStep.AddWatchOnlyAccount);
             },
           },
           {

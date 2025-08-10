@@ -348,18 +348,14 @@ const ConfirmAccounts = memo<{
                 onLedgerOpened?.();
               },
             },
-            ...(process.env.NODE_ENV === "development"
-              ? [
-                  "space" as const,
-                  {
-                    Icon: OpenedEyeIcon,
-                    children: "Watch only",
-                    action: () => {
-                      navigateToStep(AddAccountStep.AddWatchOnlyAccount);
-                    },
-                  },
-                ]
-              : []),
+            "space" as const,
+            {
+              Icon: OpenedEyeIcon,
+              children: "Watch only",
+              action: () => {
+                navigateToStep(AddAccountStep.AddWatchOnlyAccount);
+              },
+            },
           ].map((item, i) => {
             if (item === "space") {
               return <div key={i} className="flex-1" />;
