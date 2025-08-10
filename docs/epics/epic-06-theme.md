@@ -8,15 +8,19 @@
 - Risks: Time constraints limit polish
 
 ## Objective
+
 Apply consistent theme styling per PRD.
 
 ## Scope
+
 - PRD: [Theme](../prd/04-features.md)
 - Architecture: [Overview](../architecture/01-overview.md)
 
 ## Acceptance Criteria
+
 - Color palette applied
 - Spellbook visual touches present on main screens
 
 ## Implementation Notes
-- Tailwind theme tokens; basic glow effects 
+
+- Tailwind theme tokens; basic glow effects

@@ -11,7 +11,11 @@ const RecentTransactions: FC = memo(() => {
   const { currentAccount } = useAccounts();
 
   const activities = useLazyAtomValue(
-    getActivitiesAtom({ accountAddress: currentAccount.address, chainId, limit: 5 }),
+    getActivitiesAtom({
+      accountAddress: currentAccount.address,
+      chainId,
+      limit: 5,
+    }),
     "off",
   );
 
@@ -31,4 +35,4 @@ const RecentTransactions: FC = memo(() => {
   );
 });
 
-export default RecentTransactions; 
+export default RecentTransactions;

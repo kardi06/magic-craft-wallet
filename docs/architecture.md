@@ -1,8 +1,9 @@
 """# MagicCraft Wallet - Fullstack Architecture
 
 ## 1. Overview
-MagicCraft Wallet is a browser extension cryptocurrency wallet built on the Wigwam open-source foundation. 
-It supports Ethereum, Binance Smart Chain (BSC), and Polygon mainnets with a themed UI inspired by a magical spellbook. 
+
+MagicCraft Wallet is a browser extension cryptocurrency wallet built on the Wigwam open-source foundation.
+It supports Ethereum, Binance Smart Chain (BSC), and Polygon mainnets with a themed UI inspired by a magical spellbook.
 The architecture is modular, secure, and optimized for quick feature delivery.
 
 ---
@@ -34,10 +35,10 @@ The architecture is modular, secure, and optimized for quick feature delivery.
 | +----------------+ +--------------------+ |
 +--------------------------------------------------------+
 
-
 ## 3. Core Modules
 
 ### 3.1 UI Layer (React + TailwindCSS)
+
 - **Popup UI**: Displays balance, recent transactions, send form, network selector.
 - **Onboarding Pages**: Wallet creation/import, passphrase setup.
 - **Confirmation Modals**: For transaction approval.
@@ -53,6 +54,7 @@ The architecture is modular, secure, and optimized for quick feature delivery.
   - Spellbook-inspired rounded panels & glow effects.
 
 ### 3.2 Background Script
+
 - **Wallet Management**:
   - Generate/import 12-word mnemonic (bip39).
   - AES encrypt mnemonic with passphrase.
@@ -66,7 +68,9 @@ The architecture is modular, secure, and optimized for quick feature delivery.
   - Passphrase required before signing.
 
 ### 3.3 Storage Layer
+
 - Uses `chrome.storage.local` for persistent data:
+
 ```json
 {
   "wallet": {
@@ -149,3 +153,4 @@ Hardware wallet support.
 
 DApp browser.
 """
+```

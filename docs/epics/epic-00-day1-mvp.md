@@ -8,9 +8,11 @@
 - Risks: Timebox, integration issues
 
 ## Objective
+
 Deliver a vertical slice across wallet onboarding, transaction send, and core UI in one day.
 
 ## Includes
+
 - Epic 1: Core Wallet MVP
 - Epic 3: Send Transaction Flow
 - Epic 2: Dashboard & History
@@ -19,10 +21,12 @@ Deliver a vertical slice across wallet onboarding, transaction send, and core UI
 - Epic 6: MagicCraft Theme
 
 ## Acceptance Criteria
+
 - E2E path works on at least one mainnet with test funds
 - No critical errors in console; basic error states handled
 
 ## Links
+
 - PRD: ../prd/prd.md
 - Architecture: ../architecture/architecture.md
-- All epics: ./README.md 
+- All epics: ./README.md

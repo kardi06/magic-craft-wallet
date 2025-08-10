@@ -8,17 +8,21 @@
 - Risks: Gas estimation/nonce issues
 
 ## Objective
+
 Enable sending transactions with a confirmation modal.
 
 ## Scope
+
 - PRD: [Send Transaction](../prd/04-features.md)
 - Architecture: [Core Modules](../architecture/03-core-modules.md)
 
 ## Acceptance Criteria
+
 - Input fields for address/currency/amount
 - Confirmation shows recipient, amount, network, gas fee
 - On send, show status; link to explorer
 
 ## Implementation Notes
+
 - Use ethers.js sendTransaction
-- Add validation for address/amount 
+- Add validation for address/amount

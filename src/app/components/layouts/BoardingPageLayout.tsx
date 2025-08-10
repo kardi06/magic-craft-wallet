@@ -36,7 +36,7 @@ const BoardingPageLayout: FC<PropsWithChildren<BoardingPageLayoutProps>> = ({
       "relative",
       "min-h-screen flex flex-col",
       "bg-center bg-cover",
-      "magic-page bg-magic-parchment",
+      "magic-page",
     )}
     style={{
       backgroundImage: /*isWelcome ? `url('${WelcomeBgImage}')` : */ "none",

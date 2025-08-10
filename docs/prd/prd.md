@@ -10,4 +10,4 @@
 - [8. Milestones & Delivery Plan](./08-milestones-delivery-plan.md)
 - [9. Acceptance Criteria](./09-acceptance-criteria.md)
 - [10. Deliverables](./10-deliverables.md)
-- [11. Risks & Considerations](./11-risks-considerations.md) 
+- [11. Risks & Considerations](./11-risks-considerations.md)

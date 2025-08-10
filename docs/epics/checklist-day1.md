@@ -9,4 +9,4 @@
 - [ ] Copy address button
 - [ ] QR drag-and-drop -> address parse
 - [ ] Theme tokens and primary screens styled
-- [ ] Smoke test E2E; record demo 
+- [ ] Smoke test E2E; record demo

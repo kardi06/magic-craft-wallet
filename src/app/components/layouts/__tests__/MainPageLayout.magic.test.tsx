@@ -6,7 +6,11 @@ import ReactDOMServer from "react-dom/server";
 
 jest.mock("app/components/blocks/Sidebar", () => () => <div />);
 jest.mock("app/components/blocks/Menu", () => () => <div />);
-jest.mock("app/components/layouts/PreloadBaseAndSync", () => ({ children }: any) => <>{children}</>);
+jest.mock(
+  "app/components/layouts/PreloadBaseAndSync",
+  () =>
+    ({ children }: any) => <>{children}</>,
+);
 
 // mock hooks that might touch window or ESM-only libs
 jest.mock("app/hooks", () => ({}));
@@ -25,4 +29,4 @@ describe("MainPageLayout magic theme", () => {
     expect(html).toContain("magic-page");
     expect(html).toContain("magic-card");
   });
-}); 
+});

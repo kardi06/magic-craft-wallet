@@ -16,6 +16,6 @@ describe("AppShell header logo", () => {
       </AppShell>,
     );
     // expect(html).toContain("/images/magiccraft-logo.svg");
-    expect(html).toContain("alt=\"MagicCraft logo\"");
+    expect(html).toContain('alt="MagicCraft logo"');
   });
-}); 
+});

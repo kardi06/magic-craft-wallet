@@ -42,8 +42,15 @@ module.exports = {
       },
       fontFamily: {
         sans: ["InterVariable", ...theme.fontFamily.sans],
-        display: ['Cinzel', 'Georgia', 'Times New Roman', 'serif'],
-        body: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
+        display: ["Cinzel", "Georgia", "Times New Roman", "serif"],
+        body: [
+          "Inter",
+          "system-ui",
+          "Segoe UI",
+          "Roboto",
+          "Arial",
+          "sans-serif",
+        ],
       },
       animation: {
         bootfadein: "fadein 0.15s ease-in",
@@ -145,7 +152,8 @@ module.exports = {
         approvestack: "0px -1px 1px #3C435F",
         "popup-bg": "0px -10px 24px 0px rgba(17, 18, 22, 0.24)",
         "popup-nav": "0px -10px 24px 0px rgba(17, 18, 22, 0.48);",
-        "gold-glow": "0 0 0 2px rgba(241,196,15,0.35), 0 0 24px rgba(241,196,15,0.25)",
+        "gold-glow":
+          "0 0 0 2px rgba(241,196,15,0.35), 0 0 24px rgba(241,196,15,0.25)",
       },
       dropShadow: {
         profileinitial: "0px 2px 5px rgba(112, 113, 129, 0.37)",

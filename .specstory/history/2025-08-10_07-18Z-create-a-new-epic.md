@@ -4,25 +4,24 @@
 
 _**User**_
 
-*create-epic
+\*create-epic
 
 ---
 
 _**Assistant**_
 
-
-
 ---
 
 ### Hi, I’m Bob, your Scrum Master 🏃
+
 Type `*help` anytime to see available commands.
 
 **Note**: `*create-epic` isn’t a supported command. Choose an option below:
 
-1. **draft**: Create the next story (can be an epic-level story)  
-2. **correct-course**: Adjust the current story direction  
-3. **story-checklist**: Run the story draft checklist  
-4. **help**: Show commands  
+1. **draft**: Create the next story (can be an epic-level story)
+2. **correct-course**: Adjust the current story direction
+3. **story-checklist**: Run the story draft checklist
+4. **help**: Show commands
 5. **exit**: Leave Scrum Master mode
 
 Reply with a number to proceed. If you want me to draft an epic, reply with `1`.
@@ -33,7 +32,7 @@ Reply with a number to proceed. If you want me to draft an epic, reply with `1`.
 
 _**User**_
 
-*create-story
+\*create-story
 
 ---
 
@@ -75,8 +74,6 @@ I’m going to look for the task workflow file to execute your command precisely
 </details>
 
 ---
-
-
 
 ---
 
@@ -211,15 +208,15 @@ I need to ensure I have all components for the story template: "Story," acceptan
 For the Dev Notes, I should be extracting information from architecture documents, which we have. The template states "elicit: true," but the create-next-story task suggests I populate the dev notes directly without user input. There's a bit of a conflict here because the elicit rule indicates I need user interaction. However, the guidelines instruct me to fill dev notes from documentation. I need to determine whether I should still ask for confirmation or proceed with auto-population, considering these rules.
 **Clarifying story creation steps**
 
-I can ask for consent to auto-populate from the architecture docs and then proceed. Since the user typed *create-story, I should start elicitation. I need to present the identified story as "1.1 - Title?" It could be from the epic "Core Wallet MVP." I could suggest a title like "Core Wallet MVP - Onboarding and Encryption," but I want to confirm this with the user to avoid inventing anything. I’ll elicit minimal information: role, action, benefit, and a short title. I also need to create a directory for docs/stories if it’s missing and use the edit_file tool for any code changes.
+I can ask for consent to auto-populate from the architecture docs and then proceed. Since the user typed \*create-story, I should start elicitation. I need to present the identified story as "1.1 - Title?" It could be from the epic "Core Wallet MVP." I could suggest a title like "Core Wallet MVP - Onboarding and Encryption," but I want to confirm this with the user to avoid inventing anything. I’ll elicit minimal information: role, action, benefit, and a short title. I also need to create a directory for docs/stories if it’s missing and use the edit_file tool for any code changes.
 **Examining markdown file creation process**
 
 Creating a markdown file in the docs/stories path seems appropriate, but I can’t write the file until I’ve elicited the necessary fields. While the task states to create and fill a new story file, I can’t populate "Story" or "Tasks/Subtasks" without user input. I could draft a file with placeholders and copied acceptance criteria, status as Draft, and TODOs for the items I still need. However, the rules dictate that I must elicit input first, so I'll ask the user for the required information now.
 **Structuring user prompts for story creation**
 
-I need to ask the user for several details in a structured way. First, I’ll confirm the epic number and next story number; propose "1.1" if no stories exist, giving a choice to override. I'll need a short story title and the story statement with information about role, action, and benefit. 
+I need to ask the user for several details in a structured way. First, I’ll confirm the epic number and next story number; propose "1.1" if no stories exist, giving a choice to override. I'll need a short story title and the story statement with information about role, action, and benefit.
 
-I can propose acceptance criteria from the epic and check for initial tasks based on architecture. For Dev Notes, I’ll ask for approval to auto-populate from architecture without proceeding until I have their inputs. I'll summarize the important criteria and include a status update: "I loaded config and epics and extracted AC. Awaiting your inputs." 
+I can propose acceptance criteria from the epic and check for initial tasks based on architecture. For Dev Notes, I’ll ask for approval to auto-populate from architecture without proceeding until I have their inputs. I'll summarize the important criteria and include a status update: "I loaded config and epics and extracted AC. Awaiting your inputs."
 
 Then, I'll provide a YAML block for them to fill out with clear fields for their responses, ensuring everything is concise and organized.</details></think>
 
@@ -228,29 +225,31 @@ Then, I'll provide a YAML block for them to fill out with clear fields for their
 I loaded the workflow, core config, epics, and architecture docs; no existing stories found, so the next is 1.1 from Epic 1. I extracted the acceptance criteria from `docs/epics/epic-01-core-wallet-mvp.md`.
 
 ### Confirm and provide required inputs
+
 Reply with the YAML below filled in. I’ll then generate the draft, auto-populate Dev Notes from architecture (with citations), propose Tasks/Subtasks aligned to the AC, and run the story checklist.
 
 ```yaml
 epic_num: 1
 story_num: 1
-story_title_short: ""   # short filename-friendly title, e.g. "onboarding-encryption"
+story_title_short: "" # short filename-friendly title, e.g. "onboarding-encryption"
 story:
-  role: ""              # e.g. "new user"
-  action: ""            # e.g. "create or import a wallet and unlock it"
-  benefit: ""           # e.g. "so I can sign a test transaction securely"
+  role: "" # e.g. "new user"
+  action: "" # e.g. "create or import a wallet and unlock it"
+  benefit: "" # e.g. "so I can sign a test transaction securely"
 acceptance_criteria:
-  confirm_use_from_epic_01: true   # set to false to provide edits below
-  edits: []                        # optional: override or add AC items
+  confirm_use_from_epic_01: true # set to false to provide edits below
+  edits: [] # optional: override or add AC items
 auto_generate:
-  tasks_and_dev_notes: true        # allow me to generate tasks + dev notes with citations
+  tasks_and_dev_notes: true # allow me to generate tasks + dev notes with citations
 status: Draft
 ```
 
 Reference AC from Epic 1 for your review:
-1) Create/import 12-word mnemonic
-2) AES encryption at rest, passphrase unlock
-3) Encrypted storage in chrome.storage.local
-4) Background can decrypt/sign a dummy tx
+
+1. Create/import 12-word mnemonic
+2. AES encryption at rest, passphrase unlock
+3. Encrypted storage in chrome.storage.local
+4. Background can decrypt/sign a dummy tx
 
 - I’m ready to generate `docs/stories/1.1.<story_title_short>.md` once you provide the YAML.
 
@@ -275,7 +274,7 @@ I think I can create a "Proposed YAML" and ask the user to either "Reply 'approv
 First, I noticed that the `docs/stories` directory doesn’t exist, and the list_dir showed "Could not resolve docs/stories." Before I create a story file, I should create the directory using 'mkdir docs/stories' with the run_terminal_cmd tool. But I need to wait for user approval to create the story draft first, following the elicitation process. Additionally, I need to gather more architecture details for the dev notes, but it seems we’re missing some key files like `testing-strategy.md` and the core-config indicates certain files aren't present in the snapshot.
 **Proposing story and YAML options**
 
-I need to note that the testing standards in the dev-notes should reflect that "No specific guidance found in architecture docs" if nothing is available. I can check the `docs/architecture` directory to see if those files exist, but it seems they’re not present. Also, I have to propose a story title for Epic 1, Story 1, which could be "Onboarding: Create/Import Wallet with AES Encryption," with a short slug of onboarding-encryption. 
+I need to note that the testing standards in the dev-notes should reflect that "No specific guidance found in architecture docs" if nothing is available. I can check the `docs/architecture` directory to see if those files exist, but it seems they’re not present. Also, I have to propose a story title for Epic 1, Story 1, which could be "Onboarding: Create/Import Wallet with AES Encryption," with a short slug of onboarding-encryption.
 
 Next, I’ll provide a "Proposed YAML" and ask the user to reply with "1" to accept, "2" to edit fields, or "3" to cancel. Ensuring compliance with tasks listing, I can present a filled YAML and ask for a response to either proceed or provide an alternative.
 **Providing proposed YAML and getting confirmation**
@@ -304,11 +303,12 @@ Once I provide this, I’ll update the status by noting I'm waiting for confirma
 
 Got it. I need the elicitation values to proceed. Here’s a proposed fill. Choose an option:
 
-1) Approve and generate with the YAML below
-2) I’ll edit the YAML and send it back
-3) Cancel
+1. Approve and generate with the YAML below
+2. I’ll edit the YAML and send it back
+3. Cancel
 
 Proposed YAML:
+
 ```yaml
 epic_num: 1
 story_num: 1
@@ -345,12 +345,12 @@ I need to reference architecture docs and acceptance criteria numbers while incl
 The spec outlines that I need to provide a summary to the user that includes points like story created, status as draft, key technical components, any deviations, checklist results, and next steps. First, I need to create the file and then produce a brief summary with bullet points. I also need to ensure the `docs/stories` directory exists; however, since there’s no dedicated "mkdir" tool available, I might have to run a terminal command for directory creation if necessary.
 **Setting up directory and story content**
 
-I plan to run the command `mkdir -Force docs/stories`, but since that's PowerShell syntax, I can also use `New-Item -ItemType Directory -Force -Path docs/stories`. I'll execute `mkdir docs/stories` within the terminal to ensure the directory exists. Then, I'll draft the content for the story file titled "docs/stories/1.1.onboarding-encryption.md." 
+I plan to run the command `mkdir -Force docs/stories`, but since that's PowerShell syntax, I can also use `New-Item -ItemType Directory -Force -Path docs/stories`. I'll execute `mkdir docs/stories` within the terminal to ensure the directory exists. Then, I'll draft the content for the story file titled "docs/stories/1.1.onboarding-encryption.md."
 
 It will include sections like status, story description, acceptance criteria, and a list of tasks and subtasks, focusing on creating or importing a 12-word wallet and ensuring AES encryption.
 **Developing subtasks for story content**
 
-I’ll add subtasks for generating and validating mnemonics, as well as the import path. For AES encryption, I’ll use WebCrypto to store encrypted data in `chrome.storage.local`, while tying it to acceptance criteria 2 and 3. Key derivation isn’t specified, but I can reference using a passphrase for encryption and mention the fields "encryptedMnemonic" and "salt" as shown in the architecture’s example JSON. 
+I’ll add subtasks for generating and validating mnemonics, as well as the import path. For AES encryption, I’ll use WebCrypto to store encrypted data in `chrome.storage.local`, while tying it to acceptance criteria 2 and 3. Key derivation isn’t specified, but I can reference using a passphrase for encryption and mention the fields "encryptedMnemonic" and "salt" as shown in the architecture’s example JSON.
 
 Next, implementing the unlock gate in the background will require prompting for a passphrase to decrypt for the session. Lastly, I'll create a route for signing a dummy transaction using ethers.js, returning the transaction hash without broadcasting.
 **Finalizing story content and checklist execution**
@@ -360,7 +360,7 @@ The epic states we’ll be decrypting and signing a dummy transaction, but not a
 For the API specifications, I can mention background script responsibilities without inventing new endpoints. I'll also specify the structure of the project and any security considerations, along with a change log table. After creating the files, I’ll execute the checklist and provide a validation report with the appropriate statuses.
 **Preparing checklist execution and directory creation**
 
-First, I need to read the `.bmad-core/tasks/execute-checklist.md` file to understand the expectations. It might be best to do this in parallel with other tasks, so I’ll include a read_file command alongside creating the directory. However, since the directory creation and file editing are dependent tasks, I'll run those sequentially. After updating the status, I’ll read the checklist while simultaneously creating the directory. 
+First, I need to read the `.bmad-core/tasks/execute-checklist.md` file to understand the expectations. It might be best to do this in parallel with other tasks, so I’ll include a read_file command alongside creating the directory. However, since the directory creation and file editing are dependent tasks, I'll run those sequentially. After updating the status, I’ll read the checklist while simultaneously creating the directory.
 
 Once I have all the details, I can create the story file and prepare to produce the checklist results in the chat afterward.</details></think>
 
@@ -427,23 +427,23 @@ Lines added: 76, lines removed: 1
 
 ```diff
 @@ -1,1 +1,76 @@
-- 
+-
 + # Story 1.1: Onboarding & Encryption
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a new user,
 + I want to create or import a 12-word wallet and unlock it with a passphrase,
 + so that I can securely sign a test transaction.
-+ 
++
 + ## Acceptance Criteria
 + 1. Create/import 12-word mnemonic
 + 2. AES encryption at rest, passphrase unlock
 + 3. Encrypted storage in chrome.storage.local
 + 4. Background can decrypt/sign a dummy tx
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Implement mnemonic create/import flow in UI (AC: 1)
 +   - [ ] Add onboarding screen(s) to create or import 12-word mnemonic (bip39)
@@ -464,46 +464,46 @@ Lines added: 76, lines removed: 1
 +   - [ ] Unit tests for encryption/decryption helpers
 +   - [ ] Unit tests for storage read/write of encrypted blob
 +   - [ ] Integration test for create/import → unlock → sign dummy tx
-+ 
++
 + ## Dev Notes
 + - Previous Story Insights: No previous stories. This is the first story 1.1.
-+ 
++
 + - Data Models
 +   - chrome.storage.local structure for wallet and settings must include encryptedMnemonic and salt fields. [Source: architecture/03-core-modules.md#3.3 Storage Layer]
 +   - Networks supported include Ethereum, BSC, Polygon; RPC endpoints should be defined in source config. [Source: architecture/03-core-modules.md#3.4 Blockchain Integration]
-+ 
++
 + - API Specifications / Integration Points
 +   - Background script provides wallet logic, AES encryption/decryption, and RPC calls via ethers.js. UI communicates with background to trigger wallet ops. [Source: architecture/02-high-level-architecture-diagram.md]
-+ 
++
 + - Component Specifications
 +   - Onboarding pages handle wallet creation/import and passphrase setup. Popup UI later shows balances/tx, but this story focuses on onboarding + signing capability. [Source: architecture/03-core-modules.md#3.1 UI Layer]
-+ 
++
 + - File Locations
 +   - Background implementation in TypeScript with modules for wallet management and encryption per architecture; storage via chrome.storage.local. [Source: architecture/03-core-modules.md#3.2 Background Script, #3.3 Storage Layer]
-+ 
++
 + - Testing Requirements
 +   - Conform to testing strategy: create unit tests for cryptography helpers and storage, and an integration path covering create/import → unlock → sign. [Source: architecture/03-core-modules.md#6 Technology Stack]
-+ 
++
 + - Technical Constraints
 +   - Use bip39 and ethers.js for wallet, AES via WebCrypto, TypeScript, build via Vite/Webpack. [Source: architecture/03-core-modules.md#6 Technology Stack]
 +   - Passphrase required before signing as a security constraint. [Source: architecture/03-core-modules.md#3.2 Background Script]
-+ 
++
 + ### Testing
 + - Test file locations should align with repository testing setup (Jest). Validate encryption correctness and that decrypted mnemonic yields expected address for a fixed mnemonic in tests. [Source: architecture/03-core-modules.md#6 Technology Stack]
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                             | Author |
 + |------------|---------|-----------------------------------------|--------|
 + | 2025-08-10 | 0.1     | Initial draft created for Story 1.1     | SM     |
-+ 
++
 + ## Dev Agent Record
-+ - Agent Model Used: 
-+ - Debug Log References: 
-+ - Completion Notes List: 
-+ - File List: 
-+ 
++ - Agent Model Used:
++ - Debug Log References:
++ - Completion Notes List:
++ - File List:
++
 + ## QA Results
-+ - TBD 
++ - TBD
 ```
 
 </details>
@@ -527,7 +527,7 @@ Lines added: 6, lines removed: undefined
 +     - src/app/components/screens/onboarding/ (UI screens for create/import + passphrase)
 +     - src/app/hooks/account.tsx (hook integration points)
 +     - src/core/back/approve/ or src/core/back/rpc/ (signing flow integration)
-  
+
   - Testing Requirements
 ```
 
@@ -569,7 +569,7 @@ For the checklist, the guidelines indicate that I need to ask the user if they w
 The status update suggests pausing only if I truly can't proceed. I could propose the YOLO default and seek confirmation, but the execute-checklist guidelines say to ask first. Since the mandatory interaction rule indicates that tasks need user engagement, and while the checklist doesn't specify elicit, the story template suggests it does. However, since it’s not explicitly required here, I think I can proceed with YOLO by default. Asking a quick question would still be wise to confirm.
 **Executing YOLO workflow and reporting**
 
-The rule states that when executing formal workflows, all task instructions must be followed, but since the checklist isn’t interactive, I can proceed with YOLO as recommended. I’ll generate a concise validation report with a summary, status table, issues, and developer perspective. 
+The rule states that when executing formal workflows, all task instructions must be followed, but since the checklist isn’t interactive, I can proceed with YOLO as recommended. I’ll generate a concise validation report with a summary, status table, issues, and developer perspective.
 
 I’ll evaluate key points, marking PASS or PARTIAL as needed. We need to mention any issues that need revision, such as adding environment variable lists. Finally, I’ll include next steps and keep the communication minimal, focusing on essential details. A bullet list seems like a great way to summarize!</details></think>
 
@@ -582,6 +582,7 @@ I created the story and validated it against the checklist in YOLO mode.
 - Key inclusions: AC from Epic 1; tasks/subtasks mapped to AC; Dev Notes with citations to `docs/architecture`; suggested repo-aligned file locations; testing guidance.
 
 Checklist results:
+
 - Goal & Context Clarity: PASS
 - Technical Implementation Guidance: PARTIAL
   - Add explicit env/config details (e.g., RPC provider config file, required keys).
@@ -590,8 +591,9 @@ Checklist results:
   - Add assumptions and edge cases (e.g., invalid mnemonic, short passphrase, decrypt failure).
 - Testing Guidance: PARTIAL
   - Define measurable success criteria (e.g., network to use for dummy tx, expected tx hash presence).
-  
+
 Recommended quick edits:
+
 - Specify config paths for RPC endpoints and default network.
 - State minimum passphrase policy and error handling flows.
 - Add explicit success criteria: “Signing dummy tx on <testnet> returns tx hash and UI shows success state.”
@@ -694,21 +696,21 @@ Lines added: 69, lines removed: 1
 
 ```diff
 @@ -1,1 +1,69 @@
-- 
+-
 + # Story 6.1: Apply MagicCraft Theme
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a user,
 + I want the wallet UI to reflect the MagicCraft theme,
 + so that the experience feels cohesive and on-brand.
-+ 
++
 + ## Acceptance Criteria
 + 1. Color palette applied across main UI surfaces (Midnight Blue `#1A1B2F`, Arcane Purple `#6E4B9E`, Gold Accent `#F1C40F`)
 + 2. Spellbook visual touches present on main screens (rounded parchment panels, glowing hover effects, rune-like icons)
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Define Tailwind theme tokens (AC: 1)
 +   - [ ] Add colors to Tailwind config and CSS variables
@@ -730,40 +732,40 @@ Lines added: 69, lines removed: 1
 + - [ ] Testing
 +   - [ ] Visual regression checks (screenshots) for main screens
 +   - [ ] Snapshot tests for key components
-+ 
++
 + ## Dev Notes
 + - Theme Requirements
 +   - Color palette and visual style per PRD. [Source: prd/04-features.md#4.6 MagicCraft Theme]
 +   - Apply consistently across Popup UI and main screens. [Source: architecture/01-overview.md]
-+ 
++
 + - UI Layer & Components
 +   - The UI uses React + TailwindCSS with themed components and screens. [Source: architecture/03-core-modules.md#3.1 UI Layer]
-+ 
++
 + - Suggested File Locations in this repo
 +   - tailwind.config.js – define theme tokens
 +   - src/app/styles/index.css – global CSS variables and utilities
 +   - src/app/components/elements/ – apply tokens to buttons, cards, inputs
 +   - src/app/components/layouts/ and screens – apply layout/backgrounds
-+ 
++
 + - Accessibility
 +   - Ensure sufficient contrast for primary text on themed backgrounds. If conflicts exist, adjust shades minimally.
-+ 
++
 + ### Testing
 + - Prefer screenshot comparisons of main screens; add Jest snapshots for key components.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                             | Author |
 + |------------|---------|-----------------------------------------|--------|
 + | 2025-08-10 | 0.1     | Initial draft created for Story 6.1     | SM     |
-+ 
++
 + ## Dev Agent Record
-+ - Agent Model Used: 
-+ - Debug Log References: 
-+ - Completion Notes List: 
-+ - File List: 
-+ 
++ - Agent Model Used:
++ - Debug Log References:
++ - Completion Notes List:
++ - File List:
++
 + ## QA Results
-+ - TBD 
++ - TBD
 ```
 
 </details>
@@ -774,6 +776,7 @@ Lines added: 69, lines removed: 1
 - The new story includes AC, tasks/subtasks, repo-aligned file hints, and Dev Notes with citations.
 
 Do you want me to:
+
 - set Story 6.1 to Approved and mark as top priority, or
 - run the story checklist on 6.1 now?
 
@@ -818,12 +821,12 @@ Lines added: 2, lines removed: 1
 
 ```diff
 @@ -2,5 +2,6 @@
-  
+
   ## Status
 - Draft
 + Approved
 + Priority: P0 (Top)
-  
+
   ## Story
 ```
 
@@ -835,7 +838,7 @@ Lines added: 1, lines removed: undefined
   |------------|---------|-----------------------------------------|--------|
   | 2025-08-10 | 0.1     | Initial draft created for Story 6.1     | SM     |
 + | 2025-08-10 | 0.2     | Status set to Approved; priority set P0 | SM     |
-  
+
   ## Dev Agent Record
 ```
 
@@ -852,7 +855,7 @@ Anything else to adjust before handing to the dev agent?
 
 _**User**_
 
-let's make the logo litte big, make it beuty 
+let's make the logo litte big, make it beuty
 
 ---
 
@@ -889,18 +892,18 @@ Lines added: 60, lines removed: 1
 
 ```diff
 @@ -1,1 +1,60 @@
-- 
+-
 + # Story 6.2: Logo Size & Hero Header Polish
-+ 
++
 + ## Status
 + Approved
 + Priority: P0 (Top)
-+ 
++
 + ## Story
 + As a user,
 + I want a larger, beautifully styled MagicCraft logo on the welcome and header screens,
 + so that the brand feels prominent and visually appealing.
-+ 
++
 + ## Acceptance Criteria
 + 1. Logo size increased and responsive
 +    - Mobile (360–400px width): rendered width 128–160px
@@ -916,7 +919,7 @@ Lines added: 60, lines removed: 1
 + 5. Verification
 +    - Before/after screenshots attached in PR
 +    - Snapshot test updated for header/welcome component
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Asset preparation (AC: 2, 3)
 +   - [ ] Add `public/images/magiccraft-logo.svg` (optimize; keep ≤50KB)
@@ -932,7 +935,7 @@ Lines added: 60, lines removed: 1
 + - [ ] Testing (AC: 5)
 +   - [ ] Update/extend snapshot tests for header/welcome
 +   - [ ] Attach before/after screenshots in PR
-+ 
++
 + ## Dev Notes
 + - Theme alignment
 +   - Use MagicCraft palette for glow: gold accent `#F1C40F`; keep subtle to avoid halos. [Source: prd/04-features.md#4.6 MagicCraft Theme]
@@ -942,14 +945,14 @@ Lines added: 60, lines removed: 1
 +   - Assets: `public/images/magiccraft-logo.svg`
 +   - Styles: `src/app/styles/index.css` (add `.logo-magic`, `.logo-glow`)
 +   - Components: `Welcome.tsx`, `AppShell.tsx`/`MainPageLayout.tsx`
-+ 
++
 + ### Testing
 + - Snapshot tests for `Welcome`/header; visual check in 360px and 1440px viewports.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                                 | Author |
 + |------------|---------|---------------------------------------------|--------|
-+ | 2025-08-10 | 0.1     | Created; Approved; marked P0 for execution  | SM     | 
++ | 2025-08-10 | 0.1     | Created; Approved; marked P0 for execution  | SM     |
 ```
 
 </details>
@@ -972,9 +975,10 @@ Done. I created a focused follow-up story and set it to top priority.
 - Scope: Larger responsive logo on Welcome/Header with subtle gold glow, balanced spacing, SVG asset, accessibility, and tests. Includes exact tasks and file targets (`Welcome.tsx`, header layout, `index.css`, SVG asset path).
 
 Pick one:
-1) Assign to dev agent now
-2) Run story checklist on 6.2
-3) Tweak specs (e.g., size range, glow strength) before assignment
+
+1. Assign to dev agent now
+2. Run story checklist on 6.2
+3. Tweak specs (e.g., size range, glow strength) before assignment
 
 - Added `Story 6.2` with AC, tasks, Dev Notes, and citations; marked Approved P0 so it can be implemented immediately.
 
@@ -982,13 +986,11 @@ Pick one:
 
 _**User**_
 
-and there is an error in story before (6.1) , first logo in dashboar still wigwam , second the color is not full, third the pop color theme still black  . add this in story 6.2
+and there is an error in story before (6.1) , first logo in dashboar still wigwam , second the color is not full, third the pop color theme still black . add this in story 6.2
 
 ---
 
 _**Assistant**_
-
-
 
 ---
 
@@ -1015,7 +1017,7 @@ Lines added: 4, lines removed: undefined
 +    - Dashboard header uses MagicCraft logo (no Wigwam remnants)
 +    - Theme colors apply across full surfaces (no mismatched areas)
 +    - Popup uses MagicCraft theme (not default black)
-  
+
   ## Tasks / Subtasks
 ```
 
@@ -1043,7 +1045,7 @@ Lines added: 10, lines removed: 6
 + - [ ] Testing (AC: 5, 6)
 +   - [ ] Update/extend snapshot tests for header/welcome and layout logos
 +   - [ ] Add screenshots for dashboard header and popup showing theme applied
-  
+
   ## Dev Notes
 ```
 
@@ -1054,9 +1056,9 @@ Lines added: 2, lines removed: 1
 @@ -58,3 +66,4 @@
   | Date       | Version | Description                                 | Author |
   |------------|---------|---------------------------------------------|--------|
-- | 2025-08-10 | 0.1     | Created; Approved; marked P0 for execution  | SM     | 
+- | 2025-08-10 | 0.1     | Created; Approved; marked P0 for execution  | SM     |
 + | 2025-08-10 | 0.1     | Created; Approved; marked P0 for execution  | SM     |
-+ | 2025-08-10 | 0.2     | Added AC and tasks to fix 6.1 follow-ups    | SM     | 
++ | 2025-08-10 | 0.2     | Added AC and tasks to fix 6.1 follow-ups    | SM     |
 ```
 
 </details>
@@ -1081,7 +1083,7 @@ Do you want me to assign 6.2 to the dev agent now or run the checklist on it?
 
 _**User**_
 
-now make a new story for epic 2 
+now make a new story for epic 2
 
 ---
 
@@ -1132,17 +1134,17 @@ Lines added: 61, lines removed: 1
 
 ```diff
 @@ -1,1 +1,61 @@
-- 
+-
 + # Story 2.1: Dashboard Balance & Recent History
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a user,
 + I want to see my native coin balance and a summary of my last 5 transactions for the selected network,
 + so that I can quickly understand my current status and recent activity.
-+ 
++
 + ## Acceptance Criteria
 + 1. Native coin balance loads for the selected network and can be refreshed on demand
 + 2. Last 5 transactions are displayed with:
@@ -1153,7 +1155,7 @@ Lines added: 61, lines removed: 1
 + 3. Network selector changes update balance and history to the selected network
 + 4. Loading and empty states are shown; error state displays retry option
 + 5. Performance: initial balance + history load in ≤ 1.5s on broadband; avoid RPC rate-limit errors by basic debouncing/throttling
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Data fetching and background integration (AC: 1, 2, 3)
 +   - [ ] Implement balance fetch via ethers.js Provider.getBalance
@@ -1174,7 +1176,7 @@ Lines added: 61, lines removed: 1
 +   - [ ] Unit tests for utilities and data mappers
 +   - [ ] Component tests for render states and refresh behavior
 +   - [ ] Integration test: network change triggers refetch
-+ 
++
 + ## Dev Notes
 + - Requirements
 +   - Balance and last 5 transactions with specific fields; refresh on demand. [Source: prd/04-features.md#4.2 Dashboard]
@@ -1186,14 +1188,14 @@ Lines added: 61, lines removed: 1
 +   - UI: `src/app/components/blocks/` for `BalanceDisplay`, `TransactionList`
 +   - Hooks: `src/app/hooks/activity.tsx` or new hook for dashboard data
 +   - Utils: `src/app/utils/format.ts` for hash/date/amount; explorer helper in `src/app/utils`
-+ 
++
 + ### Testing
 + - Ensure deterministic fixtures for history; test pending/confirmed variants and empty state.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                        | Author |
 + |------------|---------|------------------------------------|--------|
-+ | 2025-08-10 | 0.1     | Initial draft for Story 2.1        | SM     | 
++ | 2025-08-10 | 0.1     | Initial draft for Story 2.1        | SM     |
 ```
 
 </details>
@@ -1211,7 +1213,7 @@ Want me to mark it Approved and P1, or run the story checklist first?
 
 _**User**_
 
-ok, but first i want to ask, i never try crypto. how to test the transaction ? 
+ok, but first i want to ask, i never try crypto. how to test the transaction ?
 
 ---
 
@@ -1222,9 +1224,9 @@ _**Assistant**_
 I’m considering testing on the Sepolia testnet. Using a zero-value transaction for self-transfer is an option, and it could also be helpful to create two accounts or send to the same address. Even though a self-transfer incurs gas costs, it's allowed. To ensure safety and clarity, I’ll provide steps: First, choose the Sepolia testnet. If it’s not present, I need to add the network to the wallet through the settings.
 **Outlining testing steps**
 
-I need to provide a clear stub path for testing. First, I’ll get some test ETH from the faucet by pasting my address. Then, I’ll switch to the Sepolia network in the wallet extension. 
+I need to provide a clear stub path for testing. First, I’ll get some test ETH from the faucet by pasting my address. Then, I’ll switch to the Sepolia network in the wallet extension.
 
-Next, I’ll try sending a small amount, like 0.001 ETH, either to my own address or a second wallet. After confirming, I’ll approve the popup and unlock if necessary. I'll watch the activity and check the transaction in the explorer. If gas estimation fails, I’ll need to increase the gas or check the RPC provider. 
+Next, I’ll try sending a small amount, like 0.001 ETH, either to my own address or a second wallet. After confirming, I’ll approve the popup and unlock if necessary. I'll watch the activity and check the transaction in the explorer. If gas estimation fails, I’ll need to increase the gas or check the RPC provider.
 
 Alternatively, I could use a local dev chain with Anvil or Hardhat for unlimited funds and quick transactions, ensuring that I only use test mnemonics. Finally, I’ll create a concise summary.</details></think>
 
@@ -1242,6 +1244,7 @@ Here’s the safest, fastest way to test without real money:
   - Open Activity; click “View in Explorer” to see confirmations.
 
 Tips
+
 - If send fails: ensure you’re on Sepolia, you have faucet ETH, and the RPC URL is reachable.
 - Self-transfer works and still consumes small gas.
 - For rapid local testing: run a local chain (Anvil/Hardhat) on http://localhost:8545, add it as a custom network, and use its funded test accounts.
@@ -1309,17 +1312,17 @@ Lines added: 68, lines removed: 1
 
 ```diff
 @@ -1,1 +1,68 @@
-- 
+-
 + # Story 2.2: Dashboard Refresh, Caching, and Explorer Links
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a user,
 + I want a clear refresh action, fast loads when reopening the popup, and correct explorer links per network,
 + so that I can quickly verify my balance and recent activity without delays.
-+ 
++
 + ## Acceptance Criteria
 + 1. Manual refresh
 +    - A visible Refresh control updates balance and last 5 transactions
@@ -1337,7 +1340,7 @@ Lines added: 68, lines removed: 1
 + 5. Error and empty states
 +    - On RPC failure, show a friendly error with a Retry button; do not clear previously shown data
 +    - Empty state message appears when no transactions exist for the account
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Refresh control & timestamps (AC: 1)
 +   - [ ] Add Refresh button with busy state and "Last updated" indicator
@@ -1358,7 +1361,7 @@ Lines added: 68, lines removed: 1
 +   - [ ] Unit tests for caching, debounce, and explorer helpers
 +   - [ ] Component tests for refresh behavior, loading/empty/error states
 +   - [ ] Integration test: network switch invalidates cache and refetches
-+ 
++
 + ## Dev Notes
 + - Product requirements
 +   - Dashboard must show native balance and last 5 tx; provide refresh on demand. This story implements the refresh and explorer link details. [Source: prd/04-features.md#4.2 Dashboard]
@@ -1370,14 +1373,14 @@ Lines added: 68, lines removed: 1
 +   - Utils: `src/app/utils/format.ts` and `src/app/utils/explorer.ts`
 +   - Hooks: extend `src/app/hooks/activity.tsx` or add `useDashboardData.ts`
 +   - UI: reuse components from 2.1 in `src/app/components/blocks/`
-+ 
++
 + ### Testing
 + - Use deterministic fixtures for tx lists; verify retry keeps prior data until successful update.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                       | Author |
 + |------------|---------|-----------------------------------|--------|
-+ | 2025-08-10 | 0.1     | Initial draft for Story 2.2       | SM     | 
++ | 2025-08-10 | 0.1     | Initial draft for Story 2.2       | SM     |
 ```
 
 </details>
@@ -1427,12 +1430,12 @@ Lines added: 2, lines removed: 1
 
 ```diff
 @@ -2,5 +2,6 @@
-  
+
   ## Status
 - Draft
 + Approved
 + Priority: P1
-  
+
   ## Story
 ```
 
@@ -1441,15 +1444,15 @@ Lines added: 4, lines removed: 3
 
 ```diff
 @@ -64,5 +65,6 @@
-  
+
   ## Change Log
 - | Date       | Version | Description                       | Author |
 - |------------|---------|-----------------------------------|--------|
-- | 2025-08-10 | 0.1     | Initial draft for Story 2.2       | SM     | 
+- | 2025-08-10 | 0.1     | Initial draft for Story 2.2       | SM     |
 + | Date       | Version | Description                                | Author |
 + |------------|---------|--------------------------------------------|--------|
 + | 2025-08-10 | 0.1     | Initial draft for Story 2.2                | SM     |
-+ | 2025-08-10 | 0.2     | Status Approved; set Priority P1           | SM     | 
++ | 2025-08-10 | 0.2     | Status Approved; set Priority P1           | SM     |
 ```
 
 </details>
@@ -1465,17 +1468,17 @@ Lines added: 61, lines removed: 1
 
 ```diff
 @@ -1,1 +1,61 @@
-- 
+-
 + # Story 2.3: Transaction History Fetcher (Provider-first with Indexer Fallback)
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a developer,
 + I want a reusable history fetcher that prefers on-chain provider methods and falls back to an indexer when unavailable or rate-limited,
 + so that the dashboard reliably shows the last 5 transactions across supported networks.
-+ 
++
 + ## Acceptance Criteria
 + 1. Abstraction
 +    - Expose `getRecentTransactions(address, network, limit=5)` returning normalized items
@@ -1490,7 +1493,7 @@ Lines added: 61, lines removed: 1
 + 5. Tests and fixtures
 +    - Unit tests cover provider success, fallback path, and error conditions
 +    - Mapper tests ensure normalization is consistent
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Interfaces and models (AC: 1)
 +   - [ ] Define `RecentTx` type and fetcher interface
@@ -1508,7 +1511,7 @@ Lines added: 61, lines removed: 1
 + - [ ] Testing (AC: 5)
 +   - [ ] Unit tests for each path + normalization
 +   - [ ] Integration test to ensure dashboard uses fallback when provider path fails
-+ 
++
 + ## Dev Notes
 + - Product & PRD
 +   - Dashboard requires last 5 transactions with key details. [Source: prd/04-features.md#4.2 Dashboard]
@@ -1519,14 +1522,14 @@ Lines added: 61, lines removed: 1
 +   - Core: `src/core/back/services/activity/` or `src/core/back/services/history/`
 +   - Config: `src/fixtures/networks/` or `src/app/utils`
 +   - Types: `src/core/types/`
-+ 
++
 + ### Testing
 + - Provide recorded fixtures for provider and indexer responses; ensure deterministic mapping.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                     | Author |
 + |------------|---------|---------------------------------|--------|
-+ | 2025-08-10 | 0.1     | Initial draft for Story 2.3     | SM     | 
++ | 2025-08-10 | 0.1     | Initial draft for Story 2.3     | SM     |
 ```
 
 </details>
@@ -1562,7 +1565,7 @@ For 2.4, I’m thinking about options like "Time formatting and timezone" or "er
 I could enhance the feature by adding "background sync to store the last known values in chrome.storage.local," which can help with performance and improve loading speed. While it’s not directly in the PRD, it serves our goals for efficiency. I previously addressed caching in 2.2, with a TTL of 30 seconds, which is sufficient. For 2.4, I can implement a "date/time formatting utility and localization." The architecture does include i18n in our packages, specifically under "fixtures/dateLocales.ts." So, a story on "Localization of dates and numbers in Dashboard" would align with the local date/time requirement!
 **Planning Story 2.4 Steps**
 
-For story 2.4, titled "Formatting and Localization for Dashboard," I'll focus on ensuring proper date/time, number formatting, and consistent short hashes. First, I need to provide a status update and proceed with code edits. 
+For story 2.4, titled "Formatting and Localization for Dashboard," I'll focus on ensuring proper date/time, number formatting, and consistent short hashes. First, I need to provide a status update and proceed with code edits.
 
 I’ll edit the documentation for story 2.3 to mark its status as Approved Priority P1 and add a change log. Then, I'll create a draft for 2.4 that details local time formatting, timezone handling, number formatting, and references to the i18n files. Finally, I'll ensure I provide minimal summary messages before making tool calls. Let's move forward!</details></think>
 
@@ -1581,12 +1584,12 @@ Lines added: 2, lines removed: 1
 
 ```diff
 @@ -2,5 +2,6 @@
-  
+
   ## Status
 - Draft
 + Approved
 + Priority: P1
-  
+
   ## Story
 ```
 
@@ -1597,9 +1600,9 @@ Lines added: 2, lines removed: 1
 @@ -59,3 +60,4 @@
   | Date       | Version | Description                     | Author |
   |------------|---------|---------------------------------|--------|
-- | 2025-08-10 | 0.1     | Initial draft for Story 2.3     | SM     | 
+- | 2025-08-10 | 0.1     | Initial draft for Story 2.3     | SM     |
 + | 2025-08-10 | 0.1     | Initial draft for Story 2.3     | SM     |
-+ | 2025-08-10 | 0.2     | Approved; set Priority P1       | SM     | 
++ | 2025-08-10 | 0.2     | Approved; set Priority P1       | SM     |
 ```
 
 </details>
@@ -1615,17 +1618,17 @@ Lines added: 53, lines removed: 1
 
 ```diff
 @@ -1,1 +1,53 @@
-- 
+-
 + # Story 2.4: Dashboard Formatting and Localization
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a user,
 + I want dates, numbers, and hashes displayed in a clear, localized way,
 + so that I can quickly read my balance and history in my locale.
-+ 
++
 + ## Acceptance Criteria
 + 1. Date/Time formatting
 +    - Use browser locale to format timestamps (e.g., `en-US`, `de-DE`)
@@ -1640,7 +1643,7 @@ Lines added: 53, lines removed: 1
 + 5. Testing and configuration
 +    - Provide tests for at least two locales (e.g., `en`, `de`)
 +    - Utilities are pure and reusable across the app
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Utilities (AC: 1–3)
 +   - [ ] `formatDateShort(date, locale)` and `formatDateFull(date, locale)`
@@ -1654,21 +1657,21 @@ Lines added: 53, lines removed: 1
 + - [ ] Testing (AC: 5)
 +   - [ ] Unit tests using fixtures in `src/fixtures/dateLocales.ts`
 +   - [ ] Component tests assert localized rendering and copy behavior
-+ 
++
 + ## Dev Notes
 + - PRD requires specific fields for history; this story ensures their display is readable. [Source: prd/04-features.md#4.2 Dashboard]
 + - Architecture stack: React UI utilities belong under `src/app/utils`. [Source: architecture/03-core-modules.md#3.1 UI Layer]
 + - Suggested File Locations
 +   - Utils: `src/app/utils/format.ts` and `src/app/utils/clipboard.ts`
 +   - Fixtures: `src/fixtures/dateLocales.ts`
-+ 
++
 + ### Testing
 + - Mock `Intl.DateTimeFormat` with fixtures for deterministic tests.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                     | Author |
 + |------------|---------|---------------------------------|--------|
-+ | 2025-08-10 | 0.1     | Initial draft for Story 2.4     | SM     | 
++ | 2025-08-10 | 0.1     | Initial draft for Story 2.4     | SM     |
 ```
 
 </details>
@@ -1717,12 +1720,12 @@ Lines added: 2, lines removed: 1
 
 ```diff
 @@ -2,5 +2,6 @@
-  
+
   ## Status
 - Draft
 + Approved
 + Priority: P1
-  
+
   ## Story
 ```
 
@@ -1733,9 +1736,9 @@ Lines added: 2, lines removed: 1
 @@ -51,3 +52,4 @@
   | Date       | Version | Description                     | Author |
   |------------|---------|---------------------------------|--------|
-- | 2025-08-10 | 0.1     | Initial draft for Story 2.4     | SM     | 
+- | 2025-08-10 | 0.1     | Initial draft for Story 2.4     | SM     |
 + | 2025-08-10 | 0.1     | Initial draft for Story 2.4     | SM     |
-+ | 2025-08-10 | 0.2     | Approved; set Priority P1       | SM     | 
++ | 2025-08-10 | 0.2     | Approved; set Priority P1       | SM     |
 ```
 
 </details>
@@ -1751,17 +1754,17 @@ Lines added: 55, lines removed: 1
 
 ```diff
 @@ -1,1 +1,55 @@
-- 
+-
 + # Story 2.5: Pending Transaction Status Tracking
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a user,
 + I want pending transactions to update to confirmed automatically and see their latest status without manual checks,
 + so that I can trust the dashboard to reflect reality shortly after I send a transaction.
-+ 
++
 + ## Acceptance Criteria
 + 1. Detection
 +    - Items with `status=pending` are tracked until confirmed or failed
@@ -1777,7 +1780,7 @@ Lines added: 55, lines removed: 1
 +    - Persist pending list in memory while popup is open; tolerate popup close/open by resuming from latest known state if background keeps context
 + 6. Testing
 +    - Simulate pending→confirmed; ensure UI updates and polling stops
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Background polling service (AC: 1–2, 4–5)
 +   - [ ] Track pending hashes per network
@@ -1792,21 +1795,21 @@ Lines added: 55, lines removed: 1
 + - [ ] Testing (AC: 6)
 +   - [ ] Unit tests for polling/backoff logic
 +   - [ ] Component tests for status transitions
-+ 
++
 + ## Dev Notes
 + - PRD requires showing tx status; this enhances it with live updates. [Source: prd/04-features.md#4.2 Dashboard]
 + - Architecture: background handles RPC receipt checks; UI subscribes to updates. [Source: architecture/03-core-modules.md#3.2 Background Script; architecture/02-high-level-architecture-diagram.md]
 + - Suggested File Locations
 +   - Background: `src/core/back/services/activity/txStatusTracker.ts`
 +   - UI: augment `TransactionList` item rendering
-+ 
++
 + ### Testing
 + - Use mocked provider that transitions from null receipt to confirmed/failed.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                     | Author |
 + |------------|---------|---------------------------------|--------|
-+ | 2025-08-10 | 0.1     | Initial draft for Story 2.5     | SM     | 
++ | 2025-08-10 | 0.1     | Initial draft for Story 2.5     | SM     |
 ```
 
 </details>
@@ -1828,8 +1831,6 @@ yes
 
 _**Assistant**_
 
-
-
 ---
 
 Approving Story 2.5 and adding Priority P1, then drafting Story 2.6 for auto-refresh on new blocks with AC, tasks, and citations.
@@ -1845,12 +1846,12 @@ Lines added: 2, lines removed: 1
 
 ```diff
 @@ -2,5 +2,6 @@
-  
+
   ## Status
 - Draft
 + Approved
 + Priority: P1
-  
+
   ## Story
 ```
 
@@ -1859,15 +1860,15 @@ Lines added: 4, lines removed: 3
 
 ```diff
 @@ -51,5 +52,6 @@
-  
+
   ## Change Log
 - | Date       | Version | Description                     | Author |
 - |------------|---------|---------------------------------|--------|
-- | 2025-08-10 | 0.1     | Initial draft for Story 2.5     | SM     | 
+- | 2025-08-10 | 0.1     | Initial draft for Story 2.5     | SM     |
 + | Date       | Version | Description                              | Author |
 + |------------|---------|------------------------------------------|--------|
 + | 2025-08-10 | 0.1     | Initial draft for Story 2.5              | SM     |
-+ | 2025-08-10 | 0.2     | Approved; set Priority P1                | SM     | 
++ | 2025-08-10 | 0.2     | Approved; set Priority P1                | SM     |
 ```
 
 </details>
@@ -1883,17 +1884,17 @@ Lines added: 47, lines removed: 1
 
 ```diff
 @@ -1,1 +1,47 @@
-- 
+-
 + # Story 2.6: Auto-Refresh on New Blocks
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a user,
 + I want my balance and recent transactions to refresh shortly after a new block is mined on the selected network,
 + so that the dashboard stays up-to-date without manual refresh.
-+ 
++
 + ## Acceptance Criteria
 + 1. New block listener
 +    - Subscribe to new block headers for the active network via provider or background relay
@@ -1906,7 +1907,7 @@ Lines added: 47, lines removed: 1
 +    - If the subscription fails, gracefully fall back to periodic polling (60s)
 + 5. Testing
 +    - Simulate new block events and verify refresh behavior and cache respect
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Background subscription service (AC: 1, 3, 4)
 +   - [ ] Subscribe to `provider.on('block')`; broadcast light event to UI
@@ -1916,21 +1917,21 @@ Lines added: 47, lines removed: 1
 +   - [ ] Ensure no overlapping fetches (reuse in-flight guard from Story 2.2)
 + - [ ] Testing (AC: 5)
 +   - [ ] Unit tests: block events lead to refresh; within-TTL events do not refetch heavy data
-+ 
++
 + ## Dev Notes
 + - PRD: Dashboard should be able to refresh on demand; this adds auto-refresh on block events to improve timeliness. [Source: prd/04-features.md#4.2 Dashboard]
 + - Architecture: provider events come from background; UI reacts via message or store event. [Source: architecture/03-core-modules.md#3.2 Background Script; architecture/02-high-level-architecture-diagram.md]
 + - Suggested File Locations
 +   - Background: `src/core/back/services/activity/blockListener.ts`
 +   - UI: reuse dashboard data hook to react to block events
-+ 
++
 + ### Testing
 + - Mock provider `on('block')` and verify no double fetches when in-flight.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                     | Author |
 + |------------|---------|---------------------------------|--------|
-+ | 2025-08-10 | 0.1     | Initial draft for Story 2.6     | SM     | 
++ | 2025-08-10 | 0.1     | Initial draft for Story 2.6     | SM     |
 ```
 
 </details>
@@ -1977,12 +1978,12 @@ Lines added: 2, lines removed: 1
 
 ```diff
 @@ -2,5 +2,6 @@
-  
+
   ## Status
 - Draft
 + Approved
 + Priority: P1
-  
+
   ## Story
 ```
 
@@ -1993,9 +1994,9 @@ Lines added: 2, lines removed: 1
 @@ -45,3 +46,4 @@
   | Date       | Version | Description                     | Author |
   |------------|---------|---------------------------------|--------|
-- | 2025-08-10 | 0.1     | Initial draft for Story 2.6     | SM     | 
+- | 2025-08-10 | 0.1     | Initial draft for Story 2.6     | SM     |
 + | 2025-08-10 | 0.1     | Initial draft for Story 2.6     | SM     |
-+ | 2025-08-10 | 0.2     | Approved; set Priority P1       | SM     | 
++ | 2025-08-10 | 0.2     | Approved; set Priority P1       | SM     |
 ```
 
 </details>
@@ -2011,17 +2012,17 @@ Lines added: 59, lines removed: 1
 
 ```diff
 @@ -1,1 +1,59 @@
-- 
+-
 + # Story 2.7: Activity Page (View All) with Pagination and Filters
-+ 
++
 + ## Status
 + Draft
-+ 
++
 + ## Story
 + As a user,
 + I want a full Activity page where I can browse more than 5 transactions, filter and paginate,
 + so that I can review my history beyond the dashboard summary.
-+ 
++
 + ## Acceptance Criteria
 + 1. Navigation
 +    - From the popup dashboard, a "View all" action opens the Activity page
@@ -2039,7 +2040,7 @@ Lines added: 59, lines removed: 1
 +    - Initial page renders ≤ 1.5s on broadband; subsequent pages fetched lazily
 + 7. Accessibility
 +    - Keyboard navigable; list items have accessible labels; links have descriptive titles
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Routing and navigation (AC: 1)
 +   - [ ] Add route for Activity page and link from dashboard "View all"
@@ -2056,7 +2057,7 @@ Lines added: 59, lines removed: 1
 +   - [ ] Unit tests for pagination and filter logic
 +   - [ ] Component tests for navigation and rendering
 +   - [ ] Integration test: network switch resets and refetches
-+ 
++
 + ## Dev Notes
 + - PRD and Epic require dashboard summary; this implements the extended history view. [Source: prd/04-features.md#4.2 Dashboard; epics/epic-02-dashboard-history.md]
 + - Architecture: UI components in React, data via background RPC/indexer abstraction. [Source: architecture/03-core-modules.md#3.1 UI Layer, #3.2 Background Script]
@@ -2064,13 +2065,13 @@ Lines added: 59, lines removed: 1
 +   - Pages: `src/app/components/screens/Activity.tsx` (or `screens/activity/`)
 +   - Components: `src/app/components/blocks/ActivityList.tsx`, `FiltersBar.tsx`
 +   - Hooks: extend `src/app/hooks/activity.tsx`
-+ 
++
 + ### Testing
 + - Provide fixtures with >40 txs to validate pagination and filters.
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                     | Author |
-+ |------------|---------|---------------------------------|--------| 
++ |------------|---------|---------------------------------|--------|
 ```
 
 </details>
@@ -2114,6 +2115,7 @@ I’m tasked with mapping features to their corresponding stories. The dashboard
 ---
 
 - Dashboard
+
   - Story 2.1 (`docs/stories/2.1.dashboard-summary.md`): Shows native balance and last 5 transactions (hash, date/time, amount, status).
   - Story 2.2 (`docs/stories/2.2.dashboard-refresh-caching-explorer.md`): Refresh button, caching, and correct explorer links.
   - Story 2.3 (`docs/stories/2.3.tx-history-provider-and-indexer.md`): Robust tx history fetcher.
@@ -2122,12 +2124,15 @@ I’m tasked with mapping features to their corresponding stories. The dashboard
   - Story 2.6 (`docs/stories/2.6.auto-refresh-on-new-blocks.md`): Auto-refresh on new blocks.
 
 - Send Transaction
+
   - Not created yet. This belongs to Epic 3: Send Transaction Flow. Proposed next: Story 3.1 “Send form + confirmation modal” and 3.2 “Submit + status + explorer link”.
 
 - Address & QR
+
   - Not created yet. This maps to Epic 5: Address Tools & QR. Proposed next: Story 5.1 “Copy Address” and 5.2 “Drag-and-drop QR to prefill recipient”.
 
 - Network Selector
+
   - Not created yet. This maps to Epic 4: Network Selector & RPC. Proposed next: Story 4.1 “Network dropdown + provider switch”.
 
 - If you want, I can draft 3.1, 4.1, and 5.1 now so they’re ready to implement.
@@ -2146,12 +2151,12 @@ _**Assistant**_
 
 <think><details><summary>Thought Process</summary>**Executing file updates**
 
-The user specifically wants balance and only five transactions. I plan to adjust version 2.1 to focus on those two items, keeping it simple while considering minimal error states. 
+The user specifically wants balance and only five transactions. I plan to adjust version 2.1 to focus on those two items, keeping it simple while considering minimal error states.
 
 I'll update the change log and delete unnecessary files 2.2 through 2.7 using the delete_file tool. After that, I’ll edit 2.1 to reflect this simplicity and mark it as Approved P1, ensuring a status update and summary follow. Using multi_tool_use.parallel helps delete multiple files at once efficiently.
 **Preparing content updates**
 
-I’m getting ready to edit the content for version 2.1 by keeping it minimal. 
+I’m getting ready to edit the content for version 2.1 by keeping it minimal.
 
 I’ll display the native coin balance for the selected network and show the last five transactions, including a shortened hash, local date/time, amount, and status. I'm thinking about the “View in Explorer” link, but since the user didn't ask for it, I’ll skip it for simplicity.
 
@@ -2167,7 +2172,7 @@ For the edit, I’ll call edit_file first and then perform the parallel deletion
 
 It seems like using a search and replace might be less precise than I’d like. So instead, I'm thinking it could be easier to completely overwrite the file with a simplified version using edit_file.
 
-The instructions indicate that I can propose edits or create a new file, and it allows rewriting the whole content. I’ll provide the content for the entire file, which is acceptable. 
+The instructions indicate that I can propose edits or create a new file, and it allows rewriting the whole content. I’ll provide the content for the entire file, which is acceptable.
 
 Next, I'll replace story 2.1 with the new simplified content and then proceed with the parallel delete_file calls. Let’s execute this plan!</details></think>
 
@@ -2188,18 +2193,18 @@ Lines added: 24, lines removed: 45
 @@ -1,61 +1,40 @@
 - # Story 2.1: Dashboard Balance & Recent History
 + # Story 2.1: Dashboard — Balance and 5 Recent Transactions
-  
+
   ## Status
   Approved
 + Priority: P1
-  
+
   ## Story
   As a user,
 - I want to see my native coin balance and a summary of my last 5 transactions for the selected network,
 - so that I can quickly understand my current status and recent activity.
 + I want to see my current native coin balance and the 5 most recent transactions for the selected network,
 + so that I can quickly understand my account status.
-  
+
   ## Acceptance Criteria
 - 1. Native coin balance loads for the selected network and can be refreshed on demand
 - 2. Last 5 transactions are displayed with:
@@ -2215,7 +2220,7 @@ Lines added: 24, lines removed: 45
 - 4. Loading and empty states are shown; error state displays retry option
 - 5. Performance: initial balance + history load in ≤ 1.5s on broadband; avoid RPC rate-limit errors by basic debouncing/throttling
 + 3. When the selected network changes, both balance and the 5 tx update to that network
-  
+
   ## Tasks / Subtasks
 - - [ ] Data fetching and background integration (AC: 1, 2, 3)
 -   - [ ] Implement balance fetch via ethers.js Provider.getBalance
@@ -2246,7 +2251,7 @@ Lines added: 24, lines removed: 45
 +   - [ ] On network change, refetch balance and last 5 transactions
 + - [ ] Tests
 +   - [ ] Unit/component tests for balance and tx list rendering
-  
+
   ## Dev Notes
 - - Requirements
 -   - Balance and last 5 transactions with specific fields; refresh on demand. [Source: prd/04-features.md#4.2 Dashboard]
@@ -2258,19 +2263,19 @@ Lines added: 24, lines removed: 45
 -   - UI: `src/app/components/blocks/` for `BalanceDisplay`, `TransactionList`
 -   - Hooks: `src/app/hooks/activity.tsx` or new hook for dashboard data
 -   - Utils: `src/app/utils/format.ts` for hash/date/amount; explorer helper in `src/app/utils`
-- 
+-
 - ### Testing
 - - Ensure deterministic fixtures for history; test pending/confirmed variants and empty state.
 + - Requirements source: [prd/04-features.md#4.2 Dashboard]
 + - Architecture references: UI and background responsibilities. [architecture/03-core-modules.md#3.1 UI Layer, #3.2 Background Script]
-  
+
   ## Change Log
 - | Date       | Version | Description                        | Author |
 - |------------|---------|------------------------------------|--------|
-- | 2025-08-10 | 0.1     | Initial draft for Story 2.1        | SM     | 
+- | 2025-08-10 | 0.1     | Initial draft for Story 2.1        | SM     |
 + | Date       | Version | Description                                      | Author |
 + |------------|---------|--------------------------------------------------|--------|
-+ | 2025-08-10 | 1.0     | Simplified core story; Approved; Priority P1     | SM     | 
++ | 2025-08-10 | 1.0     | Simplified core story; Approved; Priority P1     | SM     |
 ```
 
 </details>
@@ -2347,18 +2352,18 @@ Lines added: 58, lines removed: 1
 
 ```diff
 @@ -1,1 +1,58 @@
-- 
+-
 + # Story 3.1: Send Transaction — Form, Confirmation, and Status
-+ 
++
 + ## Status
 + Approved
 + Priority: P0
-+ 
++
 + ## Story
 + As a user,
 + I want to input a recipient address, select currency, and amount, confirm the details, and send the transaction,
 + so that I can transfer funds with a clear confirmation and status.
-+ 
++
 + ## Acceptance Criteria
 + 1. Form inputs
 +    - Recipient address (with basic validation: EVM address format)
@@ -2375,7 +2380,7 @@ Lines added: 58, lines removed: 1
 +    - Show clear inline validation and RPC errors; allow retry
 + 5. Network awareness
 +    - Uses the currently selected network/provider
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] UI — Send form (AC: 1)
 +   - [ ] Inputs: address, currency, amount; disabled when background is locked
@@ -2394,7 +2399,7 @@ Lines added: 58, lines removed: 1
 +   - [ ] Unit tests for validation and explorer helper
 +   - [ ] Component tests for form → modal → send
 +   - [ ] Integration test mocking provider to return tx hash and then receipt
-+ 
++
 + ## Dev Notes
 + - Product: [prd/04-features.md#4.3 Send Transaction]
 + - Architecture: background handles RPC; UI is React. [architecture/03-core-modules.md#3.2 Background Script; #3.1 UI Layer]
@@ -2402,10 +2407,10 @@ Lines added: 58, lines removed: 1
 +   - UI: `src/app/components/screens/Send.tsx` and `src/app/components/blocks/ConfirmSendModal.tsx`
 +   - Background: `src/core/back/services/tx/send.ts`
 +   - Utils: explorer link helper under `src/app/utils`
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                            | Author |
-+ |------------|---------|----------------------------------------|--------| 
++ |------------|---------|----------------------------------------|--------|
 ```
 
 </details>
@@ -2458,37 +2463,37 @@ Lines added: 30, lines removed: 1
 
 ```diff
 @@ -1,1 +1,30 @@
-- 
+-
 + # Story 4.1: Network Selector — Dropdown and Provider Switch
-+ 
++
 + ## Status
 + Approved
 + Priority: P1
-+ 
++
 + ## Story
 + As a user,
 + I want to choose between Ethereum, BSC, and Polygon from a dropdown,
 + so that my balance and history reflect the selected network.
-+ 
++
 + ## Acceptance Criteria
 + 1. Dropdown lists: Ethereum, BSC, Polygon
 + 2. On selection, switch provider to the network’s RPC endpoint
 + 3. Dashboard updates: balance and 5 tx re-fetched for the selected network
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] UI: simple dropdown component in the dashboard header
 + - [ ] State: store selected network in settings/store
 + - [ ] Provider: switch RPC provider accordingly
 + - [ ] Trigger re-fetch for balance and tx list on change
 + - [ ] Tests: selection changes provider and triggers data refresh
-+ 
++
 + ## Dev Notes
 + - Product: [prd/04-features.md#4.5 Network Selector]
 + - Architecture: centralize endpoints; derive explorer base URL per network. [architecture/03-core-modules.md#3.4 Blockchain Integration]
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                         | Author |
-+ |------------|---------|-------------------------------------|--------| 
++ |------------|---------|-------------------------------------|--------|
 ```
 
 </details>
@@ -2504,37 +2509,37 @@ Lines added: 30, lines removed: 1
 
 ```diff
 @@ -1,1 +1,30 @@
-- 
+-
 + # Story 5.1: Copy Address Button
-+ 
++
 + ## Status
 + Approved
 + Priority: P2
-+ 
++
 + ## Story
 + As a user,
 + I want a Copy Address button,
 + so that I can quickly copy my wallet address to share or paste elsewhere.
-+ 
++
 + ## Acceptance Criteria
 + 1. A button labeled "Copy" copies the current wallet address to the clipboard
 + 2. Success toast/tooltip shown; failure shows an error message
 + 3. Accessible: button has clear label and `aria-label` with the full address
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Add Copy button near the displayed address
 + - [ ] Use Clipboard API with graceful fallback
 + - [ ] Add success/error feedback
 + - [ ] Tests: simulate copy success/failure paths
-+ 
++
 + ## Dev Notes
 + - Product: [prd/04-features.md#4.4 Address & QR]
 + - Architecture: UI only; reads current account address from store/hook
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                         | Author |
 + |------------|---------|-------------------------------------|--------|
-+ | 2025-08-10 | 1.0     | Initial story; Approved; Priority P2| SM     | 
++ | 2025-08-10 | 1.0     | Initial story; Approved; Priority P2| SM     |
 ```
 
 </details>
@@ -2550,37 +2555,37 @@ Lines added: 30, lines removed: 1
 
 ```diff
 @@ -1,1 +1,30 @@
-- 
+-
 + # Story 5.2: QR Drag-and-Drop — Prefill Recipient
-+ 
++
 + ## Status
 + Approved
 + Priority: P2
-+ 
++
 + ## Story
 + As a user,
 + I want to drag-and-drop a QR code image into the extension to prefill the recipient address,
 + so that sending funds is faster and less error-prone.
-+ 
++
 + ## Acceptance Criteria
 + 1. On the Send screen, dropping an image with a QR code parses an address and populates the Recipient field
 + 2. If parsing fails or the QR does not contain a valid address, show a clear error
 + 3. Security: do not auto-submit; only prefill the field; user can edit
-+ 
++
 + ## Tasks / Subtasks
 + - [ ] Add drag-and-drop area to the Send screen (or whole panel)
 + - [ ] Parse dropped image using `jsqr` or `qrcode-reader`
 + - [ ] Validate parsed value as an EVM address, then prefill Recipient
 + - [ ] Error feedback and tests
-+ 
++
 + ## Dev Notes
 + - Product: [prd/04-features.md#4.4 Address & QR]
 + - Architecture: UI-level parsing; no background changes required
-+ 
++
 + ## Change Log
 + | Date       | Version | Description                         | Author |
 + |------------|---------|-------------------------------------|--------|
-+ | 2025-08-10 | 1.0     | Initial story; Approved; Priority P2| SM     | 
++ | 2025-08-10 | 1.0     | Initial story; Approved; Priority P2| SM     |
 ```
 
 </details>
@@ -2622,4 +2627,3 @@ Created story: `docs/stories/4.1.network-selector-dropdown.md` (Approved, Priori
 Want any other networks added or keep just these three?
 
 ---
-

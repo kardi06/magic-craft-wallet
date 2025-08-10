@@ -5,13 +5,11 @@
 _**User**_
 
 *shard-doc docs/prd.md /docs/prd/prd.md
-*shard-doc  docs/architecture.md
+*shard-doc docs/architecture.md
 
 ---
 
 _**Assistant**_
-
-
 
 ---
 
@@ -30,8 +28,6 @@ Read file: docs/prd.md
 Read file: docs/architecture.md
 
 ---
-
-
 
 ---
 
@@ -123,9 +119,9 @@ Lines added: 13, lines removed: 1
 
 ```diff
 @@ -1,1 +1,13 @@
-- 
+-
 + # MagicCraft Wallet - Product Requirements Document (PRD)
-+ 
++
 + - [1. Overview](./01-overview.md)
 + - [2. Goals & Objectives](./02-goals-objectives.md)
 + - [3. Target Platforms](./03-target-platforms.md)
@@ -136,7 +132,7 @@ Lines added: 13, lines removed: 1
 + - [8. Milestones & Delivery Plan](./08-milestones-delivery-plan.md)
 + - [9. Acceptance Criteria](./09-acceptance-criteria.md)
 + - [10. Deliverables](./10-deliverables.md)
-+ - [11. Risks & Considerations](./11-risks-considerations.md) 
++ - [11. Risks & Considerations](./11-risks-considerations.md)
 ```
 
 </details>
@@ -152,11 +148,11 @@ Lines added: 4, lines removed: 1
 
 ```diff
 @@ -1,1 +1,4 @@
-- 
+-
 + ## 1. Overview
 + MagicCraft Wallet is a browser extension wallet built on top of the open-source Wigwam wallet framework. It is designed to provide users with a magical, themed experience while managing their cryptocurrency on EVM-compatible blockchains. The wallet will support Ethereum, Binance Smart Chain (BSC), and Polygon mainnets, with a focus on security, usability, and aesthetic appeal.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -172,7 +168,7 @@ Lines added: 9, lines removed: 1
 
 ```diff
 @@ -1,1 +1,9 @@
-- 
+-
 + ## 2. Goals & Objectives
 + - Provide a secure, user-friendly wallet experience in a browser extension.
 + - Support onboarding via new wallet creation or importing existing wallets.
@@ -180,8 +176,8 @@ Lines added: 9, lines removed: 1
 + - Enable sending cryptocurrency with confirmation and explorer tracking.
 + - Introduce a MagicCraft spellbook theme with immersive visuals.
 + - Limit scope to core wallet functions for speed of delivery.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -197,11 +193,11 @@ Lines added: 4, lines removed: 1
 
 ```diff
 @@ -1,1 +1,4 @@
-- 
+-
 + ## 3. Target Platforms
 + - Google Chrome (latest version)
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -217,15 +213,15 @@ Lines added: 47, lines removed: 1
 
 ```diff
 @@ -1,1 +1,47 @@
-- 
+-
 + ## 4. Features
-+ 
++
 + ### 4.1 Wallet Onboarding
 + - Create a new wallet with a 12-word mnemonic phrase.
 + - Import existing wallet using a 12-word mnemonic.
 + - Encrypt mnemonic with a user-defined passphrase before storage using AES.
 + - Store encrypted wallet data in `chrome.storage.local`.
-+ 
++
 + ### 4.2 Dashboard
 + - Show native coin balance for the selected network.
 + - Display the last 5 transactions with:
@@ -234,7 +230,7 @@ Lines added: 47, lines removed: 1
 +   - Amount
 +   - Status (confirmed/pending)
 + - Refresh balance and transactions on demand.
-+ 
++
 + ### 4.3 Send Transaction
 + - Input fields for recipient address, currency, and amount.
 + - MetaMask-style confirmation pop-up with:
@@ -245,15 +241,15 @@ Lines added: 47, lines removed: 1
 + - On send:
 +   - Show transaction status.
 +   - Provide “View in Explorer” link.
-+ 
++
 + ### 4.4 Address & QR
 + - "Copy Address" button to copy to clipboard.
 + - Drag-and-drop QR code image to auto-fill recipient field.
-+ 
++
 + ### 4.5 Network Selector
 + - Dropdown menu for Ethereum Mainnet, BSC Mainnet, and Polygon Mainnet.
 + - Preconfigured RPC endpoints.
-+ 
++
 + ### 4.6 MagicCraft Theme
 + - Color palette:
 +   - Midnight Blue: `#1A1B2F`
@@ -263,8 +259,8 @@ Lines added: 47, lines removed: 1
 +   - Rounded, parchment-style panels.
 +   - Glowing hover effects on buttons.
 +   - Rune-like iconography.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -280,13 +276,13 @@ Lines added: 6, lines removed: 1
 
 ```diff
 @@ -1,1 +1,6 @@
-- 
+-
 + ## 5. Non-Goals
 + - No NFT display or management in v1.
 + - No token swap functionality.
 + - No integration with non-EVM blockchains.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -302,31 +298,31 @@ Lines added: 24, lines removed: 1
 
 ```diff
 @@ -1,1 +1,24 @@
-- 
+-
 + ## 6. Technical Requirements
-+ 
++
 + ### 6.1 Frontend
 + - Framework: React + TailwindCSS
 + - State Management: Context API or Zustand
 + - QR Code Parsing: `qrcode-reader` or `jsqr`
-+ 
++
 + ### 6.2 Web3 Integration
 + - Library: Ethers.js
 + - RPC Connections:
 +   - Ethereum Mainnet
 +   - Binance Smart Chain Mainnet
 +   - Polygon Mainnet
-+ 
++
 + ### 6.3 Security
 + - AES encryption for mnemonic storage.
 + - Passphrase required for wallet unlock and transaction signing.
-+ 
++
 + ### 6.4 Extension APIs
 + - Browser Storage: `chrome.storage.local`
 + - Clipboard API for copy functionality.
 + - Drag-and-drop event handling for QR codes.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -342,25 +338,25 @@ Lines added: 18, lines removed: 1
 
 ```diff
 @@ -1,1 +1,18 @@
-- 
+-
 + ## 7. User Stories
-+ 
++
 + ### US1: Wallet Creation/Import
 + **As a** new user, **I want** to create or import a wallet, **so that** I can start managing my crypto in MagicCraft.
-+ 
++
 + ### US2: Balance & Transaction History
 + **As a** user, **I want** to see my balance and recent transactions, **so that** I can track my funds easily.
-+ 
++
 + ### US3: Sending Transactions
 + **As a** user, **I want** to send cryptocurrency with a confirmation step, **so that** I can avoid mistakes.
-+ 
++
 + ### US4: Address Tools
 + **As a** user, **I want** to copy my wallet address and scan QR codes, **so that** I can send/receive funds easily.
-+ 
++
 + ### US5: Network Switching
 + **As a** user, **I want** to change networks, **so that** I can manage assets on different EVM chains.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -376,28 +372,28 @@ Lines added: 21, lines removed: 1
 
 ```diff
 @@ -1,1 +1,21 @@
-- 
+-
 + ## 8. Milestones & Delivery Plan
-+ 
++
 + ### Phase 1: Branding & Setup
 + - Update name, icons, and colors.
 + - Prepare Tailwind theme.
-+ 
++
 + ### Phase 2: Core Wallet Enhancements
 + - Implement AES encryption with passphrase.
 + - Display balance and transactions.
 + - Add send transaction confirmation.
-+ 
++
 + ### Phase 3: Utility Features
 + - Copy address button.
 + - QR code drop autofill.
-+ 
++
 + ### Phase 4: Theme & Testing
 + - Apply MagicCraft theme.
 + - Cross-browser testing.
 + - Record demo video.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -413,7 +409,7 @@ Lines added: 9, lines removed: 1
 
 ```diff
 @@ -1,1 +1,9 @@
-- 
+-
 + ## 9. Acceptance Criteria
 + - Wallet creation/import works with encryption and passphrase unlock.
 + - Balance and last 5 transactions display correctly for selected network.
@@ -421,8 +417,8 @@ Lines added: 9, lines removed: 1
 + - Copy address button and QR autofill work correctly.
 + - Network selector functions for Ethereum, BSC, and Polygon.
 + - Theme matches MagicCraft color palette and style.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -438,7 +434,7 @@ Lines added: 10, lines removed: 1
 
 ```diff
 @@ -1,1 +1,10 @@
-- 
+-
 + ## 10. Deliverables
 + - GitHub repository with source code.
 + - README.md with build/install instructions.
@@ -447,8 +443,8 @@ Lines added: 10, lines removed: 1
 +   - Dashboard with balances/transactions.
 +   - Sending transaction flow.
 +   - Theme design.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -464,13 +460,13 @@ Lines added: 6, lines removed: 1
 
 ```diff
 @@ -1,1 +1,6 @@
-- 
+-
 + ## 11. Risks & Considerations
 + - RPC endpoint rate limits — may require API keys.
 + - Browser storage size limits — must store minimal data.
 + - QR parsing may fail with poor-quality images.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -486,12 +482,12 @@ Lines added: 5, lines removed: 1
 
 ```diff
 @@ -1,1 +1,5 @@
-- 
+-
 + # MagicCraft Wallet - Fullstack Architecture
-+ 
++
 + - [1. Overview](./01-overview.md)
 + - [2. High-Level Architecture Diagram](./02-high-level-architecture-diagram.md)
-+ - [3. Core Modules](./03-core-modules.md) 
++ - [3. Core Modules](./03-core-modules.md)
 ```
 
 </details>
@@ -507,13 +503,13 @@ Lines added: 6, lines removed: 1
 
 ```diff
 @@ -1,1 +1,6 @@
-- 
+-
 + ## 1. Overview
-+ MagicCraft Wallet is a browser extension cryptocurrency wallet built on the Wigwam open-source foundation. 
-+ It supports Ethereum, Binance Smart Chain (BSC), and Polygon mainnets with a themed UI inspired by a magical spellbook. 
++ MagicCraft Wallet is a browser extension cryptocurrency wallet built on the Wigwam open-source foundation.
++ It supports Ethereum, Binance Smart Chain (BSC), and Polygon mainnets with a themed UI inspired by a magical spellbook.
 + The architecture is modular, secure, and optimized for quick feature delivery.
-+ 
-+ --- 
++
++ ---
 ```
 
 </details>
@@ -529,9 +525,9 @@ Lines added: 26, lines removed: 1
 
 ```diff
 @@ -1,1 +1,26 @@
-- 
+-
 + ## 2. High-Level Architecture Diagram
-+ 
++
 + +--------------------------------------------------------+
 + | Browser Environment |
 + | |
@@ -555,7 +551,7 @@ Lines added: 26, lines removed: 1
 + | | chrome.storage | | RPC Providers | |
 + | | (local) | | (Ethereum/BSC/Poly) | |
 + | +----------------+ +--------------------+ |
-+ +--------------------------------------------------------+ 
++ +--------------------------------------------------------+
 ```
 
 </details>
@@ -569,11 +565,11 @@ I will create the Core Modules shard for the Architecture document, preserving s
 **Chunk 1**
 Lines added: 114, lines removed: 1
 
-```diff
+````diff
 @@ -1,1 +1,114 @@
-- 
+-
 + ## 3. Core Modules
-+ 
++
 + ### 3.1 UI Layer (React + TailwindCSS)
 + - **Popup UI**: Displays balance, recent transactions, send form, network selector.
 + - **Onboarding Pages**: Wallet creation/import, passphrase setup.
@@ -588,7 +584,7 @@ Lines added: 114, lines removed: 1
 +   - Arcane Purple: `#6E4B9E`
 +   - Gold Accent: `#F1C40F`
 +   - Spellbook-inspired rounded panels & glow effects.
-+ 
++
 + ### 3.2 Background Script
 + - **Wallet Management**:
 +   - Generate/import 12-word mnemonic (bip39).
@@ -601,7 +597,7 @@ Lines added: 114, lines removed: 1
 +   - Switch RPC provider based on network selector.
 + - **Security**:
 +   - Passphrase required before signing.
-+ 
++
 + ### 3.3 Storage Layer
 + - Uses `chrome.storage.local` for persistent data:
 + ```json
@@ -618,75 +614,75 @@ Lines added: 114, lines removed: 1
 + ```
 + 3.4 Blockchain Integration
 + Library: ethers.js
-+ 
++
 + Networks Supported:
-+ 
++
 + Ethereum Mainnet
-+ 
++
 + Binance Smart Chain Mainnet
-+ 
++
 + Polygon Mainnet
-+ 
++
 + Endpoints: Defined in /src/config/networks.ts.
-+ 
++
 + 3.5 QR Code Integration
 + Libraries: jsqr or qrcode-reader
-+ 
++
 + Flow:
-+ 
++
 + User drags QR image.
-+ 
++
 + Parse QR to get address.
-+ 
++
 + Autofill recipient field.
-+ 
++
 + 4. Data Flow Example (Send Transaction)
 + User enters tx details in UI.
-+ 
++
 + UI sends message to background script.
-+ 
++
 + Background script decrypts mnemonic, signs tx, sends via RPC.
-+ 
++
 + Returns tx hash to UI.
-+ 
++
 + UI displays link to block explorer.
-+ 
++
 + 5. Security Considerations
 + AES encryption at rest for sensitive data.
-+ 
++
 + No passphrase storage.
-+ 
++
 + All blockchain queries via RPC — no third-party key handling.
-+ 
++
 + 6. Technology Stack
 + Frontend: React, TailwindCSS
-+ 
++
 + Blockchain: ethers.js, bip39
-+ 
++
 + QR Parsing: jsqr or qrcode-reader
-+ 
++
 + Extension API: WebExtension Polyfill
-+ 
++
 + Build Tool: Vite/Webpack
-+ 
++
 + Language: TypeScript
-+ 
++
 + 7. Deployment
 + yarn build → creates /dist folder.
-+ 
++
 + Load unpacked extension in Chrome/Firefox.
-+ 
++
 + Publish to respective extension stores.
-+ 
++
 + 8. Future Enhancements
 + Token list & ERC-20 support.
-+ 
++
 + NFT integration.
-+ 
++
 + Hardware wallet support.
-+ 
-+ DApp browser. 
-```
++
++ DApp browser.
+````
 
 </details>
 
@@ -701,8 +697,8 @@ Lines added: 1, lines removed: 1
 
 ```diff
 @@ -1,1 +1,1 @@
-- 
-+ Refer to the PRD index at `./prd.md` for section links. 
+-
++ Refer to the PRD index at `./prd.md` for section links.
 ```
 
 </details>
@@ -718,8 +714,8 @@ Lines added: 1, lines removed: 1
 
 ```diff
 @@ -1,1 +1,1 @@
-- 
-+ Refer to the Architecture index at `./architecture.md` for section links. 
+-
++ Refer to the Architecture index at `./architecture.md` for section links.
 ```
 
 </details>
@@ -737,32 +733,36 @@ We used functions.run_terminal_cmd to create directories, which is fine. However
 I need to confirm to the user that the tasks have executed and clarify where. I’m considering updating the documentation to include a link to the original root document. The user asked to shard docs/prd.md into /docs/prd/prd.md, which we accomplished well. For the architecture files, they didn't specify a destination, but we created it under docs/architecture, also producing an index file. It’s important to ensure that the original documents remain unchanged, which they do. The docs/prd.md contains triple-quoted content, but we made sure not to include those in the shards. That's a relief!
 **Reviewing document shards and updates**
 
-The original document had triple quotes at the beginning and end, but our shards effectively removed those. The instruction was to preserve the content exactly, and I see how this might feel like a deviation. However, it seems the triple quotes weren't meant to be part of the markdown. The shards still represent the content accurately. It might help to provide a list of created files for clarity. Also, since they invoked *shard-doc for docs/architecture.md without a destination, it defaulted to docs/architecture/architecture.md, which is what we implemented. Including a status update and summary would be helpful!
+The original document had triple quotes at the beginning and end, but our shards effectively removed those. The instruction was to preserve the content exactly, and I see how this might feel like a deviation. However, it seems the triple quotes weren't meant to be part of the markdown. The shards still represent the content accurately. It might help to provide a list of created files for clarity. Also, since they invoked \*shard-doc for docs/architecture.md without a destination, it defaulted to docs/architecture/architecture.md, which is what we implemented. Including a status update and summary would be helpful!
 **Composing final response**
 
-The instructions specify to present options as a numbered list, but we’re executing commands instead. They want the "Sarah" persona for the greeting and to await further input, although commands were already provided. We should respond as Sarah while considering help commands. We’re missing the dependency file, which complicates task execution. The ‘docs/prd/prd.md’ index links need to correspond with created files. 
+The instructions specify to present options as a numbered list, but we’re executing commands instead. They want the "Sarah" persona for the greeting and to await further input, although commands were already provided. We should respond as Sarah while considering help commands. We’re missing the dependency file, which complicates task execution. The ‘docs/prd/prd.md’ index links need to correspond with created files.
 
 So, the final response should acknowledge completion, provide output paths, address the lack of dependency, and ask about adjusting shard splitting for sections 4-8. I’ll also mention if they want to run "doc-out." I'll keep it brief and include a status update and summary in markdown format.</details></think>
 
 ---
 
 I checked for the shard-doc workflow file but it doesn’t exist in the workspace, so I proceeded with a careful manual shard:
+
 - Split on top-level headings (lines starting with ##), preserved content and rules.
 - Created an index file with links to each shard.
 
 Results:
+
 - PRD sharded to `docs/prd/` and indexed at `docs/prd/prd.md`
 - Architecture sharded to `docs/architecture/` and indexed at `docs/architecture/architecture.md`
 
 Key outputs:
+
 - PRD index: `docs/prd/prd.md`
 - PRD sections: `docs/prd/01-overview.md`, `02-goals-objectives.md`, `03-target-platforms.md`, `04-features.md`, `05-non-goals.md`, `06-technical-requirements.md`, `07-user-stories.md`, `08-milestones-delivery-plan.md`, `09-acceptance-criteria.md`, `10-deliverables.md`, `11-risks-considerations.md`
 - Architecture index: `docs/architecture/architecture.md`
 - Architecture sections: `docs/architecture/01-overview.md`, `02-high-level-architecture-diagram.md`, `03-core-modules.md` (contains subsequent numbered content exactly as in the source since later items weren’t marked with “##”)
 
 Would you like me to:
+
 1. Further split the Architecture shard so items 4–8 become separate sections?
-2. Generate a “doc-out” combined document from the shards? 
+2. Generate a “doc-out” combined document from the shards?
 
 - Created `docs/prd/` and `docs/architecture/` directories.
 - Wrote index files and shard files with preserved content.
@@ -772,7 +772,7 @@ Would you like me to:
 
 _**User**_
 
-*create-epic
+\*create-epic
 
 ---
 
@@ -792,7 +792,7 @@ I need to follow the status update spec by providing a brief progress note befor
 The rules specify that when I execute formal task workflows from dependencies, all instructions take precedence over any base constraints. However, if a dependency is missing, I can't execute. The REQUEST-RESOLUTION suggests matching flexibly, but I need to ask for clarification if there's no clear match. Since I have a match but the file is gone, I should ask the user to add it or allow a fallback to the epic creation process. I’ll present options as a numbered list: 1) Locate and load the missing task; 2) Use the fallback "brownfield epic" template with elicitation; 3) Cancel. I’ll propose the fields we need for the epic creation.
 **Following command formatting rules**
 
-The user wants commands preceded by an asterisk, but I can still allow them to type a number to select from the options. The rule states that when I present tasks or templates, I should list them as numbered options, letting the user choose by typing a number. Since the user typed "*create-epic," I’ll attempt to find the corresponding file. If it's not there, I'll follow up quickly to ask which option they prefer. I'll proceed with a parallel list directory search.</details></think>
+The user wants commands preceded by an asterisk, but I can still allow them to type a number to select from the options. The rule states that when I present tasks or templates, I should list them as numbered options, letting the user choose by typing a number. Since the user typed "\*create-epic," I’ll attempt to find the corresponding file. If it's not there, I'll follow up quickly to ask which option they prefer. I'll proceed with a parallel list directory search.</details></think>
 
 ---
 
@@ -826,16 +826,17 @@ I’m planning to set up MagicCraft theme integration. I’ll present options, i
 
 I can’t find the formal task definition for create-epic in `.bmad-core`, so I’ll proceed with a structured fallback to generate an epic from your PRD/Architecture. Please pick an option:
 
-1) Core Wallet MVP (Onboarding, Security, Balance, Send)
-2) Dashboard & Transaction History
-3) Send Transaction Flow
-4) Network Selector & RPC
-5) Address Tools & QR
-6) MagicCraft Theme Integration
-7) Create all of the above as separate epics
-8) Custom (you provide a title)
+1. Core Wallet MVP (Onboarding, Security, Balance, Send)
+2. Dashboard & Transaction History
+3. Send Transaction Flow
+4. Network Selector & RPC
+5. Address Tools & QR
+6. MagicCraft Theme Integration
+7. Create all of the above as separate epics
+8. Custom (you provide a title)
 
 Provide your choice number and confirm these fields:
+
 - Owner:
 - Target release/sprint:
 - Priority: (P0/P1/P2)
@@ -870,7 +871,7 @@ First, I’ll set the priorities for various tasks, such as Core Wallet MVP and 
 I’ll proceed to create the "docs/epics" folder and seven associated files, ensuring I reference PRD and architecture shards with the correct paths.
 **Implementing tool calls and drafting files**
 
-I'm going to use `run_terminal_cmd` to create the necessary directory and then use `multi_tool_use.parallel` to create the required files. I'll draft content for several documentation files, including the core wallet MVP, dashboard transaction history, and the one-day blitz plan, among others. It's important to keep the content concise yet complete. 
+I'm going to use `run_terminal_cmd` to create the necessary directory and then use `multi_tool_use.parallel` to create the required files. I'll draft content for several documentation files, including the core wallet MVP, dashboard transaction history, and the one-day blitz plan, among others. It's important to keep the content concise yet complete.
 
 I'll also update or create a README document in the "docs/epics" directory, listing all the epics, and proceed with everything in parallel.</details></think>
 
@@ -901,17 +902,17 @@ Lines added: 10, lines removed: 1
 
 ```diff
 @@ -1,1 +1,10 @@
-- 
+-
 + # Epics Index
-+ 
++
 + - [Epic 1: Core Wallet MVP](./epic-01-core-wallet-mvp.md)
 + - [Epic 2: Dashboard & History](./epic-02-dashboard-history.md)
 + - [Epic 3: Send Transaction Flow](./epic-03-send-transaction.md)
 + - [Epic 4: Network Selector & RPC](./epic-04-network-selector.md)
 + - [Epic 5: Address Tools & QR](./epic-05-address-tools-qr.md)
 + - [Epic 6: MagicCraft Theme](./epic-06-theme.md)
-+ 
-+ - [1-Day Blitz Plan](./blitz-1-day.md) 
++
++ - [1-Day Blitz Plan](./blitz-1-day.md)
 ```
 
 </details>
@@ -927,33 +928,33 @@ Lines added: 26, lines removed: 1
 
 ```diff
 @@ -1,1 +1,26 @@
-- 
+-
 + # Epic 1: Core Wallet MVP
-+ 
++
 + - Owner: TBD
 + - Target: 1-day blitz
 + - Priority: P0
 + - Success Metrics: Wallet can be created/imported, unlocked, and used to sign a tx in test env
 + - Dependencies: None
 + - Risks: Timebox; encryption bugs
-+ 
++
 + ## Objective
 + Deliver secure onboarding, encryption, and base background logic to enable signing.
-+ 
++
 + ## Scope
 + - PRD: [Overview](../prd/01-overview.md), [Goals](../prd/02-goals-objectives.md), [Features/Onboarding](../prd/04-features.md)
 + - Architecture: [Overview](../architecture/01-overview.md), [Core Modules](../architecture/03-core-modules.md)
-+ 
++
 + ## Acceptance Criteria
 + - Create/import 12-word mnemonic
 + - AES encryption at rest, passphrase unlock
 + - Encrypted storage in chrome.storage.local
 + - Background can decrypt/sign a dummy tx
-+ 
++
 + ## Implementation Notes
 + - Use bip39 + ethers.js wallet
 + - AES with WebCrypto
-+ - Add minimal unlock gate in background 
++ - Add minimal unlock gate in background
 ```
 
 </details>
@@ -969,30 +970,30 @@ Lines added: 23, lines removed: 1
 
 ```diff
 @@ -1,1 +1,23 @@
-- 
+-
 + # Epic 2: Dashboard & History
-+ 
++
 + - Owner: TBD
 + - Target: 1-day blitz
 + - Priority: P1
 + - Success Metrics: Balance and last 5 tx visible for selected network
 + - Dependencies: Epic 1 (wallet ready)
 + - Risks: RPC rate limits
-+ 
++
 + ## Objective
 + Show balances and recent tx summary in the popup UI.
-+ 
++
 + ## Scope
 + - PRD: [Dashboard](../prd/04-features.md), [Acceptance Criteria](../prd/09-acceptance-criteria.md)
 + - Architecture: [Core Modules](../architecture/03-core-modules.md)
-+ 
++
 + ## Acceptance Criteria
 + - Native coin balance loads and refreshes
 + - Last 5 tx show hash, date/time, amount, status, explorer link
-+ 
++
 + ## Implementation Notes
 + - Use ethers.js Provider.getBalance and getHistory (or third-party if not supported)
-+ - Shorten hashes; add explorer URL helpers 
++ - Shorten hashes; add explorer URL helpers
 ```
 
 </details>
@@ -1008,31 +1009,31 @@ Lines added: 24, lines removed: 1
 
 ```diff
 @@ -1,1 +1,24 @@
-- 
+-
 + # Epic 3: Send Transaction Flow
-+ 
++
 + - Owner: TBD
 + - Target: 1-day blitz
 + - Priority: P0
 + - Success Metrics: Successful send with confirmation and explorer link
 + - Dependencies: Epic 1 (wallet), Epic 2 (UI base)
 + - Risks: Gas estimation/nonce issues
-+ 
++
 + ## Objective
 + Enable sending transactions with a confirmation modal.
-+ 
++
 + ## Scope
 + - PRD: [Send Transaction](../prd/04-features.md)
 + - Architecture: [Core Modules](../architecture/03-core-modules.md)
-+ 
++
 + ## Acceptance Criteria
 + - Input fields for address/currency/amount
 + - Confirmation shows recipient, amount, network, gas fee
 + - On send, show status; link to explorer
-+ 
++
 + ## Implementation Notes
 + - Use ethers.js sendTransaction
-+ - Add validation for address/amount 
++ - Add validation for address/amount
 ```
 
 </details>
@@ -1048,29 +1049,29 @@ Lines added: 22, lines removed: 1
 
 ```diff
 @@ -1,1 +1,22 @@
-- 
+-
 + # Epic 4: Network Selector & RPC
-+ 
++
 + - Owner: TBD
 + - Target: 1-day blitz
 + - Priority: P1
 + - Success Metrics: Switch networks and reflect state in UI and provider
 + - Dependencies: Epic 1
 + - Risks: RPC configuration drift
-+ 
++
 + ## Objective
 + Allow user to select Ethereum, BSC, Polygon and switch providers seamlessly.
-+ 
++
 + ## Scope
 + - PRD: [Network Selector](../prd/04-features.md)
 + - Architecture: [Core Modules](../architecture/03-core-modules.md)
-+ 
++
 + ## Acceptance Criteria
 + - Dropdown with the 3 networks
 + - Provider switches; balance/tx re-query
-+ 
++
 + ## Implementation Notes
-+ - Centralize RPC endpoints; derive explorer URLs per network 
++ - Centralize RPC endpoints; derive explorer URLs per network
 ```
 
 </details>
@@ -1086,29 +1087,29 @@ Lines added: 22, lines removed: 1
 
 ```diff
 @@ -1,1 +1,22 @@
-- 
+-
 + # Epic 5: Address Tools & QR
-+ 
++
 + - Owner: TBD
 + - Target: 1-day blitz
 + - Priority: P2
 + - Success Metrics: Copy address and QR autofill working
 + - Dependencies: Epic 1
 + - Risks: QR parsing inconsistencies
-+ 
++
 + ## Objective
 + Provide convenience tools for copying address and QR parsing.
-+ 
++
 + ## Scope
 + - PRD: [Address & QR](../prd/04-features.md)
 + - Architecture: [Core Modules](../architecture/03-core-modules.md)
-+ 
++
 + ## Acceptance Criteria
 + - Copy address button to clipboard API
 + - Drag-and-drop QR image parses address and autofills recipient
-+ 
++
 + ## Implementation Notes
-+ - Use Clipboard API; use jsqr or qrcode-reader 
++ - Use Clipboard API; use jsqr or qrcode-reader
 ```
 
 </details>
@@ -1124,29 +1125,29 @@ Lines added: 22, lines removed: 1
 
 ```diff
 @@ -1,1 +1,22 @@
-- 
+-
 + # Epic 6: MagicCraft Theme
-+ 
++
 + - Owner: TBD
 + - Target: 1-day blitz
 + - Priority: P2
 + - Success Metrics: UI reflects color palette and style
 + - Dependencies: Epics 1–3 (base flows)
 + - Risks: Time constraints limit polish
-+ 
++
 + ## Objective
 + Apply consistent theme styling per PRD.
-+ 
++
 + ## Scope
 + - PRD: [Theme](../prd/04-features.md)
 + - Architecture: [Overview](../architecture/01-overview.md)
-+ 
++
 + ## Acceptance Criteria
 + - Color palette applied
 + - Spellbook visual touches present on main screens
-+ 
++
 + ## Implementation Notes
-+ - Tailwind theme tokens; basic glow effects 
++ - Tailwind theme tokens; basic glow effects
 ```
 
 </details>
@@ -1162,11 +1163,11 @@ Lines added: 25, lines removed: 1
 
 ```diff
 @@ -1,1 +1,25 @@
-- 
+-
 + # 1-Day Blitz Plan
-+ 
++
 + Timebox: 8 hours total. Focus on working vertical slice; cut scope if needed.
-+ 
++
 + ## Schedule
 + - Hour 0.0–0.5: Setup, task split, targets confirmed
 + - Hour 0.5–2.5: Epic 1 core (onboarding + encryption + background sign stub)
@@ -1175,7 +1176,7 @@ Lines added: 25, lines removed: 1
 + - Hour 5.0–6.0: Epic 4 network selector
 + - Hour 6.0–7.0: Epic 5 address tools (copy + QR)
 + - Hour 7.0–8.0: Epic 6 theme pass; smoke test; demo script
-+ 
++
 + ## Success Criteria
 + - Create/import wallet; unlock with passphrase
 + - View balance; see recent tx list (5)
@@ -1183,11 +1184,11 @@ Lines added: 25, lines removed: 1
 + - Switch between ETH/BSC/Polygon
 + - Copy address; QR autofill works
 + - Themed UI applied to main screens
-+ 
++
 + ## Links
 + - PRD: ../prd/prd.md
 + - Architecture: ../architecture/architecture.md
-+ - Epics: ./README.md 
++ - Epics: ./README.md
 ```
 
 </details>
@@ -1216,19 +1217,19 @@ Lines added: 28, lines removed: 1
 
 ```diff
 @@ -1,1 +1,28 @@
-- 
+-
 + # Epic 0: Day-1 MVP Slice
-+ 
++
 + - Owner: TBD
 + - Target: 1-day blitz
 + - Priority: P0
 + - Success Metrics: End-to-end demoable flow: create/import, view balance/tx, send tx with confirmation, network switch, copy address, QR autofill, themed UI
 + - Dependencies: None
 + - Risks: Timebox, integration issues
-+ 
++
 + ## Objective
 + Deliver a vertical slice across wallet onboarding, transaction send, and core UI in one day.
-+ 
++
 + ## Includes
 + - Epic 1: Core Wallet MVP
 + - Epic 3: Send Transaction Flow
@@ -1236,15 +1237,15 @@ Lines added: 28, lines removed: 1
 + - Epic 4: Network Selector & RPC
 + - Epic 5: Address Tools & QR
 + - Epic 6: MagicCraft Theme
-+ 
++
 + ## Acceptance Criteria
 + - E2E path works on at least one mainnet with test funds
 + - No critical errors in console; basic error states handled
-+ 
++
 + ## Links
 + - PRD: ../prd/prd.md
 + - Architecture: ../architecture/architecture.md
-+ - All epics: ./README.md 
++ - All epics: ./README.md
 ```
 
 </details>
@@ -1264,9 +1265,9 @@ Lines added: 12, lines removed: 1
 
 ```diff
 @@ -1,1 +1,12 @@
-- 
+-
 + # Day-1 MVP Execution Checklist
-+ 
++
 + - [ ] Confirm networks (RPC URLs, explorer base URLs)
 + - [ ] Implement bip39 + AES storage; unlock gate
 + - [ ] Create/import UI flow; basic validation
@@ -1276,7 +1277,7 @@ Lines added: 12, lines removed: 1
 + - [ ] Copy address button
 + - [ ] QR drag-and-drop -> address parse
 + - [ ] Theme tokens and primary screens styled
-+ - [ ] Smoke test E2E; record demo 
++ - [ ] Smoke test E2E; record demo
 ```
 
 </details>
@@ -1297,7 +1298,7 @@ Lines added: 1, lines removed: undefined
 ```diff
 @@ -1,4 +1,5 @@
   # Epics Index
-  
+
 + - [Epic 0: Day-1 MVP Slice](./epic-00-day1-mvp.md)
   - [Epic 1: Core Wallet MVP](./epic-01-core-wallet-mvp.md)
   - [Epic 2: Dashboard & History](./epic-02-dashboard-history.md)
@@ -1309,12 +1310,12 @@ Lines added: 1, lines removed: undefined
 
 <think><details><summary>Thought Process</summary>**Finalizing documentation process**
 
-I need to ensure our test/build runs only if the code is edited, but since we've only modified the docs, that's fine. I’ll present where the docs are and confirm our 1-day plan with quick reading links. Next, I can slot times for the team with minimal adjustments. 
+I need to ensure our test/build runs only if the code is edited, but since we've only modified the docs, that's fine. I’ll present where the docs are and confirm our 1-day plan with quick reading links. Next, I can slot times for the team with minimal adjustments.
 
 We also need to include a summary as per spec and a status update before final tool calls. Let’s keep it concise while mentioning key documents created, like the epic files and checklists.
 **Crafting concise response**
 
-I need to keep things brief. First, I’ll acknowledge that we've packaged the Day-1 MVP with a schedule and specify where to find the docs. If they want details like owners or priorities, I should ask for that concisely. 
+I need to keep things brief. First, I’ll acknowledge that we've packaged the Day-1 MVP with a schedule and specify where to find the docs. If they want details like owners or priorities, I should ask for that concisely.
 
 I could offer to auto-generate "doc-out" or create task board issues. Instead of an open-ended question, I’ll ask, "Confirm owner for Day-1 MVP" to proceed.
 
@@ -1325,6 +1326,7 @@ Finally, I'll compile a short status update mentioning the created epics and che
 Status: I created a Day-1 plan and split the scope into a master MVP epic plus focused epics, all linked to PRD/Architecture shards. I also added a tight execution checklist to keep us on track.
 
 What I created
+
 - Day-1 master epic: `docs/epics/epic-00-day1-mvp.md`
 - Focused epics: `docs/epics/epic-01-..-06-*.md` (MVP, Dashboard, Send, Network, Address/QR, Theme)
 - Blitz plan: `docs/epics/blitz-1-day.md`
@@ -1332,6 +1334,7 @@ What I created
 - Epics index (updated): `docs/epics/README.md`
 
 Need from you (1 message, minimal):
+
 - Owner for Day-1 MVP:
 - Target release/sprint:
 - Priority scheme confirmation: keep P0 for MVP/Send, P1 for Dashboard/Network, P2 for Address/Theme? (Yes/No)
@@ -1341,4 +1344,3 @@ Need from you (1 message, minimal):
 - Updated `docs/epics/README.md` with Epic 0 and all links.
 
 ---
-

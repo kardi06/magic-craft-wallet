@@ -1,6 +1,7 @@
 ## 3. Core Modules
 
 ### 3.1 UI Layer (React + TailwindCSS)
+
 - **Popup UI**: Displays balance, recent transactions, send form, network selector.
 - **Onboarding Pages**: Wallet creation/import, passphrase setup.
 - **Confirmation Modals**: For transaction approval.
@@ -16,6 +17,7 @@
   - Spellbook-inspired rounded panels & glow effects.
 
 ### 3.2 Background Script
+
 - **Wallet Management**:
   - Generate/import 12-word mnemonic (bip39).
   - AES encrypt mnemonic with passphrase.
@@ -29,7 +31,9 @@
   - Passphrase required before signing.
 
 ### 3.3 Storage Layer
+
 - Uses `chrome.storage.local` for persistent data:
+
 ```json
 {
   "wallet": {
@@ -42,6 +46,7 @@
   }
 }
 ```
+
 3.4 Blockchain Integration
 Library: ethers.js
 
@@ -67,7 +72,7 @@ Parse QR to get address.
 Autofill recipient field.
 
 4. Data Flow Example (Send Transaction)
-User enters tx details in UI.
+   User enters tx details in UI.
 
 UI sends message to background script.
 
@@ -78,14 +83,14 @@ Returns tx hash to UI.
 UI displays link to block explorer.
 
 5. Security Considerations
-AES encryption at rest for sensitive data.
+   AES encryption at rest for sensitive data.
 
 No passphrase storage.
 
 All blockchain queries via RPC — no third-party key handling.
 
 6. Technology Stack
-Frontend: React, TailwindCSS
+   Frontend: React, TailwindCSS
 
 Blockchain: ethers.js, bip39
 
@@ -98,17 +103,17 @@ Build Tool: Vite/Webpack
 Language: TypeScript
 
 7. Deployment
-yarn build → creates /dist folder.
+   yarn build → creates /dist folder.
 
 Load unpacked extension in Chrome/Firefox.
 
 Publish to respective extension stores.
 
 8. Future Enhancements
-Token list & ERC-20 support.
+   Token list & ERC-20 support.
 
 NFT integration.
 
 Hardware wallet support.
 
-DApp browser. 
+DApp browser.

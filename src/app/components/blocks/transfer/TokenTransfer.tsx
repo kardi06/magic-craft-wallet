@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import classNames from "clsx";
 import BigNumber from "bignumber.js";
@@ -132,6 +133,8 @@ const TransferTokenContent = memo<TransferTokenContent>(
     const { alert, closeCurrentDialog } = useDialog();
     const { updateToast } = useToast();
     const isMounted = useIsMounted();
+
+    const [dragActive, setDragActive] = useState(false);
 
     const provider = useProvider();
     const signerProvider = provider.getVoidSigner(currentAccount.address);
@@ -558,11 +561,72 @@ const TransferTokenContent = memo<TransferTokenContent>(
       ],
     );
 
+    const tryDecodeQrFromFile = useCallback(async (file: File) => {
+      try {
+        const objectUrl = URL.createObjectURL(file);
+        const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const i = new Image();
+          i.onload = () => resolve(i);
+          i.onerror = reject;
+          i.src = objectUrl;
+        });
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("Cannot get canvas context");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(objectUrl);
+
+        // Try BarcodeDetector first
+        if ("BarcodeDetector" in window) {
+          // @ts-expect-error: BarcodeDetector type missing in lib
+          const detector = new window.BarcodeDetector({ formats: ["qr_code"] });
+          const bitmap = await createImageBitmap(canvas);
+          const codes = await detector.detect(bitmap);
+          if (codes && codes.length > 0 && codes[0].rawValue) {
+            return String(codes[0].rawValue);
+          }
+          throw new Error("QR code not detected");
+        }
+
+        throw new Error("QR detection is not supported in this environment.");
+      } catch (err: any) {
+        throw new Error(err?.message || "Failed to read QR image");
+      }
+    }, []);
+
     const handleRecipientChange = useDebouncedCallback((recipient: string) => {
       if (recipient && ethers.isAddress(recipient)) {
         setRecipientAddr(recipient);
       }
     }, 150);
+
+    const extractAddressFromQr = useCallback((text: string) => {
+      try {
+        // Support EIP-681 like schemes e.g. ethereum:0xabc... or general embedded
+        const lower = text.trim();
+        let candidate = lower;
+        if (candidate.startsWith("ethereum:")) {
+          candidate = candidate.slice("ethereum:".length);
+          // strip path/query
+          const qIdx = Math.min(
+            ...["@", "/", "?"].map((c) => {
+              const i = candidate.indexOf(c);
+              return i === -1 ? Number.POSITIVE_INFINITY : i;
+            }),
+          );
+          candidate =
+            qIdx === Number.POSITIVE_INFINITY
+              ? candidate
+              : candidate.slice(0, qIdx);
+        }
+        const match = candidate.match(/0x[a-fA-F0-9]{40}/);
+        return match ? match[0] : null;
+      } catch {
+        return null;
+      }
+    }, []);
 
     useEffect(() => {
       let t: any;
@@ -590,94 +654,147 @@ const TransferTokenContent = memo<TransferTokenContent>(
     return (
       <Form<FormValues>
         onSubmit={handleSubmit}
-        render={({ form, handleSubmit, values, submitting }) => (
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col max-w-[23.25rem]"
-          >
-            <OnChange name="recipient" callback={handleRecipientChange} />
-            <TokenSelect
-              tokenType={tokenType}
-              handleTokenChanged={() => {
-                form.change("amount", "");
-                setTimeout(() => form.blur("amount"));
-              }}
-            />
-            <Field
-              name="recipient"
-              validate={composeValidators(required, validateAddress)}
+        render={({ form, handleSubmit, values, submitting }) => {
+          const handleDragOver = (e: React.DragEvent) => {
+            e.preventDefault();
+            setDragActive(true);
+          };
+          const handleDragLeave = (e: React.DragEvent) => {
+            e.preventDefault();
+            setDragActive(false);
+          };
+          const handleDrop = async (e: React.DragEvent) => {
+            e.preventDefault();
+            setDragActive(false);
+            try {
+              const file = e.dataTransfer?.files?.[0];
+              if (!file) return;
+              if (!file.type.startsWith("image/")) {
+                throw new Error("Please drop an image containing a QR code.");
+              }
+              const text = await tryDecodeQrFromFile(file);
+              const addr = text && extractAddressFromQr(text);
+              if (!addr || !ethers.isAddress(addr)) {
+                throw new Error("QR does not contain a valid address.");
+              }
+              form.change("recipient", addr);
+            } catch (err: any) {
+              alert({ title: "QR parsing failed", content: err?.message });
+            }
+          };
+
+          return (
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className="relative"
             >
-              {({ input, focus, meta }) => (
-                <ContactAutocomplete
-                  setValue={(value) => {
-                    form.change("recipient", value);
-                    focus?.();
-                  }}
-                  error={meta.error && meta.touched && meta.submitFailed}
-                  errorMessage={meta.error}
-                  meta={meta}
-                  className="mt-5"
-                  {...input}
-                />
-              )}
-            </Field>
-            {parseTokenSlug(tokenSlug).standard !== TokenStandard.ERC721 && (
-              <div className="relative mt-5">
-                <Field
-                  key={amountFieldKey}
-                  name="amount"
-                  validate={composeValidators(
-                    required,
-                    maxValue(maxAmount, tokenSymbol),
+              {dragActive && (
+                <div
+                  className={classNames(
+                    "absolute inset-0 z-10",
+                    "rounded-xl border-2 border-dashed border-brand-main/60",
+                    "bg-black/20 backdrop-blur-sm",
+                    "flex items-center justify-center",
+                    "text-sm font-semibold text-brand-light",
                   )}
                 >
-                  {({ input, meta }) => (
-                    <AssetInput
-                      label="Amount"
-                      placeholder="0"
-                      thousandSeparator={true}
-                      assetDecimals={tokenDecimals}
-                      labelActions={
-                        estimating ? (
-                          <span className="text-xs text-brand-inactivedark2 self-end">
-                            Estimating...
-                          </span>
-                        ) : (
-                          <InputLabelAction
-                            onClick={() => form.change("amount", maxAmount)}
-                          >
-                            MAX
-                          </InputLabelAction>
-                        )
-                      }
-                      currency={tokenSymbol}
-                      error={(meta.modified || meta.submitFailed) && meta.error}
+                  Drop QR image to prefill Recipient
+                </div>
+              )}
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col max-w-[23.25rem]"
+              >
+                <OnChange name="recipient" callback={handleRecipientChange} />
+                <TokenSelect
+                  tokenType={tokenType}
+                  handleTokenChanged={() => {
+                    form.change("amount", "");
+                    setTimeout(() => form.blur("amount"));
+                  }}
+                />
+                <Field
+                  name="recipient"
+                  validate={composeValidators(required, validateAddress)}
+                >
+                  {({ input, focus, meta }) => (
+                    <ContactAutocomplete
+                      setValue={(value) => {
+                        form.change("recipient", value);
+                        focus?.();
+                      }}
+                      error={meta.error && meta.touched && meta.submitFailed}
                       errorMessage={meta.error}
-                      // readOnly={estimating}
+                      meta={meta}
+                      className="mt-5"
                       {...input}
                     />
                   )}
                 </Field>
-              </div>
-            )}
-            <div className="mt-6 flex items-start">
-              <TxCheck
-                tokenType={tokenType}
-                token={token}
-                values={{ gas: gas?.average, ...values }}
-                error={estimationError}
-              />
+                {parseTokenSlug(tokenSlug).standard !==
+                  TokenStandard.ERC721 && (
+                  <div className="relative mt-5">
+                    <Field
+                      key={amountFieldKey}
+                      name="amount"
+                      validate={composeValidators(
+                        required,
+                        maxValue(maxAmount, tokenSymbol),
+                      )}
+                    >
+                      {({ input, meta }) => (
+                        <AssetInput
+                          label="Amount"
+                          placeholder="0"
+                          thousandSeparator={true}
+                          assetDecimals={tokenDecimals}
+                          labelActions={
+                            estimating ? (
+                              <span className="text-xs text-brand-inactivedark2 self-end">
+                                Estimating...
+                              </span>
+                            ) : (
+                              <InputLabelAction
+                                onClick={() => form.change("amount", maxAmount)}
+                              >
+                                MAX
+                              </InputLabelAction>
+                            )
+                          }
+                          currency={tokenSymbol}
+                          error={
+                            (meta.modified || meta.submitFailed) && meta.error
+                          }
+                          errorMessage={meta.error}
+                          // readOnly={estimating}
+                          {...input}
+                        />
+                      )}
+                    </Field>
+                  </div>
+                )}
+                <div className="mt-6 flex items-start">
+                  <TxCheck
+                    tokenType={tokenType}
+                    token={token}
+                    values={{ gas: gas?.average, ...values }}
+                    error={estimationError}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="flex items-center min-w-[13.75rem] mt-8 mx-auto"
+                  loading={submitting}
+                >
+                  <SendIcon className="mr-2" />
+                  Transfer
+                </Button>
+              </form>
             </div>
-            <Button
-              type="submit"
-              className="flex items-center min-w-[13.75rem] mt-8 mx-auto"
-              loading={submitting}
-            >
-              <SendIcon className="mr-2" />
-              Transfer
-            </Button>
-          </form>
-        )}
+          );
+        }}
       />
     );
   },

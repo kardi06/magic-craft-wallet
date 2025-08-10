@@ -1,9 +1,9 @@
 @import "inter-ui/inter-variable.css";
 
 :root {
-  --magic-midnight: #1A1B2F;
-  --magic-purple: #6E4B9E;
-  --magic-gold: #F1C40F;
+  --magic-midnight: #1a1b2f;
+  --magic-purple: #6e4b9e;
+  --magic-gold: #f1c40f;
 }
 
 * {
@@ -90,7 +90,8 @@ a {
 
 /* global base layer tweaks */
 @layer base {
-  html, body {
+  html,
+  body {
     @apply bg-magic-midnight text-white font-body;
     background-color: var(--magic-midnight);
     color: white;
@@ -100,9 +101,8 @@ a {
 /* components you’ll reuse in the demo */
 @layer components {
   .magic-page {
-    @apply min-h-screen bg-magic-midnight bg-magic-parchment;
+    @apply min-h-screen bg-magic-midnight;
     background-color: var(--magic-midnight);
-    background-blend-mode: screen;
   }
 
   .magic-card {
@@ -123,25 +123,31 @@ a {
   }
 
   .logo-glow {
-    filter: drop-shadow(0 4px 20px rgba(241, 196, 15, 0.25)) drop-shadow(0 0 6px rgba(241, 196, 15, 0.2));
+    filter: drop-shadow(0 4px 20px rgba(241, 196, 15, 0.25))
+      drop-shadow(0 0 6px rgba(241, 196, 15, 0.2));
   }
 
   .btn-magic {
     @apply inline-flex items-center justify-center px-4 py-2 rounded-xl
            bg-magic-purple text-white font-semibold
            transition-transform duration-150 ease-out;
-    box-shadow: 0 0 0 1px rgba(110,75,158,0.35), 0 10px 24px rgba(110,75,158,0.25);
+    box-shadow:
+      0 0 0 1px rgba(110, 75, 158, 0.35),
+      0 10px 24px rgba(110, 75, 158, 0.25);
   }
   .btn-magic:hover {
     transform: translateY(-1px);
-    box-shadow: 0 0 0 2px rgba(241,196,15,0.35), 0 0 24px rgba(241,196,15,0.25);
-    filter: drop-shadow(0 0 8px rgba(241,196,15,0.25));
+    box-shadow:
+      0 0 0 2px rgba(241, 196, 15, 0.35),
+      0 0 24px rgba(241, 196, 15, 0.25);
+    filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.25));
   }
   .btn-magic:focus-visible {
     outline: none;
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-                var(--tw-ring-shadow, 0 0 #0000),
-                0 0 0 2px rgba(241,196,15,0.85);
+    box-shadow:
+      var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000),
+      0 0 0 2px rgba(241, 196, 15, 0.85);
   }
 
   .pill {
@@ -149,7 +155,7 @@ a {
   }
 
   .gold {
-    color: #F1C40F;
+    color: #f1c40f;
   }
 }
 

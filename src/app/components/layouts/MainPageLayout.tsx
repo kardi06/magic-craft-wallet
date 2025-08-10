@@ -15,10 +15,7 @@ const handleBootAnimationEnd = () => {
 const MainPageLayout: FC<PropsWithChildren> = ({ children }) => (
   <PreloadBaseAndSync>
     <div
-      className={classNames(
-        "h-screen flex flex-col magic-page bg-magic-parchment",
-        bootAnimationDisplayed && "animate-bootfadein",
-      )}
+      className={classNames("h-screen flex flex-col magic-page")}
       onAnimationEnd={
         bootAnimationDisplayed ? handleBootAnimationEnd : undefined
       }

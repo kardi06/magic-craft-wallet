@@ -67,7 +67,7 @@ const PopupLayout: FC<PopupLayoutProps> = ({ className, children }) => {
           className={classNames(
             isPopupWindow() ? "w-full" : "w-screen",
             "h-screen",
-            "flex flex-col items-stretch magic-page bg-magic-parchment",
+            "flex flex-col items-stretch magic-page",
             bootAnimationDisplayed && "animate-bootfadeinfast",
           )}
           onAnimationEnd={

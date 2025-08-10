@@ -8,15 +8,19 @@
 - Risks: QR parsing inconsistencies
 
 ## Objective
+
 Provide convenience tools for copying address and QR parsing.
 
 ## Scope
+
 - PRD: [Address & QR](../prd/04-features.md)
 - Architecture: [Core Modules](../architecture/03-core-modules.md)
 
 ## Acceptance Criteria
+
 - Copy address button to clipboard API
 - Drag-and-drop QR image parses address and autofills recipient
 
 ## Implementation Notes
-- Use Clipboard API; use jsqr or qrcode-reader 
+
+- Use Clipboard API; use jsqr or qrcode-reader

@@ -10,8 +10,6 @@ let's do story 2.1, but first check the in wigam, are there default system for a
 
 _**Assistant**_
 
-
-
 ---
 
 I’m going to scan the project’s configuration and the story file to answer your question about default systems/tasks (“wigam”) and prep for Story 2.1. I’ll open `.bmad-core/core-config.yaml`, list `.bmad-core` structure (tasks/templates/checklists), and read `docs/stories/2.1.dashboard-summary.md`.
@@ -138,29 +136,29 @@ Read file: docs/stories/2.1.dashboard-summary.md
 We can establish that within the .bmad-core, there are default tasks and checklists like execute-checklist and validate-next-story for development. However, we still need to implement specific code for Story 2.1 since there's no automatic runner. Regarding wagmi features, default hooks exist for balance, but for recent transactions, we need an external provider like Etherscan or Alchemy. The project story mentions fetching the last 5 transactions, so we should adjust that approach. I'll suggest options to the user regarding which provider they'd prefer.
 **Clarifying commands and options**
 
-The rule indicates that I should ask for clarification if there’s no clear match, but I can still present options as a numbered list. The developer guidelines also say to always use numbered lists when showing choices. We have a default checklist called story-dod-checklist, but I must avoid any code changes until the user approves the "develop-story" command. The user hasn't typed that yet, so I should ask them to explicitly trigger "*develop-story" or something similar to move forward.
+The rule indicates that I should ask for clarification if there’s no clear match, but I can still present options as a numbered list. The developer guidelines also say to always use numbered lists when showing choices. We have a default checklist called story-dod-checklist, but I must avoid any code changes until the user approves the "develop-story" command. The user hasn't typed that yet, so I should ask them to explicitly trigger "\*develop-story" or something similar to move forward.
 **Determining next steps**
 
 The activation guidelines indicate I should greet the user and then halt until they request assistance or provide commands. However, I can ask them to run "*help" or "*develop-story." The command list includes options like "help," "run-tests," and "explain," but not "develop-story," which is a method rather than a command. I think it might be best to provide an answer about wagmi default features, then propose numbered options for the user to confirm which provider they prefer for transactions.
 **Crafting the response**
 
-I think it’s a good idea to mention that the user can start by typing "*help" or confirm to proceed. But strictly speaking, we don't need the * commands to kick things off; however, it's smart to ask for confirmation. I'll include a status update before summarizing, keeping verbosity minimal. While I could cite code lines or the story file for acceptance criteria, I might skip that. Starting with a greeting like "James here" and adding my role as a Full Stack Developer seems friendly and appropriate.
+I think it’s a good idea to mention that the user can start by typing "_help" or confirm to proceed. But strictly speaking, we don't need the _ commands to kick things off; however, it's smart to ask for confirmation. I'll include a status update before summarizing, keeping verbosity minimal. While I could cite code lines or the story file for acceptance criteria, I might skip that. Starting with a greeting like "James here" and adding my role as a Full Stack Developer seems friendly and appropriate.
 **Providing options for wagmi/viem**
 
-In wagmi/viem, I can use default options like useBalance or getBalance, which work across networks and update when the network changes. Unfortunately, there’s no built-in transaction history API for wagmi or ethers provider; I'd need an indexer like Etherscan or Alchemy. I could suggest the Alchemy Transfers API or Etherscan API for this purpose. 
+In wagmi/viem, I can use default options like useBalance or getBalance, which work across networks and update when the network changes. Unfortunately, there’s no built-in transaction history API for wagmi or ethers provider; I'd need an indexer like Etherscan or Alchemy. I could suggest the Alchemy Transfers API or Etherscan API for this purpose.
 
 For the system of all tasks, we follow .bmad-core tasks and checklists. Here are numbered options for the user to choose from:
 
-1) Use Etherscan (needs API keys per network).
-2) Use Alchemy (single key for multiple chains).
-3) Use Blockscout for EVM chains.
-4) Go minimal: show balance and keep transaction history as a placeholder.
+1. Use Etherscan (needs API keys per network).
+2. Use Alchemy (single key for multiple chains).
+3. Use Blockscout for EVM chains.
+4. Go minimal: show balance and keep transaction history as a placeholder.
 
 I’ll also update on the testing with yarn, though it may not be strictly necessary.</details></think>
 
 ---
 
-James (Full Stack Developer) here. Type *help anytime for available commands.
+James (Full Stack Developer) here. Type \*help anytime for available commands.
 
 Quick status: I checked the story and the project’s default dev system files.
 
@@ -171,11 +169,12 @@ Quick status: I checked the story and the project’s default dev system files.
   - Recent transactions (last 5): Not provided by wagmi/viem or a vanilla RPC provider. Ethereum JSON-RPC doesn’t have “list transactions by address”; we need an indexer API (e.g., Etherscan, Alchemy Transfers, Covalent, Blockscout) to fetch recent txs.
 
 Choose how you want to fetch recent transactions:
-1) Etherscan API (per-chain keys; simple, widely available)
-2) Alchemy Transfers API (single key, good multi-chain support)
-3) Covalent (broad chain support, rich data)
-4) Blockscout (good for chains with Blockscout explorers)
-5) Minimal v1: implement balance now, add tx history later
+
+1. Etherscan API (per-chain keys; simple, widely available)
+2. Alchemy Transfers API (single key, good multi-chain support)
+3. Covalent (broad chain support, rich data)
+4. Blockscout (good for chains with Blockscout explorers)
+5. Minimal v1: implement balance now, add tx history later
 
 Reply with a number. Once chosen, I’ll proceed per the develop-story workflow and implement 2.1.
 
@@ -183,7 +182,6 @@ Reply with a number. Once chosen, I’ll proceed per the develop-story workflow 
 
 - Recent files I checked: `docs/stories/2.1.dashboard-summary.md` (Approved), `.bmad-core/core-config.yaml`, `.bmad-core/tasks/*`, `.bmad-core/checklists/*`.
 
-- If you want command-driven flow, say *help or tell me to proceed with your selected option.
+- If you want command-driven flow, say \*help or tell me to proceed with your selected option.
 
 ---
-

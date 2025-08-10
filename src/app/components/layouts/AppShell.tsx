@@ -1,5 +1,6 @@
 import * as React from "react";
-import logoUrl from "@logo.png";
+// Use the SVG for crisp rendering
+const logoUrl = "/images/magiccraft-logo.svg";
 
 type Props = {
   title?: string;
@@ -41,7 +42,9 @@ export default function AppShell({
 
       {/* content */}
       <main className="flex-1 px-4 pb-4">
-        <section className="magic-card border-surface-border bg-surface-card">{children}</section>
+        <section className="magic-card border-surface-border bg-surface-card">
+          {children}
+        </section>
       </main>
     </div>
   );

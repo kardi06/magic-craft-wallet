@@ -13,4 +13,4 @@ describe("Button theme=magic", () => {
     expect(html).toContain("btn-magic");
     expect(html).toMatchSnapshot();
   });
-}); 
+});
