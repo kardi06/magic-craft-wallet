@@ -1,6 +1,7 @@
 import {
   BigNumberish,
   Transaction,
+  TransactionLike,
   TransactionRequest,
   getBytes,
   resolveAddress,
@@ -31,6 +32,31 @@ const GAS_UNIT = {
   basicTransfer: 50_000,
 };
 
+// helper: safely coerce BigNumberish -> bigint | undefined
+const toBig = (v: any) =>
+  v === null || v === undefined ? undefined : BigInt(v);
+
+// helper: safely coerce numeric-like -> number | undefined
+const toNum = (v: any) =>
+  v === null || v === undefined ? undefined : Number(v);
+
+// turn TransactionRequest into TransactionLike with bigint fields
+function toTxLike(tx: any): TransactionLike<string> {
+  return {
+    type: tx.type, // 0, 1, or 2
+    to: tx.to ?? undefined,
+    from: tx.from ?? undefined,
+    chainId: toNum(tx.chainId),
+    nonce: toNum(tx.nonce),
+    gasLimit: toBig(tx.gas ?? tx.gasLimit),
+    gasPrice: toBig(tx.gasPrice),
+    maxFeePerGas: toBig(tx.maxFeePerGas),
+    maxPriorityFeePerGas: toBig(tx.maxPriorityFeePerGas),
+    value: toBig(tx.value),
+    data: tx.data,
+    accessList: tx.accessList,
+  };
+}
 export const estimateL1Fee = async (
   provider: ClientProvider,
   txReq: TransactionRequest & { gas?: string },
@@ -86,7 +112,7 @@ export const estimateL1Fee = async (
         provider,
       );
 
-      const serializedTx = Transaction.from(tx).unsignedSerialized;
+      const serializedTx = Transaction.from(toTxLike(tx)).unsignedSerialized;
 
       return await retry(() => contract.getL1Fee(serializedTx), {
         retries: 2,
@@ -105,7 +131,7 @@ export const estimateL1Fee = async (
       const fixedOverhead = 2100n;
       const dynamicOverhead = 1n;
 
-      const serializedTx = Transaction.from(tx).unsignedSerialized;
+      const serializedTx = Transaction.from(toTxLike(tx)).unsignedSerialized;
       const txBytes = getBytes(serializedTx);
 
       const zeroBytes = countZeroBytes(txBytes);
