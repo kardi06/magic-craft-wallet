@@ -16,6 +16,9 @@ import { createAccountTokenKey } from "core/common/tokens";
 
 import { chainIdAtom, syncStatusAtom } from "app/atoms";
 import { useAccounts } from "./account";
+import { getReadableAddress } from "_dev/testAddress";
+import * as repo from "core/repo";
+import { ActivityType } from "core/types";
 
 const ScopedChainIdContext = createContext<number | null>(null);
 
@@ -68,8 +71,64 @@ export function useSync(
   useEffect(() => {
     let t: any;
 
-    const syncAndDefer = () => {
-      sync(chainId, accountAddress, tokenType);
+    const syncAndDefer = async () => {
+      const addr = getReadableAddress(accountAddress, chainId);
+      sync(chainId, addr, tokenType);
+
+      // Dev-only: if there are no activities for THIS WALLET address/chain,
+      // seed a few read-only items so Recent Transactions renders instantly
+      if (process.env.NODE_ENV === "development") {
+        const existing = await repo.queryActivities({
+          pending: false,
+          accountAddress,
+          chainId,
+          limit: 1,
+        });
+        if (!existing || existing.length === 0) {
+          const now = Date.now();
+          await repo.activities.bulkPut([
+            {
+              id: `dev_${chainId}_1`,
+              accountAddress,
+              chainId,
+              type: ActivityType.Transaction,
+              pending: 0,
+              timeAt: now - 60_000,
+              txHash: `0xdevtx${chainId}1`,
+              source: { type: "self" as const, kind: "swap" as const },
+              txParams: {},
+              txAction: { type: "TOKEN_TRANSFER", tokens: [] } as any,
+              rawTx: "0x",
+            } as any,
+            {
+              id: `dev_${chainId}_2`,
+              accountAddress,
+              chainId,
+              type: ActivityType.Transaction,
+              pending: 0,
+              timeAt: now - 5 * 60_000,
+              txHash: `0xdevtx${chainId}2`,
+              source: { type: "self" as const, kind: "swap" as const },
+              txParams: {},
+              txAction: { type: "TOKEN_TRANSFER", tokens: [] } as any,
+              rawTx: "0x",
+            } as any,
+            {
+              id: `dev_${chainId}_3`,
+              accountAddress,
+              chainId,
+              type: ActivityType.Transaction,
+              pending: 0,
+              timeAt: now - 15 * 60_000,
+              txHash: `0xdevtx${chainId}3`,
+              source: { type: "self" as const, kind: "swap" as const },
+              txParams: {},
+              txAction: { type: "TOKEN_TRANSFER", tokens: [] } as any,
+              rawTx: "0x",
+            } as any,
+          ]);
+        }
+      }
 
       t = setTimeout(syncAndDefer, 3_000);
     };
@@ -93,7 +152,8 @@ export function useTokenActivitiesSync(
     let t: any;
 
     const syncAndDefer = () => {
-      if (tokenSlug) syncTokenActivities(chainId, accountAddress, tokenSlug);
+      const addr = getReadableAddress(accountAddress, chainId);
+      if (tokenSlug) syncTokenActivities(chainId, addr, tokenSlug);
 
       t = setTimeout(syncAndDefer, 5_000);
     };

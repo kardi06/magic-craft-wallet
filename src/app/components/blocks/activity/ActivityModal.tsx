@@ -39,7 +39,6 @@ const ActivityModal = memo(() => {
           className={classNames("fixed inset-0 z-20", "bg-brand-darkblue/50")}
         />
         <Dialog.Content
-          onOpenAutoFocus={(e) => e.preventDefault()}
           className={classNames(
             "fixed z-20",
             "w-full",
@@ -50,6 +49,10 @@ const ActivityModal = memo(() => {
             bootAnimationDisplayed && "animate-modalcontent",
           )}
         >
+          <Dialog.Title className="sr-only">Activity</Dialog.Title>
+          <Dialog.Description className="sr-only">
+            Recent transactions and activity for your selected account.
+          </Dialog.Description>
           {!isPopupMode && (
             <ActivityIcon
               className={classNames(
