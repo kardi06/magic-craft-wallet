@@ -15,7 +15,7 @@ node_modules
 /coverage
 
 # Env
-.env.*
+# .env.*
 
 # misc
 .swc
