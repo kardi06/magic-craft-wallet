@@ -1,132 +1,93 @@
-# Wigwam - Web3 Wallet
+# MagicCraft Wallet (based on Wigwam)
 
-### https://wigwam.app
+This project is a customized build of the open‑source Wigwam Web3 wallet browser extension, adapted for MagicCraft.
 
-A browser extension Web3 wallet designed for Ethereum, Polygon, BNB Smart Chain, Arbitrum, and all EVM networks. Reliable and secure solution for managing accounts and crypto keys, exploring DeFi, NFTs, and GameFi.
+Upstream repository: https://github.com/wigwamapp/wigwam
 
-![Wigwam](./docs/banner.png)
+## Branch
 
-**Table of Contents**
+- Use branch: `feat/magicraft`
 
-- [Features](#features)
-- [Documentation](#documentation)
-- [Build from Source](#build-from-source)
-- [Useful Scripts](#useful-scripts)
-- [Contributions](#contributions)
-- [Support](#support)
+## Requirements
 
-## Features
+- Node.js ≥ 18.12
+- Yarn v1 (classic)
 
-### Self-Custodial
-
-- 🤲 User-centric approach - the keys belong to the user and are securely stored on their device, encrypted and inaccessible to anyone else.
-- 🗝 Compatible with hardware wallets like [Ledger](https://www.ledger.com/) for an extra layer of security.
-
-### Security First
-
-- 🛡 Utilizes battle-proof techniques for encrypting and storing sensitive data, which are commonly used in password managers, to protect user data.
-
-### Dapp Integration
-
-- 🌐 Seamlessly connects with decentralized applications (dApps) across various EVM networks.
-- 💼 Supports all the latest Web3 standards.
-
-### Full-Page Dashboard
-
-- 📊 Features a comprehensive full-page dashboard within the app, providing detailed information about accounts, transactions, and assets.
-- 📈 Stay updated on your portfolio and activities within the Web3 ecosystem.
-
-### Multi-Network Support
-
-- 🔗 Designed to be multi-network, allowing to switch between networks effortlessly.
-- 🌐 Easily manage assets and explore the diverse opportunities offered by different networks.
-
-### Open Source
-
-- 📖 Committed to transparency and community-driven development. The project is open source, allowing developers to review and contribute to the codebase.
-
-### User-Friendly Interface
-
-- 🖥️ The user interface is intuitive and user-friendly, making it easy for both newcomers and experienced users to navigate and utilize the wallet's features.
-
-### Offline-first
-
-- 🔌 Adopts an offline-first approach by utilizing a local database as the primary source of data. The app syncs with third-party indexer APIs for enhanced functionality but can operate independently, directly interacting with the blockchain if needed.
-
-### Manifest V3 Compatibility
-
-- ✅ Fully adapted to the latest browser extension ManifestV3 API, ensuring compatibility with modern standards.
-- 🌙 "Sleep well" feature allows the extension to save resources when not in active use, improving overall performance.
-
-### Lightweight
-
-- ⚡️ Designed with efficiency in mind to ensure a lightweight and responsive user experience.
-
-## Documentation
-
-- [**General Tech Documentation**](docs/README.md)
-- [**Security Documentation**](docs/SECURITY.md)
-
-You can also find documentation for specific modules within the source code.
-
-## Build from source
-
-> Requires: [`Node.js >=18.12.0`](https://nodejs.org) and [`Yarn ^1`](https://yarnpkg.com)
-
-### Get the source code
+## Install
 
 ```bash
-git clone git@github.com:wigwamapp/local-wigwam.git wigwam
-```
+# clone your fork with the feat/magicraft branch
+git clone <your-fork-url> magiccraft-wallet
+cd magiccraft-wallet
+git checkout feat/magicraft
 
-### Install app dependencies
-
-```bash
+# install dependencies
 yarn
 ```
 
-### Build an application
+## Development (Dev build)
 
+1) Start the dev build
 ```bash
-# for Chrome and other Chrome-based browsers
+yarn start
+```
+- Outputs to: `dist/dev/chrome_unpacked` (hot rebuild on save).
+
+2) Load the dev extension in Chrome
+- Open `chrome://extensions`
+- Enable “Developer mode”
+- Click “Load unpacked”
+- Select `dist/dev/chrome_unpacked`
+
+3) Dev env notes
+- Ensure `RELEASE_ENV=false` for dev.
+- Recommended flags (in `.env` or `.env.dev`):
+  - `WIGWAM_DEV_CONTROL_PANEL=false` (hide dev buttons)
+  - `WIGWAM_USE_TEST_ADDRESS=true` (optional, shows a demo “Recent Transactions” list in dev)
+- Networks: Settings → Web3 → verify HTTP RPC endpoints for Ethereum, BNB Chain, Polygon.
+- After edits, either reload the extension or refresh the wallet tab.
+
+## Production (Prod build)
+
+1) Set production env (example)
+```
+RELEASE_ENV=true
+WIGWAM_DEV_CONTROL_PANEL=false
+WIGWAM_USE_TEST_ADDRESS=false
+
+# Optional but recommended if you use indexer features
+WIGWAM_INDEXER_API=https://indexer-api.wigwam.app
+WIGWAM_INDEXER_API_KEY=<your-key>
+
+# Only needed if you use Infura RPCs with ${INFURA_API_KEY}
+WIGWAM_INFURA_API_KEY=<infura-key>
+```
+
+2) Build for Chrome
+```bash
 yarn build
-
-# for Firefox
-yarn build:firefox
 ```
+- Outputs to: `dist/prod/chrome_unpacked`
 
-### Add an application to the browser locally
+3) Load the prod extension
+- Remove any dev build from `chrome://extensions`
+- Click “Load unpacked” → select `dist/prod/chrome_unpacked`
 
-1. Open `chrome://extensions/` in your browser
-2. Enable "Developer mode"
-3. Tap on "Load unpacked"
-4. Select `<your_local_wigwam_repository_dir>/dist/prod/chrome_unpacked`
+## Common operations
 
-## Useful scripts
+- Reset / re-add extension: remove it from `chrome://extensions`, then load the desired dev/prod folder.
+- Switch networks: from Assets, click the Ethereum/BNB/Polygon cards. For custom networks use Settings → Web3 → “Add new network” (HTTP RPC only).
+- Watch‑only account (no funds needed): Wallets → Add wallet → Watch only → paste an EOA → Add wallets → switch to the matching network to see “Recent Transactions”.
 
-### Test
+## Troubleshooting
 
-```bash
-  yarn test
-```
+- “There was an error” screen: usually missing envs or invalid RPC/indexer keys.
+  - Dev: `RELEASE_ENV=false`
+  - Prod: `RELEASE_ENV=true` and valid RPC/indexer config
+- Dev buttons visible in prod: ensure `RELEASE_ENV=true` and `WIGWAM_DEV_CONTROL_PANEL=false`, rebuild, and load the prod folder.
+- Prices show 0 or 401: provide `WIGWAM_INDEXER_API` + `WIGWAM_INDEXER_API_KEY` or remove both to disable indexer. The app still works with on‑chain reads.
+- Infura RPC template: if an RPC contains `${INFURA_API_KEY}`, set `WIGWAM_INFURA_API_KEY` or switch to a non‑Infura HTTP endpoint.
 
-### Audit NPM dependencies
+## Upstream project
 
-```bash
-  yarn audit
-  yarn npm-audit
-```
-
-### Analyze bundle
-
-```bash
-  yarn analyze
-```
-
-## Contributions
-
-We welcome contributions from the community to make this project even better.
-
-## Support
-
-For any questions, issues, or assistance, please contact our support team or open an issue on GitHub.
+This work is based on Wigwam — Web3 Wallet — Browser extension — EVM Blockchains. For features and security docs, see: https://github.com/wigwamapp/wigwam 

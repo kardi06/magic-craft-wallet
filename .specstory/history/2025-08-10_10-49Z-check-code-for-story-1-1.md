@@ -11510,3 +11510,459 @@ If you still don’t see it:
 
 ---
 
+_**User**_
+
+what is that for ? how to use it ? sendBscToken, apporoveBscToken , generateRandomContact ? 
+
+---
+
+_**Assistant**_
+
+Those are dev-only helpers in the control panel menu. They’re meant for quick testing; they don’t appear in production.
+
+- sendBscTokens()
+  - Sends a tiny test transfer on BNB Chain from your current wallet to a preset address.
+  - Requirements:
+    - Active network: BNB Chain (click the BNB card).
+    - You’re using a seed/private-key wallet (not watch-only).
+    - You have a bit of BNB for gas.
+  - Click it, confirm the approval window, and it will broadcast a small token/native transfer (depending on config). The tx then appears in Activity.
+
+- approveBscTokens()
+  - Sends an ERC‑20 approval tx on BNB Chain from your wallet to a preset spender, to simulate “Approve” flows.
+  - Same requirements as above (BNB gas + seed wallet).
+  - Useful to test how Approve shows in Recent Transactions and the confirmation UI.
+
+- generateRandomContacts()
+  - Seeds the Contacts list with a few random entries.
+  - No network or funds needed. It just populates contacts for UI demos.
+
+If all you want is to see Recent Transactions without spending gas, use the watch-only flow or the dev seeding we added:
+- Add a watch-only account with a known EOA that has history, or
+- Just select a network; the dev build now auto-seeds a few read-only items if the list is empty.
+
+---
+
+_**User**_
+
+there are still appear in production, don't make it appear in produciion, and approvebsctoken and generateRandomContact not function properly
+
+---
+
+_**Assistant**_
+
+
+
+---
+
+Read file: src/_dev/controlPanel.tsx
+
+---
+
+Read file: src/_dev/devTools.ts
+
+---
+
+- Why dev buttons show in production
+  - They should not. The control panel is only imported when RELEASE_ENV === "false" and WIGWAM_DEV_CONTROL_PANEL === "true" in devTools.ts. If you see them in your production build, your prod bundle likely has RELEASE_ENV=false.
+  - Fix: when you run production, set RELEASE_ENV=true in the build env (or .env.prod). For prod:
+    - cross-env RELEASE_ENV=true yarn build:chrome
+    - Or ensure your CI sets RELEASE_ENV=true for production builds.
+
+- Hide them regardless in production
+  - I confirmed the control panel is only loaded from _dev/devTools.ts when RELEASE_ENV === "false". So making a proper prod build with RELEASE_ENV=true will remove it entirely.
+  - If you also want to be extra safe: we can add a guard inside controlPanel.tsx to do nothing unless process.env.RELEASE_ENV === 'false'. Say the word and I’ll add it.
+
+- approveBscTokens and generateRandomContacts not working
+  - approveBscTokens(): it’s hardcoded for BSC testnet (chainId 97) and a specific “fromAccount”. It will fail unless you control that private key. It’s meant as a demo stub.
+    - Quick fix: we can rewire it to use your current wallet and an approval to a harmless spender on 97 (or 56). Or we can disable it in the control panel to avoid confusion.
+  - generateRandomContacts(): This should seed 99 contacts into storage. If it didn’t:
+    - It adds entries to Repo.contacts. Check the Contacts screen; if still empty, I’ll switch it to use smaller batches and await writes properly.
+
+What I recommend now
+- For production:
+  - Build with RELEASE_ENV=true so the dev panel never appears.
+- For dev:
+  - I can change approveBscTokens() to use the current wallet and add a safe allowance, or hide it. Which do you prefer?
+  - I can also update generateRandomContacts() to be more reliable (smaller batch, confirm write).
+
+---
+
+_**User**_
+
+why production error ? i run this with the dev. is that okay? here is .env for prod 
+
+---
+
+_**Assistant**_
+
+Running the dev build (yarn start → dist/dev/chrome_unpacked) is fine for testing, but your “There was an error” screen indicates the UI crashed. That usually happens when:
+
+- The wrong bundle is loaded (prod bundle with RELEASE_ENV=false dev flags), or
+- A missing/blocked env (indexer, RPC) throws and the error boundary shows.
+
+To keep things clean:
+
+- For dev (recommended for now)
+  - Use only the dev bundle:
+    - yarn start
+    - Load unpacked → dist/dev/chrome_unpacked
+  - Make sure .env.dev (or .env) has:
+    - RELEASE_ENV=false
+    - WIGWAM_USE_TEST_ADDRESS=true
+    - WIGWAM_DEV_CONTROL_PANEL=false (so dev buttons don’t show)
+  - Restart yarn start and Reload the extension.
+
+- For production (no dev tools, no crashes)
+  - In your prod env file, set:
+    - RELEASE_ENV=true
+    - WIGWAM_DEV_CONTROL_PANEL=false
+    - WIGWAM_USE_TEST_ADDRESS=false
+    - WIGWAM_INDEXER_API and WIGWAM_INDEXER_API_KEY valid
+    - WIGWAM_INFURA_API_KEY valid if you use any Infura URLs
+  - Build:
+    - cross-env RELEASE_ENV=true yarn build:chrome
+    - Load unpacked → dist/prod/chrome_unpacked
+
+Why you saw that error in “production”
+- If you loaded the dev folder but your .env had RELEASE_ENV=true (or vice versa), the background may be missing networks or hitting 401s and the UI throws.
+- Also, if your prod .env has WIGWAM_DEV_CONTROL_PANEL=true, the dev panel will show in prod. Set it to false.
+
+Quick checklist to clear the error now
+- Remove the extension, then load only one unpacked build:
+  - For dev: dist/dev/chrome_unpacked (and ensure RELEASE_ENV=false, control panel false).
+  - For prod: dist/prod/chrome_unpacked with RELEASE_ENV=true.
+- Ensure Polygon/BNB/Ethereum networks have valid HTTP RPCs in Settings → Web3.
+- Ensure indexer envs are set (or ignore fiat if testing activity visuals only).
+
+If you paste your prod .env contents, I’ll confirm the exact flags to flip.
+
+---
+
+_**User**_
+
+here are .env for prod "WIGWAM_WEBSITE_ORIGIN = https://wigwam.app
+WIGWAM_STATIC_CDN = https://static.wigwam.app
+WIGWAM_INDEXER_API = https://indexer-api.wigwam.app
+WIGWAM_INDEXER_API_KEY =
+
+WIGWAM_INFURA_API_KEY=
+WIGWAM_ANALYTICS_API_KEY=
+WIGWAM_OPEN_LOGIN_CLIENT_ID=
+
+WIGWAM_ON_RAMP_API_KEY=
+WIGWAM_ON_RAMP_API_URL=
+
+
+---
+
+_**Assistant**_
+
+Thanks. A few fixes to make your production build stable and hide dev UI:
+
+Required flags
+- RELEASE_ENV=true
+- WIGWAM_DEV_CONTROL_PANEL=false
+- WIGWAM_USE_TEST_ADDRESS=false
+
+Fill or remove empty keys
+- WIGWAM_INDEXER_API_KEY: either provide a valid key or remove WIGWAM_INDEXER_API altogether so the app doesn’t hit an unauthorized proxy. Leaving the URL with an empty key is why you see 401 and occasional UI errors.
+- WIGWAM_INFURA_API_KEY: only needed if any RPC URL contains ${INFURA_API_KEY}. If you don’t use Infura RPCs, leave this unset and ensure all network RPCs are plain HTTP endpoints (e.g., Ankr, public RPC).
+
+Final .env.prod example
+- RELEASE_ENV=true
+- WIGWAM_DEV_CONTROL_PANEL=false
+- WIGWAM_USE_TEST_ADDRESS=false
+- WIGWAM_WEBSITE_ORIGIN=https://wigwam.app
+- WIGWAM_STATIC_CDN=https://static.wigwam.app
+- WIGWAM_INDEXER_API=https://indexer-api.wigwam.app
+- WIGWAM_INDEXER_API_KEY=<your-key>  (or remove both INDEXER lines to disable indexer)
+- WIGWAM_INFURA_API_KEY=<infura-key-if-you-use-infura>
+- WIGWAM_ANALYTICS_API_KEY=<optional>
+- WIGWAM_OPEN_LOGIN_CLIENT_ID=<optional>
+- WIGWAM_ON_RAMP_API_KEY=<optional>
+- WIGWAM_ON_RAMP_API_URL=<optional>
+
+Build and load
+- cross-env RELEASE_ENV=true yarn build:chrome
+- chrome://extensions → Remove any dev extension → Load unpacked → dist/prod/chrome_unpacked
+
+Network sanity
+- Settings → Web3: Ensure Ethereum/BSC/Polygon have valid HTTP RPC URLs.
+- If you used an Infura templated RPC and don’t set WIGWAM_INFURA_API_KEY, switch to a non‑Infura RPC.
+
+This will:
+- Hide the dev control panel in production.
+- Prevent 401 indexer spam that can destabilize the UI.
+- Avoid the crash screen by ensuring RPC/indexer configs are valid.
+
+---
+
+_**User**_
+
+now let's make a readme file , how to use this app . first tell this is from wigwam repo @https://github.com/wigwamapp/wigwam 
+how to install use branch feat/magicraft. do yarn first and the yarn start to access dev mode.
+in chrome activate dev mode, and load packed dev.
+for pro , remove dev, load prod package.
+and other thing. make README.md file
+
+---
+
+_**Assistant**_
+
+Here’s a concise README you can drop into README.md for your fork. I’ve tailored it to your “feat/magicraft” branch and the dev/prod flows you’re using, with clear steps and common pitfalls called out. I also referenced the upstream repo per your request.
+
+README.md
+```
+# MagicCraft Wallet (based on Wigwam)
+
+This project is a customized build of the open‑source Wigwam Web3 wallet browser extension, adapted for MagicCraft. Upstream repository: https://github.com/wigwamapp/wigwam
+
+## Branch
+
+- Use branch: `feat/magicraft`
+
+## Requirements
+
+- Node.js ≥ 18.12
+- Yarn v1 (classic)
+
+## Install
+
+```bash
+# clone your fork with the feat/magicraft branch
+git clone <your-fork-url> magiccraft-wallet
+cd magiccraft-wallet
+git checkout feat/magicraft
+
+# install dependencies
+yarn
+```
+
+## Development (Dev build)
+
+1) Start the dev build
+```bash
+yarn start
+```
+- This creates a dev unpacked extension at `dist/dev/chrome_unpacked` and rebuilds on file changes.
+
+2) Load the dev extension in Chrome
+- Open `chrome://extensions`
+- Enable “Developer mode”
+- Click “Load unpacked”
+- Select `dist/dev/chrome_unpacked`
+- Open the wallet from the extensions toolbar
+
+3) Notes for dev mode
+- Environment variables:
+  - Ensure `RELEASE_ENV=false` for dev.
+  - Keep `WIGWAM_DEV_CONTROL_PANEL=false` unless you explicitly want the small dev action panel.
+  - Optional: `WIGWAM_USE_TEST_ADDRESS=true` to show a “Recent Transactions” demo list (dev only).
+- Networks:
+  - Go to Settings → Web3 and ensure HTTP RPC endpoints exist for Ethereum, BNB Chain, Polygon (e.g., Ankr/public RPCs).
+- Hot rebuild:
+  - After editing code, yarn start rebuilds; go to `chrome://extensions` and click “Reload” on the dev extension or just refresh the wallet tab.
+
+## Production (Prod build)
+
+1) Prepare prod env
+- Create your prod .env (or export vars before build). Minimum recommended:
+```
+RELEASE_ENV=true
+WIGWAM_DEV_CONTROL_PANEL=false
+WIGWAM_USE_TEST_ADDRESS=false
+
+# Optional but recommended if you use indexer features:
+WIGWAM_INDEXER_API=https://indexer-api.wigwam.app
+WIGWAM_INDEXER_API_KEY=<your-key>
+
+# Only needed if you use Infura RPCs with ${INFURA_API_KEY}
+WIGWAM_INFURA_API_KEY=<infura-key>
+```
+
+2) Build for Chrome
+```bash
+cross-env RELEASE_ENV=true yarn build:chrome
+```
+- Output: `dist/prod/chrome_unpacked`
+
+3) Load the prod extension
+- Remove any dev extension first in `chrome://extensions`
+- Click “Load unpacked”
+- Select `dist/prod/chrome_unpacked`
+
+## Common operations
+
+- Reset / remove the extension
+  - Go to `chrome://extensions`, remove it, then load it again from the desired build folder (dev vs prod).
+- Switch networks
+  - From the Assets page, click the network cards (Ethereum/BNB/Polygon).
+  - For custom networks: Settings → Web3 → “Add new network” (HTTP RPC only).
+- Watch‑only account (no funds needed)
+  - Wallets → Add wallet → Watch only → paste a public EOA address → Add wallets → switch to the matching network to see “Recent Transactions”.
+
+## Troubleshooting
+
+- “There was an error” screen
+  - Usually caused by missing envs or invalid RPC/indexer keys. For dev, set `RELEASE_ENV=false`; for prod, set `RELEASE_ENV=true` and ensure RPC/indexer are valid.
+- Dev action buttons visible in prod
+  - Build prod with `RELEASE_ENV=true` and `WIGWAM_DEV_CONTROL_PANEL=false`. Remove the dev extension and load the prod package.
+- Prices show 0 or 401 errors
+  - Provide `WIGWAM_INDEXER_API` and `WIGWAM_INDEXER_API_KEY` or remove both to disable indexer. App still works with on‑chain reads.
+- Infura RPC template requires API key
+  - If an RPC contains `${INFURA_API_KEY}`, set `WIGWAM_INFURA_API_KEY` or switch to a non‑Infura HTTP endpoint.
+
+## Upstream project
+
+This work is based on Wigwam — Web3 Wallet — Browser extension — EVM Blockchains. For features and security docs, see the upstream repo: https://github.com/wigwamapp/wigwam
+```
+
+If you want, I can save this directly to README.md and push, or adjust copy for your organization’s naming and support links.
+
+---
+
+_**User**_
+
+yes, just make the file
+
+---
+
+_**Assistant**_
+
+<think><details><summary>Thought Process</summary>**Creating README.md file**
+
+I need to create a README.md file in the project root with the provided content. I’ll use the editing tool to generate the file and include the necessary code. I should keep the narration minimal, which is good! Also, I'll add a citation link to the upstream source for reference. After everything is set up, I’ll make sure to confirm that the file has been created. That's the plan!</details></think>
+
+---
+
+<details><summary>Edit file: README.md</summary>
+
+I will create a README.md with installation, dev/prod usage, troubleshooting, and upstream reference.
+
+**Chunk 1**
+Lines added: 93, lines removed: 1
+
+```diff
+@@ -1,1 +1,93 @@
+- 
++ # MagicCraft Wallet (based on Wigwam)
++ 
++ This project is a customized build of the open‑source Wigwam Web3 wallet browser extension, adapted for MagicCraft.
++ 
++ Upstream repository: https://github.com/wigwamapp/wigwam
++ 
++ ## Branch
++ 
++ - Use branch: `feat/magicraft`
++ 
++ ## Requirements
++ 
++ - Node.js ≥ 18.12
++ - Yarn v1 (classic)
++ 
++ ## Install
++ 
++ ```bash
++ # clone your fork with the feat/magicraft branch
++ git clone <your-fork-url> magiccraft-wallet
++ cd magiccraft-wallet
++ git checkout feat/magicraft
++ 
++ # install dependencies
++ yarn
++ ```
++ 
++ ## Development (Dev build)
++ 
++ 1) Start the dev build
++ ```bash
++ yarn start
++ ```
++ - Outputs to: `dist/dev/chrome_unpacked` (hot rebuild on save).
++ 
++ 2) Load the dev extension in Chrome
++ - Open `chrome://extensions`
++ - Enable “Developer mode”
++ - Click “Load unpacked”
++ - Select `dist/dev/chrome_unpacked`
++ 
++ 3) Dev env notes
++ - Ensure `RELEASE_ENV=false` for dev.
++ - Recommended flags (in `.env` or `.env.dev`):
++   - `WIGWAM_DEV_CONTROL_PANEL=false` (hide dev buttons)
++   - `WIGWAM_USE_TEST_ADDRESS=true` (optional, shows a demo “Recent Transactions” list in dev)
++ - Networks: Settings → Web3 → verify HTTP RPC endpoints for Ethereum, BNB Chain, Polygon.
++ - After edits, either reload the extension or refresh the wallet tab.
++ 
++ ## Production (Prod build)
++ 
++ 1) Set production env (example)
++ ```
++ RELEASE_ENV=true
++ WIGWAM_DEV_CONTROL_PANEL=false
++ WIGWAM_USE_TEST_ADDRESS=false
++ 
++ # Optional but recommended if you use indexer features
++ WIGWAM_INDEXER_API=https://indexer-api.wigwam.app
++ WIGWAM_INDEXER_API_KEY=<your-key>
++ 
++ # Only needed if you use Infura RPCs with ${INFURA_API_KEY}
++ WIGWAM_INFURA_API_KEY=<infura-key>
++ ```
++ 
++ 2) Build for Chrome
++ ```bash
++ cross-env RELEASE_ENV=true yarn build:chrome
++ ```
++ - Outputs to: `dist/prod/chrome_unpacked`
++ 
++ 3) Load the prod extension
++ - Remove any dev build from `chrome://extensions`
++ - Click “Load unpacked” → select `dist/prod/chrome_unpacked`
++ 
++ ## Common operations
++ 
++ - Reset / re-add extension: remove it from `chrome://extensions`, then load the desired dev/prod folder.
++ - Switch networks: from Assets, click the Ethereum/BNB/Polygon cards. For custom networks use Settings → Web3 → “Add new network” (HTTP RPC only).
++ - Watch‑only account (no funds needed): Wallets → Add wallet → Watch only → paste an EOA → Add wallets → switch to the matching network to see “Recent Transactions”.
++ 
++ ## Troubleshooting
++ 
++ - “There was an error” screen: usually missing envs or invalid RPC/indexer keys.
++   - Dev: `RELEASE_ENV=false`
++   - Prod: `RELEASE_ENV=true` and valid RPC/indexer config
++ - Dev buttons visible in prod: ensure `RELEASE_ENV=true` and `WIGWAM_DEV_CONTROL_PANEL=false`, rebuild, and load the prod folder.
++ - Prices show 0 or 401: provide `WIGWAM_INDEXER_API` + `WIGWAM_INDEXER_API_KEY` or remove both to disable indexer. The app still works with on‑chain reads.
++ - Infura RPC template: if an RPC contains `${INFURA_API_KEY}`, set `WIGWAM_INFURA_API_KEY` or switch to a non‑Infura HTTP endpoint.
++ 
++ ## Upstream project
++ 
++ This work is based on Wigwam — Web3 Wallet — Browser extension — EVM Blockchains. For features and security docs, see: https://github.com/wigwamapp/wigwam 
+```
+
+</details>
+
+---
+
+- Created README.md with:
+  - Install steps for branch `feat/magicraft`
+  - Dev flow (yarn start → load dist/dev/chrome_unpacked)
+  - Prod flow (RELEASE_ENV=true → yarn build:chrome → load dist/prod/chrome_unpacked)
+  - Environment flags, networks, and troubleshooting
+  - Upstream link to Wigwam repo
+
+---
+
+_**User**_
+
+@README.md give tutorial to use yarn start in readme
+
+---
+
+_**Assistant**_
+
+
+
+---
+
